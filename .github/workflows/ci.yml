@@ -27,7 +27,7 @@ jobs:
       - name: ruff check
         run: ruff check --output-format=github .
       - name: ruff format
-        run: ruff format --check --output-format=github .
+        run: ruff format --check .
       - name: djhtml
         run: find ons_alpha/ -name '*.html' | xargs djhtml --check
 
