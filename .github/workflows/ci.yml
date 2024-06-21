@@ -25,9 +25,9 @@ jobs:
           poetry config virtualenvs.create false
           poetry install
       - name: ruff check
-        run: ruff check .
+        run: ruff check --output-format=github .
       - name: ruff format
-        run: ruff format --check .
+        run: ruff format --check --output-format=github .
       - name: djhtml
         run: find ons_alpha/ -name '*.html' | xargs djhtml --check
 
