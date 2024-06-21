@@ -40,9 +40,7 @@
         {% block header %}{% endblock %}
 
         <main id="main-content">
-            {% block content %}
-                {{ pattern_library_rendered_pattern }}
-            {% endblock %}
+            {% block content %}{% endblock %}
         </main>
 
         {% block footer %}{% endblock %}
@@ -52,4 +50,3 @@
         {% block extra_js %}{% endblock %}
     </body>
 </html>
-

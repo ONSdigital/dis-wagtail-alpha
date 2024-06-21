@@ -27,14 +27,9 @@
         {% endif %}
 
         {% if search_results %}
-
-            {% if pattern_library_only %}
-                12 results found.
-            {% else %}
-                {% with count=search_results.paginator.count %}
-                    {{ count }} result{{ count|pluralize }} found.
-                {% endwith %}
-            {% endif %}
+            {% with count=search_results.paginator.count %}
+                {{ count }} result{{ count|pluralize }} found.
+            {% endwith %}
 
             <ul>
                 {% for result in search_results %}

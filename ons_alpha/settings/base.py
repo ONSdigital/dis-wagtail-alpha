@@ -22,11 +22,6 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # https://docs.djangoproject.com/en/stable/ref/settings/#debug
 DEBUG = False
 
-SILENCED_SYSTEM_CHECKS = [
-    # Silence warning about template tag modules being overridden for django-pattern-library
-    "templates.E003",
-]
-
 # Secret key is important to be kept secret. Never share it with anyone. Please
 # always set it in the environment variable and never check into the
 # repository.
@@ -98,7 +93,6 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",  # Must be before `django.contrib.staticfiles`
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
-    "pattern_library",
     "ons_alpha.project_styleguide.apps.ProjectStyleguideConfig",
     "wagtailaccessibility",
     "birdbath",
@@ -163,7 +157,6 @@ TEMPLATES = [
                 # global variables to all the templates.
                 "ons_alpha.core.context_processors.global_vars",
             ],
-            "builtins": ["pattern_library.loader_tags"],
         },
     },
 ]
@@ -780,21 +773,6 @@ PASSWORD_REQUIRED_TEMPLATE = "pages/wagtail/password_required.html"
 
 # Default size of the pagination used on the front-end.
 DEFAULT_PER_PAGE = 20
-
-
-# Styleguide
-PATTERN_LIBRARY_ENABLED = env.get("PATTERN_LIBRARY_ENABLED", "false").lower() == "true"
-PATTERN_LIBRARY = {
-    "SECTIONS": (
-        ("components", ["components"]),
-        ("pages", ["pages"]),
-        ("sprites", ["sprites"]),
-    ),
-    "TEMPLATE_SUFFIX": ".html",
-    "PATTERN_BASE_TEMPLATE_NAME": "base.html",
-    "BASE_TEMPLATE_NAMES": ["base_page.html"],
-}
-
 
 # Google Tag Manager ID from env
 GOOGLE_TAG_MANAGER_ID = env.get("GOOGLE_TAG_MANAGER_ID")

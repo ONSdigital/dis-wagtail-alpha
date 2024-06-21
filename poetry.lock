@@ -546,22 +546,6 @@ pytz = ">=2022.4"
 taggit = ["django-taggit (>=3.1)"]
 
 [[package]]
-name = "django-pattern-library"
-version = "1.1.0"
-description = "A module for Django that allows to build pattern libraries for your projects."
-optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "django_pattern_library-1.1.0-py3-none-any.whl", hash = "sha256:0ade8446f5f3dc9fa88fe0e64c65b7e2e22e2195b05fbbd3f4e84311f634c53c"},
-    {file = "django_pattern_library-1.1.0.tar.gz", hash = "sha256:beca4d9df9004cc3e46b14de20943bca919d5940b41d490f5be491533a51c459"},
-]
-
-[package.dependencies]
-Django = ">=3.2,<5.0"
-Markdown = ">=3.1,<4.0"
-PyYAML = ">=5.1,<7.0"
-
-[[package]]
 name = "django-permissionedforms"
 version = "0.1"
 description = "Django extension for creating forms that vary according to user permissions"
