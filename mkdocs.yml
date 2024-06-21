@@ -3,7 +3,7 @@ repo_url: https://github.com/torchbox/ons-alpha
 site_url:
 edit_uri: 'edit/master/docs/'
 
-repo_name: Gitlab
+repo_name: GitHub
 dev_addr: 0.0.0.0:8001
 theme:
   name: material
