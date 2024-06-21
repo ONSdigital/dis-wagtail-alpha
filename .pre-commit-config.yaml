@@ -4,18 +4,12 @@ default_language_version:
 
 repos:
   # Python linting and formatting
-  - repo: https://github.com/python/black
-    rev: '24.2.0' # keep version in sync with pyproject.toml
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 'v0.4.10'  # keep version in sync with pyproject.toml
     hooks:
-      - id: black
-  - repo: https://github.com/pycqa/flake8
-    rev: '7.0.0' # keep version in sync with pyproject.toml
-    hooks:
-      - id: flake8
-  - repo: https://github.com/PyCQA/isort
-    rev: '5.13.2' # keep version in sync with pyproject.toml
-    hooks:
-      - id: isort
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
   - repo: https://github.com/python-poetry/poetry
     rev: '1.7.1' # keep version in sync with version installed in the Dockerfile
     hooks:

@@ -6,7 +6,6 @@ import ons_alpha.utils.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("navigation", "0001_initial"),
     ]

@@ -24,12 +24,10 @@ jobs:
         run: |
           poetry config virtualenvs.create false
           poetry install
-      - name: flake8
-        run: flake8 ./
-      - name: black
-        run: black --check --diff ./
-      - name: isort
-        run: isort --check --diff ./
+      - name: ruff check
+        run: ruff check .
+      - name: ruff format
+        run: ruff format --check .
       - name: djhtml
         run: find ons_alpha/ -name '*.html' | xargs djhtml --check
 

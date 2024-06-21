@@ -6,7 +6,6 @@ import wagtail.images.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("images", "0003_wagtail30_streamfield_use_json_field"),
     ]

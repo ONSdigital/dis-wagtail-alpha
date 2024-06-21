@@ -2,7 +2,7 @@
 
 ## Code styleguide
 
-This project’s code formatting is enforced with [Prettier](https://prettier.io/) for supported languages, [black](https://github.com/psf/black) for Python, and [djhtml](https://github.com/rtts/djhtml) for templates. Make sure to have all integrated with your editor to auto-format when saving files, or to manually run them before committing (`npm run format` for Prettier).
+This project’s code formatting is enforced with [Prettier](https://prettier.io/) for supported languages, [ruff](https://github.com/astral-sh/ruff) for Python, and [djhtml](https://github.com/rtts/djhtml) for templates. Make sure to have all integrated with your editor to auto-format when saving files, or to manually run them before committing (`npm run format` for Prettier).
 
 ## Automatic linting locally
 

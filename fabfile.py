@@ -206,14 +206,16 @@ def make_bold(msg):
 @task
 def dellar_snapshot(c, filename):
     """Snapshot the database, files will be stored in the db container"""
-    dexec(
-        "pg_dump -d {database_name} -U {database_username} > {filename}.psql".format(
-            database_name=LOCAL_DATABASE_NAME,
-            database_username=LOCAL_DATABASE_USERNAME,
-            filename=filename,
+    (
+        dexec(
+            "pg_dump -d {database_name} -U {database_username} > {filename}.psql".format(
+                database_name=LOCAL_DATABASE_NAME,
+                database_username=LOCAL_DATABASE_USERNAME,
+                filename=filename,
+            ),
+            service="db",
         ),
-        service="db",
-    ),
+    )
     print("Database snapshot created")
 
 
@@ -222,14 +224,16 @@ def dellar_restore(c, filename):
     """Restore the database from a snapshot in the db container"""
     delete_docker_database(c)
 
-    dexec(
-        "psql -U {database_username} -d {database_name} < {filename}.psql".format(
-            database_name=LOCAL_DATABASE_NAME,
-            database_username=LOCAL_DATABASE_USERNAME,
-            filename=filename,
+    (
+        dexec(
+            "psql -U {database_username} -d {database_name} < {filename}.psql".format(
+                database_name=LOCAL_DATABASE_NAME,
+                database_username=LOCAL_DATABASE_USERNAME,
+                filename=filename,
+            ),
+            service="db",
         ),
-        service="db",
-    ),
+    )
     print("Database restored.")
 
 
