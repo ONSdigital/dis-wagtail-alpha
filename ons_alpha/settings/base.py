@@ -102,6 +102,7 @@ INSTALLED_APPS = [
     "ons_alpha.project_styleguide.apps.ProjectStyleguideConfig",
     "wagtailaccessibility",
     "birdbath",
+    "django_jinja",
 ]
 
 
@@ -128,6 +129,27 @@ ROOT_URLCONF = "ons_alpha.urls"
 
 TEMPLATES = [
     {
+        "BACKEND": "django_jinja.jinja2.Jinja2",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "match_extension": ".jinja",
+            "match_regex": None,
+            "app_dirname": "templates",
+            "undefined": "jinja2.ChainableUndefined",
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "wagtail.contrib.settings.context_processors.settings",
+                # This is a custom context processor that lets us add custom
+                # global variables to all the templates.
+                "ons_alpha.core.context_processors.global_vars",
+            ],
+        },
+    },
+    {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
         "OPTIONS": {
@@ -143,7 +165,7 @@ TEMPLATES = [
             ],
             "builtins": ["pattern_library.loader_tags"],
         },
-    }
+    },
 ]
 
 WSGI_APPLICATION = "ons_alpha.wsgi.application"
