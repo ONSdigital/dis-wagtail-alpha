@@ -43,7 +43,7 @@ services:
       - ./manage.py:/app/manage.py:rw
       - ./pyproject.toml:/app/pyproject.toml:rw
       - ./poetry.lock:/app/poetry.lock:rw
-      - ./setup.cfg:/app/setup.cfg:rw
+      - ./gunicorn.conf.py:/app/gunicorn.conf.py:rw
 
       # Frontend config
       - ./.editorconfig:/app/.editorconfig:rw
