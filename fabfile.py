@@ -1,4 +1,3 @@
-import datetime
 import os
 import subprocess
 from shlex import quote
@@ -19,10 +18,6 @@ FRONTEND = os.getenv("FRONTEND", "docker")
 
 PROJECT_DIR = "/app"
 LOCAL_DUMP_DIR = "database_dumps"
-
-PRODUCTION_APP_INSTANCE = "ons_alpha-production"
-STAGING_APP_INSTANCE = "ons_alpha-staging"
-DEVELOPMENT_APP_INSTANCE = "ons_alpha-dev"
 
 LOCAL_MEDIA_DIR = "media"
 LOCAL_IMAGES_DIR = LOCAL_MEDIA_DIR + "/original_images"
@@ -131,9 +126,6 @@ def psql(c, command=None):
     subprocess.run(cmd_list)
 
 
-# TODO check the rest of these work correctly from here down
-
-
 @task
 def delete_docker_database(c, local_database_name=LOCAL_DATABASE_NAME):
     dexec(
@@ -202,213 +194,6 @@ def delete_local_renditions(c, local_database_name=LOCAL_DATABASE_NAME):
     psql(c, "DELETE FROM images_rendition;")
 
 
-#########
-# Production
-#########
-
-
-@task
-def pull_production_media(c):
-    """Pull media from production AWS S3"""
-    pull_media_from_s3_heroku(c, PRODUCTION_APP_INSTANCE)
-
-
-@task
-def pull_production_images(c):
-    """Pull images from production AWS S3"""
-    pull_images_from_s3_heroku(c, PRODUCTION_APP_INSTANCE)
-
-
-@task
-def pull_production_data(c):
-    """Pull database from production Heroku Postgres"""
-    pull_database_from_heroku(c, PRODUCTION_APP_INSTANCE, anonymise=True)
-
-
-@task
-def production_shell(c):
-    """Spin up a one-time Heroku production dyno and connect to shell"""
-    open_heroku_shell(c, PRODUCTION_APP_INSTANCE)
-
-
-#########
-# Staging
-#########
-
-
-@task
-def pull_staging_media(c):
-    """Pull media from staging AWS S3"""
-    pull_media_from_s3_heroku(c, STAGING_APP_INSTANCE)
-
-
-@task
-def pull_staging_images(c):
-    """Pull images from staging AWS S3"""
-    pull_images_from_s3_heroku(c, STAGING_APP_INSTANCE)
-
-
-@task
-def pull_staging_data(c):
-    """Pull database from staging Heroku Postgres"""
-    pull_database_from_heroku(c, STAGING_APP_INSTANCE)
-
-
-@task
-def staging_shell(c):
-    """Spin up a one-time Heroku staging dyno and connect to shell"""
-    open_heroku_shell(c, STAGING_APP_INSTANCE)
-
-
-#############
-# Development
-#############
-
-
-@task
-def pull_dev_media(c):
-    """Pull media from development AWS S3"""
-    pull_media_from_s3_heroku(c, DEVELOPMENT_APP_INSTANCE)
-
-
-@task
-def pull_dev_images(c):
-    """Pull images from development AWS S3"""
-    pull_images_from_s3_heroku(c, DEVELOPMENT_APP_INSTANCE)
-
-
-@task
-def pull_dev_data(c):
-    """Pull database from development Heroku Postgres"""
-    pull_database_from_heroku(c, DEVELOPMENT_APP_INSTANCE)
-
-
-@task
-def dev_shell(c):
-    """Spin up a one-time Heroku development dyno and connect to shell"""
-    open_heroku_shell(c, DEVELOPMENT_APP_INSTANCE)
-
-
-def delete_local_database(c, local_database_name=LOCAL_DATABASE_NAME):
-    local(
-        "dropdb --if-exists {database_name}".format(database_name=LOCAL_DATABASE_NAME)
-    )
-
-
-####
-# S3
-####
-
-
-def aws(c, command, aws_access_key_id, aws_secret_access_key):
-    return local(
-        "aws {command}".format(
-            command=command,
-        ),
-        env={
-            "AWS_ACCESS_KEY_ID": aws_access_key_id,
-            "AWS_SECRET_ACCESS_KEY": aws_secret_access_key,
-        },
-    )
-
-
-def pull_media_from_s3(
-    c,
-    aws_access_key_id,
-    aws_secret_access_key,
-    aws_storage_bucket_name,
-    local_media_dir=LOCAL_MEDIA_DIR,
-):
-    aws_cmd = "s3 sync --delete s3://{bucket_name} {local_media}".format(
-        bucket_name=aws_storage_bucket_name,
-        local_media=local_media_dir,
-    )
-    aws(c, aws_cmd, aws_access_key_id, aws_secret_access_key)
-
-
-def pull_images_from_s3_heroku(c, app_instance):
-    aws_access_key_id = get_heroku_variable(c, app_instance, "AWS_ACCESS_KEY_ID")
-    aws_secret_access_key = get_heroku_variable(
-        c, app_instance, "AWS_SECRET_ACCESS_KEY"
-    )
-    aws_storage_bucket_name = get_heroku_variable(
-        c, app_instance, "AWS_STORAGE_BUCKET_NAME"
-    )
-    pull_images_from_s3(
-        c, aws_access_key_id, aws_secret_access_key, aws_storage_bucket_name
-    )
-
-
-def pull_images_from_s3(
-    c,
-    aws_access_key_id,
-    aws_secret_access_key,
-    aws_storage_bucket_name,
-    local_images_dir=LOCAL_IMAGES_DIR,
-):
-    aws_cmd = (
-        "s3 sync --delete s3://{bucket_name}/original_images {local_media}".format(
-            bucket_name=aws_storage_bucket_name, local_media=local_images_dir
-        )
-    )
-    aws(c, aws_cmd, aws_access_key_id, aws_secret_access_key)
-    # The above command just syncs the original images, so we need to drop the wagtailimages_renditions
-    # table so that the renditions will be re-created when requested on the local build.
-    delete_local_renditions(c)
-
-
-########
-# Heroku
-########
-
-
-def pull_media_from_s3_heroku(c, app_instance):
-    aws_access_key_id = get_heroku_variable(c, app_instance, "AWS_ACCESS_KEY_ID")
-    aws_secret_access_key = get_heroku_variable(
-        c, app_instance, "AWS_SECRET_ACCESS_KEY"
-    )
-    aws_storage_bucket_name = get_heroku_variable(
-        c, app_instance, "AWS_STORAGE_BUCKET_NAME"
-    )
-    pull_media_from_s3(
-        c, aws_access_key_id, aws_secret_access_key, aws_storage_bucket_name
-    )
-
-
-def pull_database_from_heroku(c, app_instance, anonymise=False):
-    datestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-
-    local(
-        "heroku pg:backups:download --output={dump_folder}/{datestamp}.dump --app {app}".format(
-            app=app_instance, dump_folder=LOCAL_DUMP_DIR, datestamp=datestamp
-        ),
-    )
-
-    import_data(c, f"/app/{LOCAL_DUMP_DIR}/{datestamp}.dump")
-
-    local(
-        "rm {dump_folder}/{datestamp}.dump".format(
-            dump_folder=LOCAL_DUMP_DIR,
-            datestamp=datestamp,
-        ),
-    )
-
-    if anonymise:
-        dexec("./manage.py run_birdbath --skip-checks")
-
-
-def open_heroku_shell(c, app_instance, shell_command="bash"):
-    subprocess.call(
-        [
-            "heroku",
-            "run",
-            shell_command,
-            "-a",
-            app_instance,
-        ]
-    )
-
-
 #######
 # Utils
 #######
@@ -454,13 +239,6 @@ def docker_coverage(c):
         "coverage erase && coverage run manage.py test \
             --settings=ons_alpha.settings.test && coverage report",
     )
-
-
-def get_heroku_variable(c, app_instance, variable):
-    return local(
-        "heroku config:get {var} --app {app}".format(app=app_instance, var=variable),
-        hide=True,
-    ).stdout.strip()
 
 
 @task

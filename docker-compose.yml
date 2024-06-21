@@ -20,6 +20,7 @@ services:
       WAGTAILADMIN_BASE_URL: http://localhost:8000
       STATIC_DIR: /app/static/
       STATIC_URL: /static/
+      BIRDBATH_REQUIRED: false
     command: tail -f /dev/null # do nothing forever - exec commands elsewhere
     ports:
       - 8000:8000 # runserver

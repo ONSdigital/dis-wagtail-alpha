@@ -24,8 +24,6 @@ markdown_extensions:
 nav:
   - 'Home': 'index.md'
   - 'Infrastructure': 'infrastructure.md'
-  - 'Project conventions': 'project_conventions.md'
-  - 'Deployment': 'deployment.md'
   - 'Front-end':
       - 'Tooling': 'front-end/tooling.md'
       - 'Form overrides': 'front-end/form-overrides.md'
@@ -36,5 +34,3 @@ nav:
       - 'Migration-friendly StreamFields': 'custom-features/migration_friendly_streamfields.md'
   - 'Data protection': 'data_protection.md'
   - 'VSCode Dev container': 'vscode-dev-container.md'
-  - 'Support runbook': 'support-runbook.md'
-  - 'Upgrading guidelines': 'upgrading.md'

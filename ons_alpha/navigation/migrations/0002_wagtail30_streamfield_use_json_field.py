@@ -15,29 +15,21 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="navigationsettings",
             name="footer_links",
-            field=ons_alpha.utils.fields.StreamField(
-                blank=True, use_json_field=True
-            ),
+            field=ons_alpha.utils.fields.StreamField(blank=True, use_json_field=True),
         ),
         migrations.AlterField(
             model_name="navigationsettings",
             name="footer_navigation",
-            field=ons_alpha.utils.fields.StreamField(
-                blank=True, use_json_field=True
-            ),
+            field=ons_alpha.utils.fields.StreamField(blank=True, use_json_field=True),
         ),
         migrations.AlterField(
             model_name="navigationsettings",
             name="primary_navigation",
-            field=ons_alpha.utils.fields.StreamField(
-                blank=True, use_json_field=True
-            ),
+            field=ons_alpha.utils.fields.StreamField(blank=True, use_json_field=True),
         ),
         migrations.AlterField(
             model_name="navigationsettings",
             name="secondary_navigation",
-            field=ons_alpha.utils.fields.StreamField(
-                blank=True, use_json_field=True
-            ),
+            field=ons_alpha.utils.fields.StreamField(blank=True, use_json_field=True),
         ),
     ]
