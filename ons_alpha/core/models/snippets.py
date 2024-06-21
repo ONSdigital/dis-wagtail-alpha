@@ -1,11 +1,11 @@
 from django.db import models
-
 from wagtail import blocks
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
 from wagtail.snippets.models import register_snippet
 
 from ons_alpha.utils.fields import StreamField
+
 
 __all__ = [
     "CallToActionSnippet",
@@ -57,6 +57,9 @@ class CallToActionSnippet(models.Model):
         FieldPanel("link"),
     ]
 
+    def __str__(self):
+        return self.title
+
     def get_link_text(self):
         # Link is required, so we should always have
         # an element with index 0
@@ -79,6 +82,3 @@ class CallToActionSnippet(models.Model):
             return block.value["url"]
 
         return block.value["page"].get_url()
-
-    def __str__(self):
-        return self.title

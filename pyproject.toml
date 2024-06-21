@@ -43,13 +43,14 @@ pre-commit = "~2.11"
 pudb = "^2020.1"
 pymdown-extensions = "9.3"
 tblib = "^3.0.0"
+ruff = "^0.4.10"
 
 [build-system]
 requires = ["poetry>=1,<2"]
 build-backend = "poetry.masonry.api"
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 
 [tool.ruff.lint]
 extend-select = [
@@ -76,8 +77,8 @@ extend-ignore = [
 fixable = ["C4", "E", "F", "I", "UP"]
 
 [tool.ruff.lint.per-file-ignores]
-"fabfile.py" = ["S603", "S607", "T201"]
-"ons_alpha/settings/*.py" = ["SIM105"]
+"fabfile.py" = ["S603", "S607", "T201", "S101", "S608"]
+"ons_alpha/settings/*.py" = ["SIM105", "S105"]
 "ons_alpha/utils/management/commands/__init__.py" = ["PGH003"]
 "ons_alpha/*/tests/**" = ["S101"]
 

@@ -14,11 +14,13 @@ This will reduce the amount of migrations and therefore speed-up development.
 """
 
 import logging
+
 from functools import wraps
 
 from django.db.migrations.operations import AlterModelOptions
 from django.db.models import Field, FileField
 from django.db.models.fields.related import RelatedField
+
 
 logger = logging.getLogger(__name__)
 

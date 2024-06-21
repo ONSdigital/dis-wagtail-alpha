@@ -1,6 +1,6 @@
 from django.db import models
-
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+
 
 __all__ = [
     "ListingFieldsMixin",

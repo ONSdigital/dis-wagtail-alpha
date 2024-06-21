@@ -1,10 +1,10 @@
 from django.db import models
-
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 from wagtail.fields import RichTextField
 
 from ons_alpha.images.models import CustomImage
+
 
 __all__ = [
     "SocialMediaSettings",

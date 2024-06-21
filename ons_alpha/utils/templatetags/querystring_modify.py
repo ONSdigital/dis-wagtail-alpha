@@ -2,6 +2,7 @@ from django import template
 from django.db.models import Model
 from django.http.request import QueryDict
 
+
 register = template.Library()
 
 MODE_ADD = "__add"
@@ -135,7 +136,7 @@ def querystring_modify(
         elif value is None:
             querydict.pop(key, None)
         else:
-            if isinstance(value, (str, bytes)):
+            if isinstance(value, str | bytes):
                 querydict[key] = value
             elif hasattr(value, "__iter__"):
                 querydict.setlist(key, list(value))

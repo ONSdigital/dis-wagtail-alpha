@@ -1,13 +1,14 @@
 import os
-import subprocess
 import shlex
+import subprocess
 
 from invoke import run as local
 from invoke.tasks import task
 
+
 # Process .env file
 if os.path.exists(".env"):
-    with open(".env", "r") as f:
+    with open(".env") as f:
         for line in f.readlines():
             if not line or line.startswith("#") or "=" not in line:
                 continue
@@ -37,7 +38,6 @@ def dexec(cmd, service="web"):
     return subprocess.run(args)
 
 
-
 @task
 def build(c):
     """
@@ -48,7 +48,7 @@ def build(c):
 
     group = subprocess.check_output(["id", "-gn"], encoding="utf-8").strip()
     local("mkdir -p " + directories_arg)
-    local("chown -R $USER:{} {}".format(group, directories_arg))
+    local(f"chown -R $USER:{group} {directories_arg}")
     local("chmod -R 775 " + directories_arg)
 
     subprocess.run(shlex.split("docker compose pull"))
@@ -66,12 +66,14 @@ def start(c):
         args = "docker compose --file docker-compose.yml --file docker/docker-compose-frontend.yml up -d"
     subprocess.run(shlex.split(args))
 
+
 @task
 def stop(c):
     """
     Stop the development environment
     """
     subprocess.run(shlex.split("docker compose stop"))
+
 
 @task
 def restart(c):
@@ -129,15 +131,11 @@ def psql(c, command=None):
 @task
 def delete_docker_database(c, local_database_name=LOCAL_DATABASE_NAME):
     dexec(
-        "dropdb --if-exists --host db --username={project_name} {database_name}".format(
-            project_name=PROJECT_NAME, database_name=LOCAL_DATABASE_NAME
-        ),
+        f"dropdb --if-exists --host db --username={PROJECT_NAME} {LOCAL_DATABASE_NAME}",
         "db",
     )
     dexec(
-        "createdb --host db --username={project_name} {database_name}".format(
-            project_name=PROJECT_NAME, database_name=LOCAL_DATABASE_NAME
-        ),
+        f"createdb --host db --username={PROJECT_NAME} {LOCAL_DATABASE_NAME}",
         "db",
     )
     # Create extension schema, for error-free restores from Heroku backups
@@ -161,12 +159,8 @@ def import_data(
     delete_docker_database(c)
     # Import the database file to the db container
     dexec(
-        "pg_restore --clean --no-acl --if-exists --no-owner --host db \
-            --username={project_name} -d {database_name} {database_filename}".format(
-            project_name=PROJECT_NAME,
-            database_name=LOCAL_DATABASE_NAME,
-            database_filename=database_filename,
-        ),
+        f"pg_restore --clean --no-acl --if-exists --no-owner --host db \
+            --username={PROJECT_NAME} -d {LOCAL_DATABASE_NAME} {database_filename}",
         service="db",
     )
 
@@ -181,7 +175,7 @@ def import_data(
             hostname, port = new_default_site_hostname, "8000"
         assert hostname and port and port.isdigit()
         dexec(
-            f"psql -c \"UPDATE wagtailcore_site SET hostname = '{hostname}', port = {port} WHERE is_default_site IS TRUE;\""  # noqa: E501
+            f"psql -c \"UPDATE wagtailcore_site SET hostname = '{hostname}', port = {port} WHERE is_default_site IS TRUE;\""
         )
         print(f"Default site's hostname was updated to '{hostname}:{port}'.")
 
@@ -200,7 +194,7 @@ def delete_local_renditions(c, local_database_name=LOCAL_DATABASE_NAME):
 
 
 def make_bold(msg):
-    return "\033[1m{}\033[0m".format(msg)
+    return f"\033[1m{msg}\033[0m"
 
 
 @task
@@ -208,11 +202,7 @@ def dellar_snapshot(c, filename):
     """Snapshot the database, files will be stored in the db container"""
     (
         dexec(
-            "pg_dump -d {database_name} -U {database_username} > {filename}.psql".format(
-                database_name=LOCAL_DATABASE_NAME,
-                database_username=LOCAL_DATABASE_USERNAME,
-                filename=filename,
-            ),
+            f"pg_dump -d {LOCAL_DATABASE_NAME} -U {LOCAL_DATABASE_USERNAME} > {filename}.psql",
             service="db",
         ),
     )
@@ -226,11 +216,7 @@ def dellar_restore(c, filename):
 
     (
         dexec(
-            "psql -U {database_username} -d {database_name} < {filename}.psql".format(
-                database_name=LOCAL_DATABASE_NAME,
-                database_username=LOCAL_DATABASE_USERNAME,
-                filename=filename,
-            ),
+            f"psql -U {LOCAL_DATABASE_USERNAME} -d {LOCAL_DATABASE_NAME} < {filename}.psql",
             service="db",
         ),
     )
@@ -270,4 +256,6 @@ def migrate(c):
     """
     Run database migrations
     """
-    subprocess.run(["docker", "compose", "run", "--rm", "web", "./manage.py", "migrate"])
+    subprocess.run(
+        ["docker", "compose", "run", "--rm", "web", "./manage.py", "migrate"]
+    )

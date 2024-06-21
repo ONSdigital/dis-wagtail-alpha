@@ -5,9 +5,10 @@ Django settings for ons_alpha project.
 import os
 import sys
 
+import dj_database_url
+
 from django.core.exceptions import ImproperlyConfigured
 
-import dj_database_url
 
 env = os.environ.copy()
 
@@ -419,7 +420,9 @@ if "EMAIL_HOST" in env:
 try:
     EMAIL_PORT = int(env.get("EMAIL_PORT", 587))
 except ValueError:
-    raise ImproperlyConfigured("The setting EMAIL_PORT should be an integer, e.g. 587")
+    raise ImproperlyConfigured(
+        "The setting EMAIL_PORT should be an integer, e.g. 587"
+    ) from None
 
 # https://docs.djangoproject.com/en/stable/ref/settings/#email-host-user
 if "EMAIL_HOST_USER" in env:
@@ -456,6 +459,7 @@ is_in_shell = len(sys.argv) > 1 and sys.argv[1] in ["shell", "shell_plus"]
 
 if "SENTRY_DSN" in env and not is_in_shell:
     import sentry_sdk
+
     from sentry_sdk.integrations.django import DjangoIntegration
     from sentry_sdk.utils import get_default_release
 

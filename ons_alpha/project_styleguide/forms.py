@@ -1,6 +1,5 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-
 from tbxforms.choices import Choice
 from tbxforms.fields import DateInputField
 from tbxforms.layout import HTML, Button, Field, Fieldset, Layout
