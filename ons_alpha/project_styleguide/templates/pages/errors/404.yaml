@@ -1,0 +1,20 @@
+context:
+  settings:
+    core:
+      SystemMessagesSettings:
+        title_404: Page not found
+        body_404: <p>You may be trying to find a page that doesn&apos;t exist or has been moved.</p>
+
+tags:
+  primary_nav:
+    '':
+      template_name: 'components/navigation/primary_nav.html'
+  secondary_nav:
+    '':
+      template_name: 'components/navigation/secondary_nav.html'
+  footer_nav:
+    '':
+      template_name: 'components/navigation/footer_nav.html'
+  footer_links:
+    '':
+      template_name: 'components/navigation/footer_links.html'

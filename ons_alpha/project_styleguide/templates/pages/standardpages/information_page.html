@@ -1,0 +1,33 @@
+{% extends "base_page.html" %}
+{% load wagtailcore_tags navigation_tags reading_time_tags static %}
+
+{% block content %}
+
+    {% include "components/progress_bar/progress_bar.html" %}
+
+    <div class="layout{% if page.get_children.live %} layout--sidebar{% endif %}">
+
+        <div class="content">
+            {% block breadcrumbs %}
+                {% include "components/navigation/breadcrumbs.html" %}
+            {% endblock %}
+
+            <h1>{{ page.title }}</h1>
+            {% get_reading_time_minutes page 'body' as reading_time_minutes %}
+            {{ reading_time_minutes }} minute read
+            {% if page.introduction %}
+                <p>{{ page.introduction }}</p>
+            {% endif %}
+
+            {% include_block page.body %}
+            {% include "components/share/share.html" %}
+
+        </div>
+
+        {% sidebar %}
+
+    </div>
+
+    {% include "components/related_content/related_content.html" with related_pages=page.related_pages %}
+
+{% endblock %}

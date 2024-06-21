@@ -1,0 +1,26 @@
+{% extends "base_page.html" %}
+{% load wagtailcore_tags wagtailimages_tags static %}
+
+{% block meta_tags %}
+    {{ block.super }}
+    <meta property="og:article:published_time" content="{{ page.display_date|date:'Y-m-d' }}" />
+{% endblock %}
+
+{% block content %}
+    <div class="layout">
+
+        <h1>{{ page.title }}</h1>
+        <p>{{ page.display_date }}</p>
+        {% if page.introduction %}
+            <p>{{ page.introduction }}</p>
+        {% endif %}
+
+        {% include_block page.body %}
+
+        {% include "components/share/share.html" %}
+
+    </div>
+
+    {% include "components/related_content/related_content.html" with related_documents=page.related_documents.all related_pages=page.related_pages %}
+
+{% endblock %}

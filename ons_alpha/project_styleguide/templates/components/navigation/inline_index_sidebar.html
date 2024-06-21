@@ -1,0 +1,22 @@
+{% load wagtailcore_tags %}
+
+
+{% if related_pages %}
+    <section class="sidebar {{ classes }}" aria-labelledby="sidebar-heading">
+        <h2 class="sidebar__heading heading" id="sidebar-heading">
+            {% if sidebar_title %}
+                {{ sidebar_title }}
+            {% else %}
+                Related content
+            {% endif %}
+        </h2>
+
+        <ul class="sidebar__link-list">
+            {% for item in related_pages %}
+                <li>
+                    <a class="sidebar__link" href="{% pageurl item %}">{% firstof item.listing_title item.title %}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+{% endif %}

@@ -1,0 +1,16 @@
+context:
+  primary_nav:
+    - dummy
+    - dummy
+    - dummy
+
+tags:
+  include_block:
+    'link with has_children=children.exists class="primary"':
+    'link with has_children=children.exists nav_type="primary-nav"':
+      template_name: 'components/navigation/menu_item.html'
+
+  pageurl:
+    'page as item_url':
+      target_var: item_url
+      raw: '#'

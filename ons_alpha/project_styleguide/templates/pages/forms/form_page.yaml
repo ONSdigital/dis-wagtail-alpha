@@ -1,0 +1,18 @@
+context:
+  page:
+    title: Some form
+    introduction: Some intro
+
+tags:
+  primary_nav:
+    '':
+      template_name: 'components/navigation/primary_nav.html'
+  secondary_nav:
+    '':
+      template_name: 'components/navigation/secondary_nav.html'
+  footer_nav:
+    '':
+      template_name: 'components/navigation/footer_nav.html'
+  footer_links:
+    '':
+      template_name: 'components/navigation/footer_links.html'

@@ -1,0 +1,27 @@
+context:
+  related_documents:
+    - title: A related document
+      document:
+        url: '#'
+        filename: some_document.pdf
+        file_extension: pdf
+    - title: Another related document
+      document:
+        url: '#'
+        filename: some_document.doc
+        file_extension: doc
+  related_pages:
+    - title: Related page
+      listing_title: Related page listing title
+      listing_summary: Some related page intro
+      listing_image: true
+
+tags:
+  image:
+    item.listing_image fill-450x300:
+      raw: |
+        <img src="https://picsum.photos/450/300.webp" width="450" height="300" alt="Some alt">
+  pageurl:
+    item as item_url:
+      target_var: item_url
+      raw: '#'

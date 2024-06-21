@@ -1,0 +1,20 @@
+@use 'config' as *;
+@use 'sass:color';
+
+.card {
+    padding: 20px;
+    background-color: $color--tertiary;
+    // Extra border for high-contrast mode users.
+    border: 1px solid transparent;
+    transition: background-color $transition;
+
+    &:hover {
+        background-color: color.adjust($color--tertiary, $lightness: -10%);
+    }
+}
+
+.card-with-image {
+    &:only-child {
+        max-width: 260px;
+    }
+}

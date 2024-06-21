@@ -1,0 +1,9 @@
+[run]
+branch = True
+concurrency = multiprocessing
+
+[report]
+include = ons_alpha/*
+omit = */migrations/*
+       */tests/*
+       */tests.py

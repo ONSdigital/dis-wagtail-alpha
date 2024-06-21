@@ -1,0 +1,27 @@
+.govuk-contents-list {
+    border-bottom: 1px solid $govuk-border-colour;
+    list-style: none;
+    padding-bottom: 25px;
+    margin-bottom: 0;
+    padding-left: 0;
+
+    &__title {
+        margin: 0;
+    }
+
+    &__item {
+        position: relative;
+        padding-left: 25px;
+        padding-right: 25px;
+        padding-top: 7.5px;
+        margin-bottom: 0;
+
+        &::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            width: 20px;
+            overflow: hidden;
+        }
+    }
+}

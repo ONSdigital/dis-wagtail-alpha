@@ -1,0 +1,10 @@
+context:
+  footer_nav:
+    - dummy
+    - dummy
+    - dummy
+
+tags:
+  include_block:
+    footer:
+      template_name: 'components/navigation/footer_column.html'

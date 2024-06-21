@@ -1,0 +1,7 @@
+// Set the assets path to the relative path from main.scss to the root static
+// folder. This is relative so that Webpack can find and copy the font and
+// image files, and so that they resolve to Django's STATIC_URL when served.
+// See https://frontend.design-system.service.gov.uk/importing-css-assets-and-javascript/#if-you-have-your-own-folder-structure
+$govuk-assets-path: '../';
+$govuk-images-path: '../images/govuk/';
+$govuk-fonts-path: '../fonts/govuk/';

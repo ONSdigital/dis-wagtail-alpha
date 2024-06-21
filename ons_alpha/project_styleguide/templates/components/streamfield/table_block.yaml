@@ -1,0 +1,22 @@
+context:
+  table_caption: Some caption
+  table_header:
+    - column:
+      strip: 'column header 1'
+    - column:
+      strip: 'column header 2'
+    - column:
+      strip: 'column header 3'
+  data:
+    - - column:
+        strip: 'column 1 row 1'
+      - column:
+        strip: 'column 2 row 1'
+      - column:
+        strip: 'column 3 row 1'
+    - - column:
+        strip: 'column 1 row 2'
+      - column:
+        strip: 'column 2 row 2'
+      - column:
+        strip: 'column 3 row 2'

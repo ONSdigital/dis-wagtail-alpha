@@ -1,0 +1,46 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% if related_documents or related_pages %}
+    <div class="layout">
+        <h2 id="related-content-heading">Related content</h2>
+        <section class="grid" aria-labelledby="related-content-heading">
+            {% if related_documents %}
+                {% for related_document in related_documents %}
+                    {% with document=related_document.document %}
+                        <div class="card">
+                            <a href="{{ document.url }}">
+                                <h3>
+                                    {% if related_document.title %}
+                                        {{ related_document.title }}
+                                        {% if document.file_extension %}
+                                            ({{ document.file_extension }})
+                                        {% endif %}
+                                    {% else %}
+                                        {{ document.filename }}
+                                    {% endif %}
+                                </h3>
+                            </a>
+                        </div>
+                    {% endwith %}
+                {% endfor %}
+            {% endif %}
+
+            {% if related_pages %}
+                {% for item in related_pages %}
+                    {% pageurl item as item_url %}
+                    <a class="card" href="{{ item_url }}">
+                        {% if item.listing_image %}
+                            {% image item.listing_image fill-450x300 %}
+                        {% endif %}
+
+                        <h3>{% firstof item.listing_title item.title %}</h3>
+
+                        {% if item.listing_summary or item.introduction %}
+                            <p>{% firstof item.listing_summary item.introduction %}</p>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            {% endif %}
+        </section>
+    </div>
+{% endif %}

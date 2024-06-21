@@ -1,0 +1,15 @@
+@use 'config' as *;
+
+.layout {
+    background-color: $color--secondary;
+    max-width: $site-width;
+    margin: 0 auto;
+    padding: $grid;
+
+    &--sidebar {
+        @include media-query(large) {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+        }
+    }
+}

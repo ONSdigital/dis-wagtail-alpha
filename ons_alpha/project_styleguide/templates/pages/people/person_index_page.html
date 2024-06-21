@@ -1,0 +1,24 @@
+{% extends "base_page.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+    <div class="layout">
+        <h1>{{ page.title }}</h1>
+
+        {% if people %}
+            {% for person in people %}
+                <div class="person">
+                    <h2><a href="{% pageurl person %}">{{ person.first_name }} {{ person.last_name }}</a></h2>
+
+                    {% if person.listing_summary or person.introduction %}
+                        <p>{% firstof person.listing_summary person.introduction %}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {% include "components/pagination/pagination.html" with paginator_page=people %}
+        {% else %}
+            {# no results #}
+        {% endif %}
+    </div>
+{% endblock %}

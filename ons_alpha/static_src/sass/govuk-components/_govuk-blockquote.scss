@@ -1,0 +1,8 @@
+.govuk-blockquote {
+    @include govuk-responsive-margin(6, 'bottom');
+    margin-top: 0;
+    margin-inline-end: 0;
+    margin-inline-start: 0;
+    border-left: 10px solid $govuk-border-colour;
+    padding: 1em 0 1em 1em;
+}

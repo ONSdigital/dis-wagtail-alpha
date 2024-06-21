@@ -1,0 +1,43 @@
+{% extends "base_page.html" %}
+
+{% load wagtailcore_tags %}
+
+{% block body_class %}{{ block.super }} template-inlineindex{% endblock body_class %}
+
+{% block content %}
+    <div class="layout{% if page.related_pages %} layout--sidebar{% endif %}">
+        <div class="content">
+            <h1 class="heading heading--xxl">
+                {{ page.index_title }}
+            </h1>
+
+            {% with page_links=index %}
+                <nav class="index-nav" aria-label="Pages in this section">
+                    <h2 class="index-nav__title">Contents</h2>
+                    <ul class="index-nav__list">
+                        {% for link in page_links %}
+                            {% if link.id == page.id %}
+                                <li class="index-nav__item index-nav__item--current">
+                                    <span class="index-nav__link">{{ link.content_title }}</span>
+                                </li>
+                            {% else %}
+                                <li class="index-nav__item">
+                                    <a class="index-nav__link" href="{% pageurl link %}">{{ link.content_title }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </nav>
+            {% endwith %}
+
+            <h2 class="heading heading--xl">
+                {{ page.content_title }}
+            </h2>
+
+            {{ page.body }}
+
+            {% include "components/pagination/index_pagination.html" with next_page=next_page prev_page=prev_page %}
+        </div>
+        {% include "components/navigation/inline_index_sidebar.html" with related_pages=page.related_pages %}
+    </div>
+{% endblock %}

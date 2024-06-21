@@ -1,0 +1,56 @@
+context:
+  pattern_library_only: True
+  search_query: test query
+  search_results:
+    - specific:
+        title: Page title
+        listing_image: fake
+        listing_title: Listing title
+        listing_summary: Listing summary
+        search_description: Search description
+        depth: 6
+        get_ancestors:
+          - is_root: false
+            depth: 3
+            title: Some category
+          - is_root: false
+            depth: 4
+            title: Some sub category
+          - is_root: false
+            depth: 5
+            title: We need to go deeper
+    - specific:
+        title: Page title
+        listing_image: fake
+        listing_title: Listing title
+        listing_summary: Listing summary
+        search_description: Search description
+        depth: 6
+        get_ancestors:
+          - is_root: false
+            depth: 3
+            title: Some category
+          - is_root: false
+            depth: 4
+            title: Some sub category
+          - is_root: false
+            depth: 5
+            title: We need to go deeper
+
+tags:
+  image:
+    result.listing_image fill-450x300:
+      raw: |
+        <img src="https://picsum.photos/450/300.webp" width="450" height="300" alt="Some alt">
+  primary_nav:
+    '':
+      template_name: 'components/navigation/primary_nav.html'
+  secondary_nav:
+    '':
+      template_name: 'components/navigation/secondary_nav.html'
+  footer_nav:
+    '':
+      template_name: 'components/navigation/footer_nav.html'
+  footer_links:
+    '':
+      template_name: 'components/navigation/footer_links.html'

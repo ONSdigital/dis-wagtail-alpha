@@ -1,0 +1,19 @@
+{% load wagtailimages_tags %}
+<div class="glide" data-carousel data-slidetotal="{{ carousel|length }}">
+    <div data-glide-el="track" class="glide__track">
+        <ul class="glide__slides" aria-live="polite">
+            {% for slide in carousel %}
+                <li class="glide__slide">
+                    <h2>{{ slide.title }}</h2>
+                    {% image slide.image fill-450x450 %}
+                    <p>{{ slide.text }}</p>
+                    <a href="{{ slide.link }}">A link to somewhere else</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div data-glide-el="controls">
+        <button class="button" data-glide-dir="&gt;">Next</button>
+        <button class="button" data-glide-dir="&lt;">Previous</button>
+    </div>
+</div>

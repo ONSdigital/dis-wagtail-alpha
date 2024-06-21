@@ -1,0 +1,10 @@
+context:
+  next_page: '- Further information'
+  prev_page: '- Overview'
+
+tags:
+  pageurl:
+    next_page:
+      raw: '#'
+    prev_page:
+      raw: '#'

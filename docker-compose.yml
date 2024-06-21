@@ -1,0 +1,88 @@
+version: '3.7'
+services:
+  web:
+    build:
+      context: .
+      args:
+        BUILD_ENV: dev
+        POETRY_INSTALL_ARGS: ''
+      target: dev
+    environment:
+      HEROKU_APP_NAME: local # this stops Birdbath's HerokuNotProductionCheck complaining
+      DATABASE_URL: postgres://ons_alpha:ons_alpha@db:5432/ons_alpha # pragma: allowlist secret
+      DJANGO_SETTINGS_MODULE: ons_alpha.settings.dev
+      ENABLE_DJANGO_DEFENDER: 'false'
+      MEDIA_DIR: /app/media/
+      RECAPTCHA_PRIVATE_KEY: UPDATE_THIS # pragma: allowlist secret
+      RECAPTCHA_PUBLIC_KEY: UPDATE_THIS
+      REDIS_URL: redis://redis
+      SECRET_KEY: local_dev_secret_key
+      WAGTAILADMIN_BASE_URL: http://localhost:8000
+      STATIC_DIR: /app/static/
+      STATIC_URL: /static/
+    command: tail -f /dev/null # do nothing forever - exec commands elsewhere
+    ports:
+      - 8000:8000 # runserver
+      - 8001:8001 # mkdocs serve
+      - 6900:6900 # pudb
+    volumes:
+      - ./.git:/app/.git:rw
+      - ./docs:/app/docs:rw
+      - ./media:/app/media:rw
+      - ./public:/app/public:rw
+      - ./docker:/app/docker:rw
+      - ./ons_alpha:/app/ons_alpha:rw
+      - ./README.md:/app/README.md:rw
+      - ./fabfile.py:/app/fabfile.py:rw
+      - ./.pre-commit-config.yaml:/app/.pre-commit-config.yaml:rw
+
+      # Docs config
+      - ./mkdocs.yml:/app/mkdocs.yml:rw
+
+      # Backend config
+      - ./manage.py:/app/manage.py:rw
+      - ./pyproject.toml:/app/pyproject.toml:rw
+      - ./poetry.lock:/app/poetry.lock:rw
+      - ./setup.cfg:/app/setup.cfg:rw
+
+      # Frontend config
+      - ./.editorconfig:/app/.editorconfig:rw
+      - ./.eslintignore:/app/.eslintignore:rw
+      - ./.eslintrc.js:/app/.eslintrc.js:rw
+      - ./.prettierignore:/app/.prettierignore:rw
+      - ./.prettierrc.toml:/app/.prettierrc.toml:rw
+      - ./.stylelintignore:/app/.stylelintignore:rw
+      - ./.stylelintrc.js:/app/.stylelintrc.js:rw
+      - ./jest.config.js:/app/jest.config.js:rw
+      - ./tailwind.config.js:/app/tailwind.config.js:rw
+      - ./package-lock.json:/app/package-lock.json:rw
+      - ./package.json:/app/package.json:rw
+      - ./tsconfig.json:/app/tsconfig.json:rw
+      - ./webpack.config.js:/app/webpack.config.js:rw
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15
+    expose:
+      - 5432
+    environment:
+      POSTGRES_DB: ons_alpha
+      POSTGRES_USER: ons_alpha
+      POSTGRES_PASSWORD: ons_alpha # pragma: allowlist secret
+      PGDATABASE: ons_alpha
+      PGUSER: ons_alpha
+      PGPASSWORD: ons_alpha # pragma: allowlist secret
+      POSTGRES_HOST_AUTH_METHOD: trust
+    logging:
+      driver: none
+    volumes:
+      - .:/app:ro
+
+  redis:
+    image: redis:6
+    expose:
+      - 6379
+    logging:
+      driver: none

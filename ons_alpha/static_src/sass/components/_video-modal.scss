@@ -1,0 +1,45 @@
+@use 'config' as *;
+
+.video-modal {
+    &__dialog {
+        border: 0;
+        padding: 0;
+        background-color: transparent;
+        width: 100%;
+
+        // adds defining border for high contrast users
+        outline: 1px solid transparent;
+
+        @include media-query(medium) {
+            width: 56%;
+            max-width: 800px;
+        }
+
+        &::backdrop {
+            background-color: $color--black;
+        }
+    }
+
+    &__open-button {
+        padding: 0.7rem 1rem;
+        border: 1px solid $color--black;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $color--black;
+            color: $color--white;
+        }
+    }
+
+    &__close-button {
+        padding: 0.7rem 1rem;
+        border: 1px solid $color--white;
+        color: $color--white;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $color--white;
+            color: $color--black;
+        }
+    }
+}

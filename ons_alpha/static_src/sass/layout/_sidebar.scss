@@ -1,0 +1,13 @@
+@use 'config' as *;
+
+.sidebar {
+    margin-top: $grid;
+
+    @include media-query(large) {
+        margin: 0 0 0 $grid;
+    }
+
+    &--filters {
+        margin: $grid 0;
+    }
+}

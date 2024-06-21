@@ -1,0 +1,11 @@
+context:
+  value:
+    page:
+      title: Menu item title
+  nav_type: 'primary-nav'
+
+tags:
+  pageurl:
+    'page as item_url':
+      target_var: item_url
+      raw: '#'

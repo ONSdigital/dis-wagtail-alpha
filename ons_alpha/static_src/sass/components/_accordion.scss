@@ -1,0 +1,73 @@
+@use 'config' as *;
+
+.accordion {
+    $root: &;
+
+    &[open] {
+        #{$root}__icon {
+            transform: rotate(90deg);
+        }
+
+        #{$root}__content {
+            display: block;
+        }
+    }
+
+    &__summary {
+        display: block;
+        transition: color 0.2s ease;
+
+        // Remove default arrow in webkit browsers:
+        // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary#default_style
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &:hover {
+            cursor: pointer;
+            color: $color--off-black;
+        }
+
+        /* stylelint-disable */
+        &:focus {
+            outline: 0; // focus style implemented directly on text instead
+        }
+        /* stylelint-enable */
+    }
+
+    &__header {
+        margin: 0;
+        padding: 10px 5px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid $color--border;
+        font-size: inherit;
+    }
+
+    &__title {
+        margin: 0;
+        padding: 0;
+
+        #{$root}__summary:focus & {
+            background-color: $color--off-black;
+            color: $color--white;
+        }
+    }
+
+    &__icon {
+        width: 25px;
+        height: 25px;
+        margin-right: 20px;
+        transition: transform, fill, 0.2s ease;
+        fill: $color--primary;
+
+        @media screen and (-ms-high-contrast: active) {
+            filter: brightness(400%);
+        }
+    }
+
+    &__content {
+        margin-bottom: 10px;
+        margin-top: 15px;
+    }
+}

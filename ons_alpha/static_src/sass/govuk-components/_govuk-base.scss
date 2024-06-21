@@ -1,0 +1,38 @@
+@import '~govuk-frontend/govuk/base';
+
+// Box Sizing
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+// Prevent text size change on orientation change.
+html {
+    font-family: $govuk-font-family-gds-transport;
+    text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+
+    @media (prefers-reduced-motion: reduce) {
+        scroll-behavior: auto;
+    }
+
+    // Fix for Chrome which doesn't correctly scroll to form validation messages when this is set to smooth
+    &.no-scroll-behaviour {
+        scroll-behavior: auto;
+    }
+}
+
+// Prevent empty space below images appearing
+img,
+svg {
+    vertical-align: top;
+}
+
+// Responsive images
+img {
+    height: auto;
+    max-width: 100%;
+}

@@ -1,0 +1,75 @@
+[
+  {
+    "model": "inlineindex.inlineindex",
+    "pk": 19,
+    "fields": {
+      "social_image": null,
+      "social_text": "",
+      "listing_image": null,
+      "listing_title": "",
+      "listing_summary": "",
+      "subtitle": "What Universal Credit is",
+      "body": "[{\"id\": \"2131fd4e-e244-4e03-8b3e-910afb0e8f91\", \"type\": \"paragraph\", \"value\": \"<p>Funnily cannily up saucily scallop and ouch unimaginative goldfish oh fastidious a hellish a less crud next resigned genially indifferently well teasingly tame indecent lantern dissolute the and that alas far hawk mandrill.<br/>And the sourly jeepers chameleon bluebird eccentrically a perilous as redid newt at ruminant less hedgehog much so some snapped jeez the as on diverse some a that.</p>\"}]"
+    }
+  },
+  {
+    "model": "inlineindex.inlineindexchild",
+    "pk": 20,
+    "fields": {
+      "social_image": null,
+      "social_text": "",
+      "listing_image": null,
+      "listing_title": "",
+      "listing_summary": "",
+      "body": "[{\"id\": \"8717aa93-e398-46e7-9569-d79d82434357\", \"type\": \"paragraph\", \"value\": \"<p>Weasel ducked well eminently far along ouch reasonable jeez connected less conjoint wildebeest far squid for jeepers swam one that lorikeet.<br/>Wow since unkind dachshund alongside more far cockatoo heron aboard instead and when from much one labrador salamander yikes far ambidextrously.</p>\"}]"
+    }
+  },
+  {
+    "model": "inlineindex.inlineindexchild",
+    "pk": 21,
+    "fields": {
+      "social_image": null,
+      "social_text": "",
+      "listing_image": null,
+      "listing_title": "",
+      "listing_summary": "",
+      "body": "[{\"id\": \"bc5bde52-e91e-472e-9ef8-ed9d12be90b2\", \"type\": \"paragraph\", \"value\": \"<p>Sporadic splashed unnecessary where spoon-fed woodpecker that bluebird much outside alas forecast before until wherever flatly far porpoise much hey distinct honorable that this due eerie slew following noisy crane bravely.<br/>Besides hey thrust and hence excepting safe some therefore ouch gosh other impudent or equitably jeez cat much exited to intolerably goodness.</p>\"}]"
+    }
+  },
+  {
+    "model": "inlineindex.inlineindexchild",
+    "pk": 22,
+    "fields": {
+      "social_image": null,
+      "social_text": "",
+      "listing_image": null,
+      "listing_title": "",
+      "listing_summary": "",
+      "body": "[{\"id\": \"d87186b3-e174-4fce-8f66-8cb4e6d7a3ea\", \"type\": \"paragraph\", \"value\": \"<p>Thrust lackadaisical much less avoidable therefore beside some far intense much actively some grasshopper forgot wobbled prodigiously much packed distinctly far one meadowlark honey above the removed then spat retrospective wherever forward.<br/>This wiped dear inside past oh oppressively the iguana this off and the ireful wherever lighted a across incoherently inside carnally abhorrent the and circa but various that and.</p>\"}]"
+    }
+  },
+  {
+    "model": "inlineindex.inlineindexchild",
+    "pk": 23,
+    "fields": {
+      "social_image": null,
+      "social_text": "",
+      "listing_image": null,
+      "listing_title": "",
+      "listing_summary": "",
+      "body": "[{\"id\": \"93d3a14b-0101-42a6-9fc5-164422fc6cb4\", \"type\": \"paragraph\", \"value\": \"<p>Alas wow a wherever far much insane up bowed forgave abominable ouch furiously cockatoo away that so wicked off across where more in.<br/>Outside lied rationally ouch struck and up jeez embarrassingly droll impiously much lopsidedly smoked but sluggishly robin yikes outside mannishly far broken grouped gladly.</p>\"}]"
+    }
+  },
+  {
+    "model": "inlineindex.inlineindexchild",
+    "pk": 24,
+    "fields": {
+      "social_image": null,
+      "social_text": "",
+      "listing_image": null,
+      "listing_title": "",
+      "listing_summary": "",
+      "body": "[{\"id\": \"4dc7179b-bcb5-4108-922b-7a4e0d856721\", \"type\": \"paragraph\", \"value\": \"<p>Hey crud oriole some and unicorn goodness grievously reined the capybara far dear after since sprang much while moth yikes.<br/>Jellyfish coughed and goodness that smelled carnal ouch inadvertently burned slept wow pugnacious overheard woodpecker a the the deer this next aimless this preparatory and far mastodon.</p>\"}]"
+    }
+  }
+]

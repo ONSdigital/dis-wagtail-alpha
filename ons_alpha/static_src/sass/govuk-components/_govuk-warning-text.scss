@@ -1,0 +1,12 @@
+.govuk-warning-text {
+    @extend %govuk-body-m;
+    @include govuk-responsive-margin(6, 'bottom');
+    display: flex;
+    align-items: center;
+
+    &__icon {
+        margin-top: 0;
+        width: 35px;
+        height: 35px;
+    }
+}
