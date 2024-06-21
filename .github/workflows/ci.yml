@@ -144,3 +144,21 @@ jobs:
         run: coverage run ./manage.py test --parallel
       - name: Report coverage
         run: coverage combine && coverage report
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - uses: Gr1N/setup-poetry@v8
+        with:
+          poetry-version: 1.7.1
+      - name: Install dependencies
+        run: |
+          poetry config virtualenvs.create false
+          poetry install
+      - name: Build documentation
+        run: mkdocs build
