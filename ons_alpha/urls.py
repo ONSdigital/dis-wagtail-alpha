@@ -66,21 +66,6 @@ if settings.DEBUG:
         urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
 
 
-# Style guide
-if getattr(settings, "PATTERN_LIBRARY_ENABLED", False) and apps.is_installed(
-    "pattern_library"
-):
-    from ons_alpha.project_styleguide.views import example_form
-
-    private_urlpatterns += [
-        path(
-            "pattern-library/pattern/pages/forms/example_form.html",
-            example_form,
-        ),
-        path("pattern-library/", include("pattern_library.urls")),
-    ]
-
-
 # Set public URLs to use the "default" cache settings.
 urlpatterns = decorate_urlpatterns(urlpatterns, get_default_cache_control_decorator())
 

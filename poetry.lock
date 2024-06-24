@@ -513,6 +513,21 @@ files = [
 Django = ">=3.2"
 
 [[package]]
+name = "django-jinja"
+version = "2.11.0"
+description = "Jinja2 templating language integrated in Django."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "django-jinja-2.11.0.tar.gz", hash = "sha256:47c06d3271e6b2f27d3596278af517bfe2e19c1eb36ae1c0b1cc302d7f0259af"},
+    {file = "django_jinja-2.11.0-py3-none-any.whl", hash = "sha256:cc4c72246a6e346aa0574e0c56c3e534c1a20ef47b8476f05d7287781f69a0a9"},
+]
+
+[package.dependencies]
+django = ">=3.2"
+jinja2 = ">=3"
+
+[[package]]
 name = "django-modelcluster"
 version = "6.3"
 description = "Django extension to allow working with 'clusters' of models as a single unit, independently of the database"
@@ -529,22 +544,6 @@ pytz = ">=2022.4"
 
 [package.extras]
 taggit = ["django-taggit (>=3.1)"]
-
-[[package]]
-name = "django-pattern-library"
-version = "1.1.0"
-description = "A module for Django that allows to build pattern libraries for your projects."
-optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "django_pattern_library-1.1.0-py3-none-any.whl", hash = "sha256:0ade8446f5f3dc9fa88fe0e64c65b7e2e22e2195b05fbbd3f4e84311f634c53c"},
-    {file = "django_pattern_library-1.1.0.tar.gz", hash = "sha256:beca4d9df9004cc3e46b14de20943bca919d5940b41d490f5be491533a51c459"},
-]
-
-[package.dependencies]
-Django = ">=3.2,<5.0"
-Markdown = ">=3.1,<4.0"
-PyYAML = ">=5.1,<7.0"
 
 [[package]]
 name = "django-permissionedforms"
@@ -2066,4 +2065,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "7b7a973db079ba97893295c461484846d2aa8c0ce434f0c6283f9019914a0d73"
+content-hash = "83b8972b6d2bef61ac3a2ee82f0f259c956896b86db6209d0048017564e57202"

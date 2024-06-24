@@ -22,11 +22,6 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # https://docs.djangoproject.com/en/stable/ref/settings/#debug
 DEBUG = False
 
-SILENCED_SYSTEM_CHECKS = [
-    # Silence warning about template tag modules being overridden for django-pattern-library
-    "templates.E003",
-]
-
 # Secret key is important to be kept secret. Never share it with anyone. Please
 # always set it in the environment variable and never check into the
 # repository.
@@ -98,10 +93,10 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",  # Must be before `django.contrib.staticfiles`
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
-    "pattern_library",
     "ons_alpha.project_styleguide.apps.ProjectStyleguideConfig",
     "wagtailaccessibility",
     "birdbath",
+    "django_jinja",
 ]
 
 
@@ -128,6 +123,27 @@ ROOT_URLCONF = "ons_alpha.urls"
 
 TEMPLATES = [
     {
+        "BACKEND": "django_jinja.jinja2.Jinja2",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "match_extension": ".jinja",
+            "match_regex": None,
+            "app_dirname": "templates",
+            "undefined": "jinja2.ChainableUndefined",
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "wagtail.contrib.settings.context_processors.settings",
+                # This is a custom context processor that lets us add custom
+                # global variables to all the templates.
+                "ons_alpha.core.context_processors.global_vars",
+            ],
+        },
+    },
+    {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
         "OPTIONS": {
@@ -141,9 +157,8 @@ TEMPLATES = [
                 # global variables to all the templates.
                 "ons_alpha.core.context_processors.global_vars",
             ],
-            "builtins": ["pattern_library.loader_tags"],
         },
-    }
+    },
 ]
 
 WSGI_APPLICATION = "ons_alpha.wsgi.application"
@@ -758,21 +773,6 @@ PASSWORD_REQUIRED_TEMPLATE = "pages/wagtail/password_required.html"
 
 # Default size of the pagination used on the front-end.
 DEFAULT_PER_PAGE = 20
-
-
-# Styleguide
-PATTERN_LIBRARY_ENABLED = env.get("PATTERN_LIBRARY_ENABLED", "false").lower() == "true"
-PATTERN_LIBRARY = {
-    "SECTIONS": (
-        ("components", ["components"]),
-        ("pages", ["pages"]),
-        ("sprites", ["sprites"]),
-    ),
-    "TEMPLATE_SUFFIX": ".html",
-    "PATTERN_BASE_TEMPLATE_NAME": "base.html",
-    "BASE_TEMPLATE_NAMES": ["base_page.html"],
-}
-
 
 # Google Tag Manager ID from env
 GOOGLE_TAG_MANAGER_ID = env.get("GOOGLE_TAG_MANAGER_ID")

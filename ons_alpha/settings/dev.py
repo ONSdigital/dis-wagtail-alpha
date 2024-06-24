@@ -10,9 +10,6 @@ CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"
 # This key to be used locally only.
 SECRET_KEY = "foo"
 
-# Enable FE component library
-PATTERN_LIBRARY_ENABLED = True
-
 ALLOWED_HOSTS = ["*"]
 
 # Allow requests from the local IPs to see more debug information.

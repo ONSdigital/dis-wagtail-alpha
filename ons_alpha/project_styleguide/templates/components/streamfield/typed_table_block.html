@@ -23,7 +23,7 @@
                 <tr class="table__row">
                     {% for block in row %}
                         <td class="table__cell table__cell--{{ block.block.name }}">
-                            {% if pattern_library_only and block.block.name == "numeric" %}1,234{% else %}{% include_block block %}{% endif %}
+                            {% include_block block %}
                         </td>
                     {% endfor %}
                 </tr>
