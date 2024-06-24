@@ -26,7 +26,7 @@
     "lint:js": "eslint --ext .js,.ts,.tsx --report-unused-disable-directives .",
     "//[ Fixing (for pre-commit) ]//": "",
     "fix:css": "stylelint --report-needless-disables --fix",
-    "fix:format": "prettier --write",
+    "fix:format": "prettier --write '**/?(.)*.{md,css,scss,js,ts,tsx,json,yaml,yml}'",
     "fix:js": "eslint --report-unused-disable-directives --fix",
     "//[ Tests ]//": "",
     "test": "jest",

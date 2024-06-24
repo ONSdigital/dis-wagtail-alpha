@@ -54,7 +54,7 @@
             display: none;
         }
 
-         // hide hint in high contrast mode as the gradient
+        // hide hint in high contrast mode as the gradient
         // is not visible
         @include high-contrast-mode() {
             display: none;

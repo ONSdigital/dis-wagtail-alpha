@@ -5,9 +5,10 @@ Django settings for ons_alpha project.
 import os
 import sys
 
+import dj_database_url
+
 from django.core.exceptions import ImproperlyConfigured
 
-import dj_database_url
 
 env = os.environ.copy()
 
@@ -56,25 +57,12 @@ if "CSRF_TRUSTED_ORIGINS" in env:
 # Application definition
 
 INSTALLED_APPS = [
-    # This is an app that we use for the performance monitoring.
-    # You set configure it by setting the following environment variables:
-    #  * SCOUT_MONITOR="True"
-    #  * SCOUT_KEY="paste api key here"
-    #  * SCOUT_NAME="ons_alpha"
-    # https://intranet.torchbox.com/delivering-projects/tech/scoutapp/
-    # According to the official docs, it's important that Scout is listed
-    # first - http://help.apm.scoutapp.com/#django.
-    "scout_apm.django",
     "ons_alpha.core",
     "ons_alpha.documents",
-    "ons_alpha.events",
     "ons_alpha.forms",
     "ons_alpha.home",
     "ons_alpha.images",
-    "ons_alpha.inlineindex.apps.InlineindexConfig",
     "ons_alpha.navigation",
-    "ons_alpha.news",
-    "ons_alpha.people",
     "ons_alpha.search",
     "ons_alpha.standardpages",
     "ons_alpha.users",
@@ -167,9 +155,7 @@ WSGI_APPLICATION = "ons_alpha.wsgi.application"
 # https://github.com/kennethreitz/dj-database-url
 
 DATABASES = {
-    "default": dj_database_url.config(
-        conn_max_age=600, default="postgres:///ons_alpha"
-    )
+    "default": dj_database_url.config(conn_max_age=600, default="postgres:///ons_alpha")
 }
 
 
@@ -434,7 +420,9 @@ if "EMAIL_HOST" in env:
 try:
     EMAIL_PORT = int(env.get("EMAIL_PORT", 587))
 except ValueError:
-    raise ImproperlyConfigured("The setting EMAIL_PORT should be an integer, e.g. 587")
+    raise ImproperlyConfigured(
+        "The setting EMAIL_PORT should be an integer, e.g. 587"
+    ) from None
 
 # https://docs.djangoproject.com/en/stable/ref/settings/#email-host-user
 if "EMAIL_HOST_USER" in env:
@@ -471,6 +459,7 @@ is_in_shell = len(sys.argv) > 1 and sys.argv[1] in ["shell", "shell_plus"]
 
 if "SENTRY_DSN" in env and not is_in_shell:
     import sentry_sdk
+
     from sentry_sdk.integrations.django import DjangoIntegration
     from sentry_sdk.utils import get_default_release
 

@@ -3,7 +3,7 @@ repo_url: https://github.com/torchbox/ons-alpha
 site_url:
 edit_uri: 'edit/master/docs/'
 
-repo_name: Gitlab
+repo_name: GitHub
 dev_addr: 0.0.0.0:8001
 theme:
   name: material
@@ -24,8 +24,6 @@ markdown_extensions:
 nav:
   - 'Home': 'index.md'
   - 'Infrastructure': 'infrastructure.md'
-  - 'Project conventions': 'project_conventions.md'
-  - 'Deployment': 'deployment.md'
   - 'Front-end':
       - 'Tooling': 'front-end/tooling.md'
       - 'Form overrides': 'front-end/form-overrides.md'
@@ -36,5 +34,3 @@ nav:
       - 'Migration-friendly StreamFields': 'custom-features/migration_friendly_streamfields.md'
   - 'Data protection': 'data_protection.md'
   - 'VSCode Dev container': 'vscode-dev-container.md'
-  - 'Support runbook': 'support-runbook.md'
-  - 'Upgrading guidelines': 'upgrading.md'

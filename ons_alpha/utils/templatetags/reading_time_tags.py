@@ -1,10 +1,10 @@
 from datetime import timedelta
 
+from bs4 import BeautifulSoup
 from django import template
 
-from bs4 import BeautifulSoup
-
 from ons_alpha.core.blocks import ImageBlock
+
 
 register = template.Library()
 

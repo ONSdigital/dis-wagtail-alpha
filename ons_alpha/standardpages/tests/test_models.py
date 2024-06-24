@@ -2,10 +2,7 @@ from wagtail.test.utils import WagtailPageTestCase
 
 from ons_alpha.core.models import PageRelatedPage
 from ons_alpha.home.models import HomePage
-from ons_alpha.standardpages.factories import (
-    IndexPageFactory,
-    InformationPageFactory,
-)
+from ons_alpha.standardpages.factories import IndexPageFactory, InformationPageFactory
 from ons_alpha.standardpages.models import IndexPage, InformationPage
 
 

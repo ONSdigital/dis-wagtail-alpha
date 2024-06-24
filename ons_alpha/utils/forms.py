@@ -1,9 +1,7 @@
 from django.utils.translation import gettext_lazy as _
-
-from wagtail.contrib.forms.forms import BaseForm as WagtailBaseForm
-
 from tbxforms import forms as tbxforms_forms
 from tbxforms.layout import Button
+from wagtail.contrib.forms.forms import BaseForm as WagtailBaseForm
 from wagtailcaptcha.forms import WagtailCaptchaFormBuilder
 
 

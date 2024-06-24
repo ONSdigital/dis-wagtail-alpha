@@ -1,4 +1,5 @@
-from .base import *  # noqa
+from .base import *  # noqa: F403
+
 
 # Debugging to be enabled locally only
 DEBUG = True
@@ -32,7 +33,7 @@ AUTH_PASSWORD_VALIDATORS = []
 
 # Enable Wagtail's style guide in Wagtail's settings menu.
 # http://docs.wagtail.io/en/stable/contributing/styleguide.html
-INSTALLED_APPS += ["wagtail.contrib.styleguide"]  # noqa
+INSTALLED_APPS += ["wagtail.contrib.styleguide"]  # noqa: F405
 
 
 # Disable forcing HTTPS locally since development server supports HTTP only.
@@ -42,8 +43,8 @@ SECURE_HSTS_SECONDS = 0
 
 
 # Adds Django Debug Toolbar
-INSTALLED_APPS.append("debug_toolbar")  # noqa
-MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")  # noqa
+INSTALLED_APPS.append("debug_toolbar")
+MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")  # noqa: F405
 
 # Override in `local.py`
 SHOW_TOOLBAR = True
@@ -65,6 +66,6 @@ CRISPY_FAIL_SILENTLY = False
 # Import settings from local.py file if it exists. Please use it to keep
 # settings that are not meant to be checked into Git and never check it in.
 try:
-    from .local import *  # noqa
+    from .local import *  # noqa: F403
 except ImportError:
     pass

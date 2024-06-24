@@ -1,5 +1,4 @@
 from django.test import RequestFactory, TestCase
-
 from wagtail.models import Site
 
 from ons_alpha.core.context_processors import global_vars

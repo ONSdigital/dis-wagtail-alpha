@@ -51,11 +51,6 @@ pip3 install fabric
 
 You can manage different python versions by setting up `pyenv`: https://realpython.com/intro-to-pyenv/
 
-Additionally, for interacting with production / staging environments, you'll need:
-
-- [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-
 ## Running the local build for the first time
 
 If you are using Docker Desktop, ensure the Resources:File Sharing settings allow the cloned directory to be mounted in the web container (avoiding `mounting` OCI runtime failures at the end of the build step).
@@ -63,8 +58,8 @@ If you are using Docker Desktop, ensure the Resources:File Sharing settings allo
 Starting a local build can be done by running:
 
 ```bash
-git clone [URL TO GIT REMOTE]
-cd ons_alpha
+git clone https://github.com/torchbox/ons-alpha
+cd ons-alpha
 fab build
 fab migrate
 fab start

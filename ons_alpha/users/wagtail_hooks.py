@@ -1,9 +1,9 @@
 # fmt: off
 from django.conf import settings
 from django.urls import reverse
-
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
+
 
 if getattr(settings, "ENABLE_DJANGO_DEFENDER", False):
     # Register shortcut to access django-defender's blocked list view within django admin
