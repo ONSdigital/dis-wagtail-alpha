@@ -2,7 +2,6 @@ from django.utils.translation import gettext_lazy as _
 from tbxforms import forms as tbxforms_forms
 from tbxforms.layout import Button
 from wagtail.contrib.forms.forms import BaseForm as WagtailBaseForm
-from wagtailcaptcha.forms import WagtailCaptchaFormBuilder
 
 
 class BaseFormMixin(tbxforms_forms.TbxFormsMixin):
@@ -37,9 +36,7 @@ class BaseWagtailForm(BaseFormMixin, WagtailBaseForm):
         )
 
 
-class WagtailFormBuilder(
-    WagtailCaptchaFormBuilder, tbxforms_forms.BaseWagtailFormBuilder
-):
+class WagtailFormBuilder(tbxforms_forms.BaseWagtailFormBuilder):
     """
     Instructs a Page model to use our `BaseWagtailForm` form variant, as well
     as inheriting some field/widget definitions from `BaseWagtailFormBuilder`.

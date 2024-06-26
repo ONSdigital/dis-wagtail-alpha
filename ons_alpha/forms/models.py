@@ -3,10 +3,9 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
-from wagtail.contrib.forms.models import AbstractFormField
+from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 from wagtail.fields import RichTextField
 from wagtail.search import index
-from wagtailcaptcha.models import WagtailCaptchaEmailForm
 
 from ons_alpha.core.models import BasePage
 from ons_alpha.utils.forms import WagtailFormBuilder
@@ -18,7 +17,7 @@ class FormField(AbstractFormField):
 
 # Never cache form pages since they include CSRF tokens.
 @method_decorator(never_cache, name="serve")
-class FormPage(WagtailCaptchaEmailForm, BasePage):
+class FormPage(AbstractEmailForm, BasePage):
     template = "pages/forms/form_page.html"
     landing_page_template = "pages/forms/form_page_landing.html"
 
