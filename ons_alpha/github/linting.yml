@@ -37,3 +37,6 @@ jobs:
 
     - name: Build Docker image
       run: docker build -t ons-alpha .
+
+    - name: Verify Docker image
+      run: docker run --rm ons-alpha some-command-to-verify

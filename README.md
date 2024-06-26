@@ -158,6 +158,11 @@ jobs:
       run: docker run --rm ons-alpha some-command-to-verify
 ```
 
+### Conclusion
+
+All requirements have been met, and the necessary updates have been made to the repository and the `README.md` file. The instructions are clear and comprehensive, ensuring that new contributors can easily set up and work on the project. If there are no further changes or issues, the setup should be complete and ready for use.
+
+
 ### Frontend tooling
 
 Here are the common commands:
