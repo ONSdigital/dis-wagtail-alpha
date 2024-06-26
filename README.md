@@ -82,6 +82,76 @@ If you only wish to run the frontend or backend tooling, the commands `honcho` r
 
 Upon first starting the container, the static files may not exist, or may be out of date. To resolve this, simply run `npm run build`.
 
+## Linting and Formatting
+
+This project uses Ruff, pylint, and black for linting and formatting.
+
+### Installation
+
+To install the dependencies, run:
+```sh
+poetry install
+
+Usage
+To lint the code, run:
+```sh
+make lint
+```
+
+To format the code, run:
+```sh
+make format
+```
+
+To check both linting and formatting, run:
+```sh
+make check
+```
+
+### GitHub Actions Workflow
+Create a workflow file named linting.yml in the .github/workflows directory with the following content:
+```yaml
+name: Linting and Formatting
+
+on: [push, pull_request]
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        poetry install
+
+    - name: Run linters
+      run: |
+        poetry run ruff .
+        poetry run pylint ons_alpha
+
+    - name: Run formatter
+      run: poetry run black --check .
+
+  build-docker-image:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build -t ons-alpha .
+```
+
 ### Frontend tooling
 
 Here are the common commands:
