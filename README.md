@@ -107,8 +107,12 @@ To check both linting and formatting, run:
 make check
 ```
 
-### GitHub Actions Workflow
-Create a workflow file named linting.yml in the .github/workflows directory with the following content:
+## GitHub Actions Workflow
+
+To ensure code quality and consistency, we use GitHub Actions for continuous integration. This includes linting, formatting, and building the Docker image.
+
+Create a workflow file named `linting.yml` in the `.github/workflows` directory with the following content:
+
 ```yaml
 name: Linting and Formatting
 
@@ -149,6 +153,9 @@ jobs:
 
     - name: Build Docker image
       run: docker build -t ons-alpha .
+
+    - name: Verify Docker image
+      run: docker run --rm ons-alpha some-command-to-verify
 ```
 
 ### Frontend tooling
