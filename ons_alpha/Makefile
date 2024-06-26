@@ -1,10 +1,12 @@
+# Makefile for linting and formatting
+
 .PHONY: lint format check
 
 lint:
-	poetry run ruff .
-	poetry run pylint ons_alpha
+    poetry run ruff .
+    poetry run pylint ons_alpha
 
 format:
-	poetry run black .
+    poetry run black .
 
-check: lint format
+check: lint format 

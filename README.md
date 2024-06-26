@@ -87,7 +87,6 @@ Upon first starting the container, the static files may not exist, or may be out
 This project uses Ruff, pylint, and black for linting and formatting.
 
 ### Installation
-
 To install the dependencies, run:
 ```sh
 poetry install
