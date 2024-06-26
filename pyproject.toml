@@ -23,7 +23,6 @@ sentry-sdk = "~1.5"
 tbxforms = "2.0.0"
 wagtail = "~5.2"
 wagtail-accessibility = "~0.2"
-wagtail-django-recaptcha = { git = "https://github.com/torchbox-forks/wagtail-django-recaptcha", tag = "2.1.1+tbx" }
 wagtail-factories = "^4.1.0"
 wagtail-storages = "~1.0.0"
 whitenoise = "~6.2"
