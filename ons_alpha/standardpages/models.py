@@ -10,7 +10,7 @@ from ons_alpha.utils.fields import StreamField
 
 
 class InformationPage(BasePage):
-    template = "pages/standardpages/information_page.html"
+    template = "templates/pages/information_page.html"
 
     introduction = models.TextField(blank=True)
     body = StreamField(StoryBlock(), use_json_field=True)
@@ -25,6 +25,18 @@ class InformationPage(BasePage):
         FieldPanel("body"),
         InlinePanel("page_related_pages", label="Related pages"),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["related_pages"] = [
+            {
+                "text": page.listing_title or page.title,
+                "url": page.get_full_url(request),
+            }
+            for page in self.related_pages
+        ]
+
+        return context
 
 
 class IndexPage(BasePage):

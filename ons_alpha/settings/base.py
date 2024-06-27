@@ -10,6 +10,7 @@ from pathlib import Path
 import dj_database_url
 
 from django.core.exceptions import ImproperlyConfigured
+from django_jinja.builtins import DEFAULT_EXTENSIONS
 
 
 env = os.environ.copy()
@@ -139,6 +140,14 @@ TEMPLATES = [
                 # This is a custom context processor that lets us add custom
                 # global variables to all the templates.
                 "ons_alpha.core.context_processors.global_vars",
+            ],
+            "extensions": DEFAULT_EXTENSIONS
+            + [
+                "wagtail.jinja2tags.core",
+                "wagtail.admin.jinja2tags.userbar",
+                "wagtail.images.jinja2tags.images",
+                "wagtail.contrib.settings.jinja2tags.settings",
+                "ons_alpha.utils.jinja2tags.UtilsExtension",
             ],
         },
     },
@@ -755,9 +764,13 @@ WAGTAILDOCS_DOCUMENT_MODEL = "documents.CustomDocument"
 WAGTAILDOCS_SERVE_METHOD = "serve_view"
 
 
-WAGTAIL_FRONTEND_LOGIN_TEMPLATE = "pages/standardpages/login_page.html"
+WAGTAIL_FRONTEND_LOGIN_TEMPLATE = (
+    "templates/pages/login_page.html"  # pragma: allowlist secret
+)
 
-PASSWORD_REQUIRED_TEMPLATE = "pages/wagtail/password_required.html"
+PASSWORD_REQUIRED_TEMPLATE = (
+    "templates/pages/wagtail/password_required.html"  # pragma: allowlist secret
+)
 
 
 # Default size of the pagination used on the front-end.
