@@ -5,6 +5,8 @@ Django settings for ons_alpha project.
 import os
 import sys
 
+from pathlib import Path
+
 import dj_database_url
 
 from django.core.exceptions import ImproperlyConfigured
@@ -12,10 +14,10 @@ from django.core.exceptions import ImproperlyConfigured
 
 env = os.environ.copy()
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# Build paths inside the project like this: BASE_DIR / "something"
 
-PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = os.path.dirname(PROJECT_DIR)
+PROJECT_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = PROJECT_DIR.parent
 
 
 # Switch off DEBUG mode explicitly in the base settings.
@@ -92,7 +94,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
     "wagtailaccessibility",
-    "birdbath",
     "django_jinja",
 ]
 
@@ -272,7 +273,7 @@ STORAGES = {
 }
 
 # Place static files that need a specific URL (such as robots.txt and favicon.ico) in the "public" folder
-WHITENOISE_ROOT = os.path.join(BASE_DIR, "public")
+WHITENOISE_ROOT = BASE_DIR / "public"
 
 
 # This is where Django will look for static files outside the directories of
@@ -281,7 +282,7 @@ WHITENOISE_ROOT = os.path.join(BASE_DIR, "public")
 STATICFILES_DIRS = [
     # "static_compiled" is a folder used by the front-end tooling
     # to output compiled static assets.
-    os.path.join(PROJECT_DIR, "static_compiled")
+    PROJECT_DIR / "jinja2" / "assets"
 ]
 
 
@@ -289,7 +290,7 @@ STATICFILES_DIRS = [
 # and custom direcotires set in "STATICFILES_DIRS" when
 # using "django-admin collectstatic" command.
 # https://docs.djangoproject.com/en/stable/ref/settings/#static-root
-STATIC_ROOT = env.get("STATIC_DIR", os.path.join(BASE_DIR, "static"))
+STATIC_ROOT = env.get("STATIC_DIR", BASE_DIR / "static")
 
 
 # This is the URL that will be used when serving static files, e.g.
@@ -302,7 +303,7 @@ STATIC_URL = env.get("STATIC_URL", "/static/")
 # MEDIA_ROOT is not used when S3 backend is set up.
 # Probably only relevant to the local development.
 # https://docs.djangoproject.com/en/stable/ref/settings/#media-root
-MEDIA_ROOT = env.get("MEDIA_DIR", os.path.join(BASE_DIR, "media"))
+MEDIA_ROOT = env.get("MEDIA_DIR", BASE_DIR / "media")
 
 
 # The URL path that media files will be accessible at. This setting won't be
