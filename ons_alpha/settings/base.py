@@ -791,21 +791,6 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = ["tbx"]
 CRISPY_TEMPLATE_PACK = "tbx"
 CRISPY_FAIL_SILENTLY = False  # Default for local development. Gets overridden.
 
-# Birdbath - Database anonymisation
-# -----------------------------------------------------------------------------
-# Configure django-birdbath to anonymise data when syncing database
-BIRDBATH_USER_ANONYMISER_EXCLUDE_SUPERUSERS = True
-BIRDBATH_USER_ANONYMISER_EXCLUDE_EMAIL_RE = r"(torchbox\.com)$"
-# Do not anonymise data on any heroku app containing 'production' in app name
-BIRDBATH_CHECKS = ["birdbath.checks.contrib.heroku.HerokuNotProductionCheck"]
-BIRDBATH_REQUIRED = env.get("BIRDBATH_REQUIRED", "true").lower() == "true"
-# Add project specific processors here to anonymise or delete sensitive data.
-# See https://git.torchbox.com/internal/django-birdbath/#processors
-BIRDBATH_PROCESSORS = [
-    "birdbath.processors.users.UserEmailAnonymiser",
-    "birdbath.processors.users.UserPasswordAnonymiser",
-]
-
 # Isolates the browsing context exclusively to same-origin documents.
 # Cross-origin documents are not loaded in the same browsing context.
 # Set to "same-origin-allow-popups" to allow popups

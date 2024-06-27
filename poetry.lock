@@ -406,23 +406,6 @@ Django = ">=1.8,<5"
 lint = ["black (==20.8b1)", "flake8 (==3.8.4)", "isort (==5.7.0)"]
 
 [[package]]
-name = "django-birdbath"
-version = "1.1.1"
-description = ""
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "django-birdbath-1.1.1.tar.gz", hash = "sha256:a0fa85496009a1611166e19c075cd765beed700d2c9b0cc598172ef6e67ea8fa"},
-    {file = "django_birdbath-1.1.1-py3-none-any.whl", hash = "sha256:e717bd057ca9e0a19b88c52f21f32c2246db7f0a0f1c8d8f3303ba0c4b6735ca"},
-]
-
-[package.dependencies]
-Faker = ">=8"
-
-[package.extras]
-dev = ["black (==23.1.0)", "flake8 (==6.0.0)", "isort (==5.12.0)"]
-
-[[package]]
 name = "django-crispy-forms"
 version = "2.1"
 description = "Best way to have Django DRY forms"
@@ -2025,4 +2008,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "bf536f83c7620bd3eddde6f6758cbbcdb1b6f38696766f1ac946ef8de3e4f35f"
+content-hash = "758e1ab2fc3c3a01eacbdc1c2395f9d91a039c86fc6f271fdfea9fd6b8da676d"
