@@ -8,7 +8,7 @@ class CSRFCustomViewTest(TestCase):
         response = client.post("/admin/login/", {})
 
         self.assertEqual(response.status_code, 403)
-        self.assertTemplateUsed(response, "pages/errors/403.html")
+        self.assertTemplateUsed(response, "templates/pages/errors/403.html")
 
     def test_crsf_token_mismatch_logs_an_error(self):
         client = Client(enforce_csrf_checks=True)

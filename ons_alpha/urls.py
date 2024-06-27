@@ -47,15 +47,17 @@ if settings.DEBUG:
         # Add views for testing 404 and 500 templates
         path(
             "test404/",
-            TemplateView.as_view(template_name="pages/errors/404.html"),
+            TemplateView.as_view(template_name="templates/pages/errors/404.html"),
         ),
         path(
             "test500/",
-            TemplateView.as_view(template_name="pages/errors/500.html"),
+            TemplateView.as_view(template_name="templates/pages/errors/500.html"),
         ),
         path(
             "testcsrffailure/",
-            TemplateView.as_view(template_name="pages/errors/csrf_failure.html"),
+            TemplateView.as_view(
+                template_name="templates/pages/errors/csrf_failure.html"
+            ),
         ),
     ]
 
