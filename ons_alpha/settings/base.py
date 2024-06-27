@@ -91,7 +91,6 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",  # Must be before `django.contrib.staticfiles`
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
-    "ons_alpha.project_styleguide.apps.ProjectStyleguideConfig",
     "wagtailaccessibility",
     "birdbath",
     "django_jinja",
@@ -122,12 +121,13 @@ ROOT_URLCONF = "ons_alpha.urls"
 TEMPLATES = [
     {
         "BACKEND": "django_jinja.jinja2.Jinja2",
-        "DIRS": [],
+        "DIRS": [
+            PROJECT_DIR / "jinja2",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
-            "match_extension": ".jinja",
-            "match_regex": None,
-            "app_dirname": "templates",
+            "match_extension": ".html",
+            "app_dirname": "jinja2",
             "undefined": "jinja2.ChainableUndefined",
             "context_processors": [
                 "django.template.context_processors.debug",
