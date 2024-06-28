@@ -44,6 +44,7 @@ def querystring_modify(
 
     return f"?{querydict.urlencode()}"
 
+
 def get_base_querydict(context, base):
     """
     Retrieves the base QueryDict object based on provided context or base value.
@@ -81,8 +82,9 @@ def clean_querydict(querydict, remove_blanks=False, remove_utm=True):
         else:
             del querydict[key]
 
+
 def handle_toggle(querydict, key, value):
-    key = key[:-len(MODE_TOGGLE)]
+    key = key[: -len(MODE_TOGGLE)]
     values = set(querydict.getlist(key))
     if value in values:
         values.remove(value)
@@ -90,19 +92,22 @@ def handle_toggle(querydict, key, value):
         values.add(value)
     querydict.setlist(key, list(values))
 
+
 def handle_add(querydict, key, value):
-    key = key[:-len(MODE_ADD)]
+    key = key[: -len(MODE_ADD)]
     values = set(querydict.getlist(key))
     if value not in values:
         values.add(value)
         querydict.setlist(key, list(values))
 
+
 def handle_remove(querydict, key, value):
-    key = key[:-len(MODE_REMOVE)]
+    key = key[: -len(MODE_REMOVE)]
     values = set(querydict.getlist(key))
     if value in values:
         values.remove(value)
         querydict.setlist(key, list(values))
+
 
 def handle_default(querydict, key, value):
     if isinstance(value, str | bytes):
