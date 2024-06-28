@@ -35,6 +35,6 @@
 {#    {% primary_nav %}#}
 {#{% endblock header %}#}
 
-{#{% block breadcrumbs %}#}
-{#    {% include "components/navigation/breadcrumbs.html" %}#}
-{#{% endblock %}#}
+{% block preMain %}
+    {% include "templates/components/navigation/breadcrumbs.html" %}
+{% endblock %}
