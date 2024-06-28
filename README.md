@@ -82,6 +82,99 @@ If you only wish to run the frontend or backend tooling, the commands `honcho` r
 
 Upon first starting the container, the static files may not exist, or may be out of date. To resolve this, simply run `npm run build`.
 
+## Development Setup
+
+This project uses `poetry` for dependency management and `make` for common development tasks. Below are the details of how to set up and use the provided tools for linting, formatting, testing, and continuous integration.
+
+### Prerequisites
+
+Ensure you have the following installed:
+- Python 3.12
+- `poetry` for Python dependency management
+- `make` for running Makefile commands
+
+### Installation
+
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/torchbox/ons-alpha.git
+    cd ons-alpha
+    ```
+
+2. Install dependencies:
+    ```sh
+    poetry install
+    ```
+
+### Linting and Formatting
+
+This project uses `Ruff`, `pylint`, and `black` for linting and formatting Python code. 
+
+- To check linting issues:
+    ```sh
+    make lint
+    ```
+
+- To automatically fix linting issues:
+    ```sh
+    poetry run ruff check . --fix
+    ```
+
+- To format the code using `black`:
+    ```sh
+    make format
+    ```
+
+- To check if the code is formatted correctly:
+    ```sh
+    make format-check
+    ```
+
+### Testing
+
+To run the tests:
+
+1. Ensure you have a PostgreSQL instance running. You can use Docker to start one:
+    ```sh
+    docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=postgres -p 5432:5432 -d postgres:15
+    ```
+
+2. Run the tests:
+    ```sh
+    make test
+    ```
+
+### Docker
+
+To build the Docker image:
+```sh
+make build-docker
+```
+
+### GitHub Actions
+This project uses GitHub Actions for continuous integration. The CI pipeline is configured to:
+
+Lint Python and JavaScript code.
+Run Python and JavaScript tests.
+Build static assets.
+Build the Docker image.
+Generate documentation.
+The GitHub Actions workflow file is located at .github/workflows/ci.yml.
+
+### Contribution Guidelines
+Ensure all linting and formatting checks pass before committing:
+```sh
+make lint
+make format-check
+```
+
+Run tests locally before pushing changes:
+```sh
+make test
+```
+
+When creating a pull request, the CI pipeline will automatically run to validate your changes.
+
 ### Frontend tooling
 
 Here are the common commands:
@@ -135,3 +228,4 @@ Then, exit the terminal and connect again using `fab sh`.
 If you run `fab build`, or the container is rebuilt for some other reason, these packages will need re-installing.
 
 If a package is always needed (eg a Python package requires a system dependency), this should be added to the `Dockerfile`.
+
