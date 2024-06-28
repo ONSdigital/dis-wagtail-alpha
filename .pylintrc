@@ -1,0 +1,33 @@
+[MASTER]
+ignore=tests
+jobs=1
+load-plugins=pylint_django
+django-settings-module=ons_alpha.settings
+
+[MESSAGES CONTROL]
+# C0114: Missing module docstring
+# C0115: Missing class docstring
+# C0116: Missing function or method docstring
+disable=C0114,C0115,C0116,R0903
+
+[REPORTS]
+output-format=colorized
+
+[FORMAT]
+max-line-length=100
+
+[DESIGN]
+# "Too few public methods" (should be fixed properly if possible)
+min-public-methods=0
+
+[TYPECHECK]
+# Allow wildcard imports (e.g., import * from module)
+ignored-modules=*
+
+[IMPORTS]
+# Allow import statements that are not grouped
+known-standard-library=
+
+[LOGGING]
+# Allow using the `warn` method in favor of `warning`
+logging-modules=logging
