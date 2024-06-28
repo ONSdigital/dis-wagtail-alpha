@@ -1,6 +1,6 @@
-from django import template
 from django.db.models import Model
 from django.http.request import QueryDict
+from django import template
 
 register = template.Library()
 
@@ -104,7 +104,7 @@ def handle_remove(querydict, key, value):
         querydict.setlist(key, list(values))
 
 def handle_default(querydict, key, value):
-    if isinstance(value, (str, bytes)):
+    if isinstance(value, str | bytes):
         querydict[key] = value
     elif hasattr(value, "__iter__"):
         querydict.setlist(key, list(value))
