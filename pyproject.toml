@@ -5,6 +5,7 @@ description = "ONS Alpha Wagtail site"
 authors = ["Torchbox <hello@torchbox.com>"]
 
 [tool.poetry.dependencies]
+pylint-django = "^2.0.0" 
 python = "~3.12"
 dj-database-url = "~0.5"
 django = "~4.2"
