@@ -4,6 +4,7 @@
     {% if current_site and page.pk == current_site.root_page.pk and current_site.site_name %}{{ current_site.site_name }} | {% endif %}{% block title %}{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title}}{% endif %}{% endblock %}{% block title_suffix %}{% if current_site and page.pk != current_site.root_page.pk and current_site.site_name %} | {{ current_site.site_name }}{% endif %}{% endblock %}
 {% endset %}
 
+{# djlint:off #}
 {% set pageConfig = {
 "header": {
 "title": page_title,
@@ -51,6 +52,7 @@
 }
 }
 } %}
+{# djlint:on #}
 
 {% block preMain %}
     {{ wagtailuserbar() }}

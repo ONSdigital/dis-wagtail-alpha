@@ -1,11 +1,9 @@
-{% extends "base_page.html" %}
-{% load wagtailcore_tags wagtailsettings_tags %}
+{% extends "templates/base_page.html" %}
 
+{# TODO: update the head title to settings.core.SystemMessagesSettings.title_404 #}
 {% block title %}{{ settings.core.SystemMessagesSettings.title_404 }}{% endblock %}
 
-{% block body_class %}template-404{% endblock %}
-
-{% block content %}
+{% block main %}
     <h1>{{ settings.core.SystemMessagesSettings.title_404 }}</h1>
 
     {{ settings.core.SystemMessagesSettings.body_404|richtext }}

@@ -18,8 +18,8 @@ class FormField(AbstractFormField):
 # Never cache form pages since they include CSRF tokens.
 @method_decorator(never_cache, name="serve")
 class FormPage(AbstractEmailForm, BasePage):
-    template = "pages/forms/form_page.html"
-    landing_page_template = "pages/forms/form_page_landing.html"
+    template = "templates/pages/forms/form_page.html"
+    landing_page_template = "templates/pages/forms/form_page_landing.html"
 
     form_builder = WagtailFormBuilder
     search_fields = BasePage.search_fields + [index.SearchField("introduction")]

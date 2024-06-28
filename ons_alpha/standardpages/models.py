@@ -40,7 +40,7 @@ class InformationPage(BasePage):
 
 
 class IndexPage(BasePage):
-    template = "pages/standardpages/index_page.html"
+    template = "templates/pages/index_page.html"
 
     introduction = models.TextField(blank=True)
 

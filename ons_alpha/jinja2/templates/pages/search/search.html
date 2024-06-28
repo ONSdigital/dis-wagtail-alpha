@@ -1,49 +1,47 @@
-{% extends "base_page.html" %}
-{% load static wagtailcore_tags wagtailsearchpromotions_tags %}
+{% extends "templates/base_page.html" %}
 
 {% block body_class %}template-searchresults{% endblock %}
 
 {% block title %}{% if search_query %}Search results for &ldquo;{{ search_query }}&rdquo;{% else %}Search{% endif %}{% endblock %}
 
-{% block content %}
-    <div class="layout">
+{% block main %}
 
-        <h1>{% if search_query %}Search results for &ldquo;{{ search_query }}&rdquo;{% else %}Search{% endif %}</h1>
+    <h1>{% if search_query %}Search results for &ldquo;{{ search_query }}&rdquo;{% else %}Search{% endif %}</h1>
 
-        <form action="{% url 'search' %}" method="get" role="search">
-            <input type="text" placeholder="Search…" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
-            <input type="submit" value="Search">
-        </form>
+    <form action="{{ url('search') }}" method="get" role="search">
+        <input type="text" placeholder="Search…" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
+        <button type="submit">{{ _("Search") }}</button>
+    </form>
 
-        {% get_search_promotions search_query as search_picks %}
-        {% if search_picks %}
-            <ul>
-                {% for pick in search_picks %}
-                    <li>
-                        {% include "components/search_result/search_result.html" with result=pick.page.specific %}
-                    </li>
+    {% if search_results  %}
+        {% with count=search_results.paginator.count %}
+            {{ count }} result{{ count|pluralize }} found.
+        {% endwith %}
+
+        {% set documents=[] %}
+            {% for generic_result in search_results %}
+                {% set result=generic_result.specific %}
+                    {% set title %}{% if result.listing_title %}{{ result.listing_title }}{% else %}{{ result.title }}{% endif %}{% endset %}
+                    {% set description %}
+                        {% if result.listing_summary or result.search_description %}
+                            <p>{% if result.listing_summary %}{{ result.listing_summary }}{% else %}{{ result.search_description }}{% endif %}</p>
+                        {% endif %}
+                    {% endset %}
+                    {% do documents.append({
+                    "url": pageurl(result),
+                    "title": title,
+                    "description": description
+                    })
+                    %}
                 {% endfor %}
-            </ul>
-        {% endif %}
 
-        {% if search_results %}
-            {% with count=search_results.paginator.count %}
-                {{ count }} result{{ count|pluralize }} found.
-            {% endwith %}
+                {% from "components/document-list/_macro.njk" import onsDocumentList %}
+                {{ onsDocumentList({"documents": documents}) }}
 
-            <ul>
-                {% for result in search_results %}
-                    <li>
-                        {% include "components/search_result/search_result.html" with result=result.specific %}
-                    </li>
-                {% endfor %}
-            </ul>
+        {# TODO: pagination#}
 
-            {% include "components/pagination/pagination.html" with paginator_page=search_results %}
+            {% elif search_query %}
+                No results found.
+            {% endif %}
 
-        {% elif search_query and not search_picks %}
-            No results found.
-        {% endif %}
-
-    </div>
-{% endblock %}
+        {% endblock %}

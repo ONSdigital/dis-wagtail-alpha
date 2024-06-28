@@ -1,13 +1,9 @@
-{% extends "base_page.html" %}
-{% load crispy_forms_tags %}
+{% extends "templates/base_page.html" %}
 
-{% comment %}
-Fix for Chrome which doesn't correctly scroll to form validation messages
-when this is set to smooth
-{% endcomment %}
+{# Fix for Chrome which doesn't correctly scroll to form validation messages when this is set to smooth #}
 {% block html_class %}no-scroll-behaviour{% endblock %}
 
-{% block content %}
+{% block main %}
     <div class="layout">
 
         <h1>{{ page.title }}</h1>
@@ -16,10 +12,8 @@ when this is set to smooth
         {% endif %}
 
         {% if form %}
-            {% crispy form %}
+            {{ crispy(form) }}
         {% endif %}
-
-        {% include "components/share/share.html" %}
 
     </div>
 {% endblock %}

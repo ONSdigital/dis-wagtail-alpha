@@ -31,7 +31,7 @@ class ListingFieldsMixin(models.Model):
         blank=True,
         help_text=(
             "The text summary used when this page appears in listings. It's also used as the "
-            "description for search engines if the 'Meta description' field above is not defined.",
+            "description for search engines if the 'Meta description' field above is not defined."
         ),
     )
 

@@ -50,14 +50,12 @@ if settings.DEBUG:
             TemplateView.as_view(template_name="templates/pages/errors/404.html"),
         ),
         path(
-            "test500/",
-            TemplateView.as_view(template_name="templates/pages/errors/500.html"),
+            "test403/",
+            TemplateView.as_view(template_name="templates/pages/errors/403.html"),
         ),
         path(
-            "testcsrffailure/",
-            TemplateView.as_view(
-                template_name="templates/pages/errors/csrf_failure.html"
-            ),
+            "test500/",
+            TemplateView.as_view(template_name="templates/pages/errors/500.html"),
         ),
     ]
 
