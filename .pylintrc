@@ -7,10 +7,8 @@ load-plugins=pylint_django
 django-settings-module=ons_alpha.settings.base
 
 [MESSAGES CONTROL]
-# C0114: Missing module docstring
-# C0115: Missing class docstring
-# C0116: Missing function or method docstring
-disable=C0114,C0115,C0116,R0903
+disable=C0114,C0115,C0116,R0903,W0401,W0614,W0212,R0801
+
 
 [REPORTS]
 output-format=colorized
@@ -19,7 +17,7 @@ output-format=colorized
 max-line-length=100
 
 [DESIGN]
-# "Too few public methods" (should be fixed properly if possible)
+max-parents=17
 min-public-methods=0
 
 [TYPECHECK]
