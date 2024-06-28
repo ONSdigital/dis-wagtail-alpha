@@ -58,10 +58,7 @@
         width: 25px;
         height: 25px;
         margin-right: 20px;
-        transition:
-            transform,
-            fill,
-            0.2s ease;
+        transition: transform, fill, 0.2s ease;
         fill: $color--primary;
 
         @media screen and (-ms-high-contrast: active) {

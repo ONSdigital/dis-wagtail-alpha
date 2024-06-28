@@ -18,18 +18,14 @@
     opacity: 0;
     visibility: hidden;
     // visible to invisible
-    transition:
-        visibility 0ms ease-out 250ms,
-        opacity 250ms ease-out 0ms;
+    transition: visibility 0ms ease-out 250ms, opacity 250ms ease-out 0ms;
 
     // mobile active state
     &.is-visible {
         opacity: 1;
         visibility: visible;
         // invisible to visible
-        transition:
-            opacity 200ms ease-out 200ms,
-            visibility 200ms ease-out 0ms;
+        transition: opacity 200ms ease-out 200ms, visibility 200ms ease-out 0ms;
     }
 
     @include media-query(medium) {
@@ -94,9 +90,7 @@
     &__link {
         color: color.adjust($color--off-black, $alpha: -0.3);
         border-bottom: 1px solid transparent;
-        transition:
-            color,
-            border $transition;
+        transition: color, border $transition;
 
         &:hover {
             cursor: pointer;

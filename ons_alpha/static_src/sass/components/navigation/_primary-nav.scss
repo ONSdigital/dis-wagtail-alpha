@@ -51,9 +51,7 @@
     &__link {
         color: color.adjust($color--off-black, $alpha: -0.3);
         border-bottom: 1px solid transparent;
-        transition:
-            color,
-            border $transition;
+        transition: color, border $transition;
         background-color: $color--primary;
 
         &:hover {
