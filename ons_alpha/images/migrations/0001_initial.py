@@ -5,7 +5,6 @@ import taggit.managers
 import wagtail.images.models
 import wagtail.models.collections
 import wagtail.search.index
-
 from django.conf import settings
 from django.db import migrations, models
 

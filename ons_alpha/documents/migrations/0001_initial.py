@@ -4,7 +4,6 @@ import django.db.models.deletion
 import taggit.managers
 import wagtail.models.collections
 import wagtail.search.index
-
 from django.conf import settings
 from django.db import migrations, models
 

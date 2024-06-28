@@ -1,5 +1,5 @@
-"""
-Django creates redundant migrations for Django model changes that do not alter the database.
+"""Django creates redundant migrations for Django model changes that do not
+alter the database.
 
 This patches the Django migration machinery to ignore various attrs.
 
@@ -14,13 +14,11 @@ This will reduce the amount of migrations and therefore speed-up development.
 """
 
 import logging
-
 from functools import wraps
 
 from django.db.migrations.operations import AlterModelOptions
 from django.db.models import Field, FileField
 from django.db.models.fields.related import RelatedField
-
 
 logger = logging.getLogger(__name__)
 

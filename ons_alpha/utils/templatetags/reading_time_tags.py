@@ -5,7 +5,6 @@ from django import template
 
 from ons_alpha.core.blocks import ImageBlock
 
-
 register = template.Library()
 
 # Using value of 275 words per minute.
@@ -18,11 +17,10 @@ SECONDS_PER_IMAGE = 10
 
 @register.simple_tag(takes_context=True)
 def get_reading_time_minutes(context, page, streamfield_name):
-    """
-    Calculate reading time of a `streamfield_name` on a `page`.
+    """Calculate reading time of a `streamfield_name` on a `page`.
 
-    Use streamfield stripped HTML and use their word count.
-    Go through all image blocks to calculate approximate reading time.
+    Use streamfield stripped HTML and use their word count. Go through
+    all image blocks to calculate approximate reading time.
     """
     total_seconds = 0
 

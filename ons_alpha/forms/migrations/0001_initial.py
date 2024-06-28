@@ -4,7 +4,6 @@ import django.db.models.deletion
 import modelcluster.fields
 import wagtail.contrib.forms.models
 import wagtail.fields
-
 from django.db import migrations, models
 
 

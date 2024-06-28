@@ -8,7 +8,7 @@ from ons_alpha.utils.forms import BaseFormMixin
 
 
 class ExampleForm(BaseFormMixin, forms.Form):
-    """Demonstration of some common fields / widgets"""
+    """Demonstration of some common fields / widgets."""
 
     RADIO_AND_CHECKBOX_CHOICES = (
         Choice(

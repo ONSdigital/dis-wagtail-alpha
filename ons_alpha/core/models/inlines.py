@@ -3,16 +3,13 @@ from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel
 from wagtail.models import Orderable, Page
 
-
 __all__ = [
     "PageRelatedPage",
 ]
 
 
 class PageRelatedPage(Orderable):
-    """
-    Related pages.
-    """
+    """Related pages."""
 
     parent = ParentalKey(Page, related_name="page_related_pages")
     page = models.ForeignKey(

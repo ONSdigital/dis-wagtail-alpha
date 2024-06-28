@@ -8,7 +8,6 @@ from ons_alpha.utils.query import order_by_pk_position
 
 from .mixins import ListingFieldsMixin, SocialFieldsMixin
 
-
 __all__ = [
     "BasePage",
 ]
@@ -30,9 +29,9 @@ class BasePage(ListingFieldsMixin, SocialFieldsMixin, Page):
 
     @cached_property
     def related_pages(self) -> PageQuerySet:
-        """
-        Return a `PageQuerySet` of items related to this page via the
+        """Return a `PageQuerySet` of items related to this page via the
         `PageRelatedPage` through model, and are suitable for display.
+
         The result is ordered to match that specified by editors using
         the 'page_related_pages' `InlinePanel`.
         """

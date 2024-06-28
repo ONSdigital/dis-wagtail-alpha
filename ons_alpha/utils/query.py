@@ -6,9 +6,8 @@ def order_by_pk_position(
     pks: list | tuple,
     exclude_non_matches: bool | None = False,
 ) -> QuerySet:
-    """
-    Returns the supplied `queryset` ordered according to the
-    PK's position in `pks` (a list or tuple of pk values).
+    """Returns the supplied `queryset` ordered according to the PK's position
+    in `pks` (a list or tuple of pk values).
 
     Use the `exclude_non_matches` option to exclude items with
     a PK value not in `pks`.

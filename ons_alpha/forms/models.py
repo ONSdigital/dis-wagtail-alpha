@@ -2,7 +2,8 @@ from django.db import models
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from modelcluster.fields import ParentalKey
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
+from wagtail.admin.panels import (FieldPanel, FieldRowPanel, InlinePanel,
+                                  MultiFieldPanel)
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 from wagtail.fields import RichTextField
 from wagtail.search import index
@@ -37,9 +38,7 @@ class FormPage(AbstractEmailForm, BasePage):
     )
 
     def get_form_parameters(self):
-        """
-        Pass our 'action_text' to the `form_builder`.
-        """
+        """Pass our 'action_text' to the `form_builder`."""
         return {"action_text": self.action_text}
 
     content_panels = BasePage.content_panels + [

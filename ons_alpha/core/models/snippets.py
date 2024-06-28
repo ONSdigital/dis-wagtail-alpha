@@ -6,7 +6,6 @@ from wagtail.snippets.models import register_snippet
 
 from ons_alpha.utils.fields import StreamField
 
-
 __all__ = [
     "CallToActionSnippet",
 ]

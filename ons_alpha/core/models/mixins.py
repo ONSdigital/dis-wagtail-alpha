@@ -1,7 +1,6 @@
 from django.db import models
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 
-
 __all__ = [
     "ListingFieldsMixin",
     "SocialFieldsMixin",
@@ -9,9 +8,8 @@ __all__ = [
 
 
 class ListingFieldsMixin(models.Model):
-    """
-    Generic listing fields abstract class to add listing image/text to any new content type easily.
-    """
+    """Generic listing fields abstract class to add listing image/text to any
+    new content type easily."""
 
     listing_image = models.ForeignKey(
         "images.CustomImage",
@@ -51,9 +49,8 @@ class ListingFieldsMixin(models.Model):
 
 
 class SocialFieldsMixin(models.Model):
-    """
-    Generic social fields abstract class to add social image/text to any new content type easily.
-    """
+    """Generic social fields abstract class to add social image/text to any new
+    content type easily."""
 
     social_image = models.ForeignKey(
         "images.CustomImage",

@@ -2,7 +2,6 @@ from django import template
 from django.db.models import Model
 from django.http.request import QueryDict
 
-
 register = template.Library()
 
 MODE_ADD = "__add"
@@ -14,12 +13,14 @@ MODE_TOGGLE = "__toggle"
 def querystring_modify(
     context, base=None, remove_blanks=False, remove_utm=True, **kwargs
 ):
-    """
-    Renders a URL and IRI encoded querystring (e.g. "q=Hello%20World&amp;category=1") that is safe to include in links.
-    The querystring for the current request (``request.GET``) is used as a base by default, or an alternative
-    ``QueryDict``, ``dict`` or querystring value can be provided as the first argument. The base value can be modified
-    by providing any number of additional key/value pairs. ``None`` values are discounted automatically, and blank
-    values can be optionally discounted by specifying ``remove_blanks=True``.
+    """Renders a URL and IRI encoded querystring (e.g.
+    "q=Hello%20World&amp;category=1") that is safe to include in links. The
+    querystring for the current request (``request.GET``) is used as a base by
+    default, or an alternative ``QueryDict``, ``dict`` or querystring value can
+    be provided as the first argument. The base value can be modified by
+    providing any number of additional key/value pairs. ``None`` values are
+    discounted automatically, and blank values can be optionally discounted by
+    specifying ``remove_blanks=True``.
 
     When specifying key/value pairs, any keys that do not already exist in the base value will be added, and those
     that do will have their value replaced. Specifying a value of ``None`` for an existing item will result in it being
