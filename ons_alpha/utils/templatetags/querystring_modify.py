@@ -2,6 +2,7 @@ from django import template
 from django.db.models import Model
 from django.http.request import QueryDict
 
+
 register = template.Library()
 
 MODE_ADD = "__add"

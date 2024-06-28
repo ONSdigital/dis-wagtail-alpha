@@ -3,6 +3,7 @@
 import django.db.models.deletion
 import modelcluster.fields
 import wagtail.fields
+
 from django.db import migrations, models
 
 import ons_alpha.utils.fields

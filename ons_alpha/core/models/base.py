@@ -8,6 +8,7 @@ from ons_alpha.utils.query import order_by_pk_position
 
 from .mixins import ListingFieldsMixin, SocialFieldsMixin
 
+
 __all__ = [
     "BasePage",
 ]

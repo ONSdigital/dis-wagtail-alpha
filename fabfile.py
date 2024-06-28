@@ -5,6 +5,7 @@ import subprocess
 from invoke import run as local
 from invoke.tasks import task
 
+
 # Process .env file
 if os.path.exists(".env"):
     with open(".env") as f:

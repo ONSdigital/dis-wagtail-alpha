@@ -5,6 +5,7 @@ from wagtail.fields import RichTextField
 
 from ons_alpha.images.models import CustomImage
 
+
 __all__ = [
     "SocialMediaSettings",
     "SystemMessagesSettings",

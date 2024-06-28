@@ -2,6 +2,7 @@ from django import template
 
 from ons_alpha.core.models import SocialMediaSettings
 
+
 register = template.Library()
 
 

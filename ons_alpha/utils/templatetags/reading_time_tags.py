@@ -5,6 +5,7 @@ from django import template
 
 from ons_alpha.core.blocks import ImageBlock
 
+
 register = template.Library()
 
 # Using value of 275 words per minute.

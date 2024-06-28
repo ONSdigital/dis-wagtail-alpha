@@ -1,9 +1,11 @@
 import factory
 import factory.fuzzy
 import wagtail_factories
+
 from faker import Factory as FakerFactory
 
 from .models import IndexPage, InformationPage
+
 
 faker = FakerFactory.create()
 

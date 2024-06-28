@@ -1,7 +1,8 @@
 from wagtail import blocks
 from wagtail.contrib.table_block.blocks import TableBlock as WagtailTableBlock
-from wagtail.contrib.typed_table_block.blocks import \
-    TypedTableBlock as WagtailTypedTableBlock
+from wagtail.contrib.typed_table_block.blocks import (
+    TypedTableBlock as WagtailTypedTableBlock,
+)
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
