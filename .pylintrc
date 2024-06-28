@@ -2,7 +2,9 @@
 ignore=tests
 jobs=1
 load-plugins=pylint_django
-django-settings-module=ons_alpha.settings
+
+[django]
+django-settings-module=ons_alpha.settings.base
 
 [MESSAGES CONTROL]
 # C0114: Missing module docstring
