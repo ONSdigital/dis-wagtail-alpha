@@ -43,6 +43,8 @@ pudb = "^2020.1"
 pymdown-extensions = "9.3"
 tblib = "^3.0.0"
 ruff = "^0.4.10"
+pylint = "^3.2.4"
+black = "^24.4.2"
 
 [build-system]
 requires = ["poetry>=1,<2"]

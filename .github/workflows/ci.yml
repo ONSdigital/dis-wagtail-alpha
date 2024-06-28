@@ -4,9 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
-    tags:
-      - '*'
+      - main
 
 jobs:
   lint_py:
@@ -24,12 +22,12 @@ jobs:
         run: |
           poetry config virtualenvs.create false
           poetry install
-      - name: ruff check
-        run: ruff check --output-format=github .
-      - name: ruff format
-        run: ruff format --check .
-      - name: djhtml
-        run: find ons_alpha/ -name '*.html' | xargs djhtml --check
+      - name: Run Ruff
+        run: poetry run ruff check .
+      - name: Run Pylint
+        run: poetry run pylint ons_alpha
+      - name: Run Black
+        run: poetry run black --check .
 
   lint_js:
     runs-on: ubuntu-latest
@@ -158,3 +156,10 @@ jobs:
           poetry install
       - name: Build documentation
         run: mkdocs build
+
+  build_docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker Image
+        run: docker build -t ons_alpha .

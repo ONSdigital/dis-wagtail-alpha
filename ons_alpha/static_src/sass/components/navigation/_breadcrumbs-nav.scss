@@ -48,7 +48,9 @@
     &__link {
         color: $color--primary;
         border-bottom: 1px solid transparent;
-        transition: color, border $transition;
+        transition:
+            color,
+            border $transition;
 
         &:hover {
             cursor: pointer;

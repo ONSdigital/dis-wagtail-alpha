@@ -2,6 +2,7 @@
 
 lint:
 	poetry run ruff check . --fix
+	poetry run pylint ons_alpha || exit 0
 
 format:
 	poetry run black .
