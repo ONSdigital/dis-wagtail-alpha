@@ -1,17 +1,35 @@
 [MASTER]
 ignore=tests
-
-[TYPECHECK]
-
-[REPORTS]
-
-[DESIGN]
-
-[IMPORTS]
-
-[LOGGING]
-
-[MESSAGES CONTROL]
-disable=E0015,C0103,E0307,E1101,W0612,W0613
+jobs=1
+load-plugins=pylint_django
 
 [django]
+django-settings-module=ons_alpha.settings.base
+
+[MESSAGES CONTROL]
+# Disabling specific warnings and errors
+disable=C0114,C0115,C0116,R0903,C0412,C0301,E1136,R0901,W0401,W0614,W0212,R0801
+
+[REPORTS]
+output-format=colorized
+
+[FORMAT]
+max-line-length=100
+
+[DESIGN]
+# "Too few public methods" (should be fixed properly if possible)
+min-public-methods=0
+# Adjust max-parents to handle the "Too many ancestors" issue
+max-parents=18
+
+[TYPECHECK]
+# Allow wildcard imports (e.g., import * from module)
+ignored-modules=*
+
+[IMPORTS]
+# Allow import statements that are not grouped
+known-standard-library=
+
+[LOGGING]
+# Allow using the `warn` method in favor of `warning`
+logging-modules=logging
