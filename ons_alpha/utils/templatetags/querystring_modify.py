@@ -1,6 +1,7 @@
+from django import template
 from django.db.models import Model
 from django.http.request import QueryDict
-from django import template
+
 
 register = template.Library()
 
