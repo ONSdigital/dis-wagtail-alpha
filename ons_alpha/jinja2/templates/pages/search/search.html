@@ -1,0 +1,49 @@
+{% extends "templates/base_page.html" %}
+
+{% block body_class %}template-searchresults{% endblock %}
+
+{% block title %}{% if search_query %}Search results for &ldquo;{{ search_query }}&rdquo;{% else %}Search{% endif %}{% endblock %}
+
+{% block main %}
+
+    <h1>{% if search_query %}Search results for &ldquo;{{ search_query }}&rdquo;{% else %}Search{% endif %}</h1>
+
+    <form action="{{ url('search') }}" method="get" role="search">
+        <input type="text" placeholder="Search…" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
+        <button type="submit">{{ _("Search") }}</button>
+    </form>
+
+    {% if search_results  %}
+        {% with count=search_results.paginator.count %}
+            {{ count }} result{{ count|pluralize }} found.
+        {% endwith %}
+
+        {% set documents=[] %}
+            {% for generic_result in search_results %}
+                {% set result=generic_result.specific %}
+                    {% set title %}{% if result.listing_title %}{{ result.listing_title }}{% else %}{{ result.title }}{% endif %}{% endset %}
+                    {% set description %}
+                        {% if result.listing_summary or result.search_description %}
+                            <p>{% if result.listing_summary %}{{ result.listing_summary }}{% else %}{{ result.search_description }}{% endif %}</p>
+                        {% endif %}
+                    {% endset %}
+                    {# fmt:off #}
+                    {% do documents.append({
+                            "url": pageurl(result),
+                            "title": title,
+                            "description": description
+                        })
+                    %}
+                    {# fmt:on #}
+                {% endfor %}
+
+                {% from "components/document-list/_macro.njk" import onsDocumentList %}
+                {{ onsDocumentList({"documents": documents}) }}
+
+        {# TODO: pagination#}
+
+            {% elif search_query %}
+                No results found.
+            {% endif %}
+
+        {% endblock %}

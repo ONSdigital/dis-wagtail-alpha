@@ -19,43 +19,6 @@ repos:
         args: [--no-update]
         files: ^pyproject.toml$
 
-  # FE linting and formatting
-  # NB - These run locally, not in an isolated environment, and hence require
-  # node, npm, and node_modules to be installed. Doing it this way prevents us
-  # having to duplicate all of eslint plugins from package.json in this file and
-  # you should probably have a working toolchain to make changes to these files
-  # anyway, right?
-  - repo: local
-    hooks:
-      - id: fix:js
-        name: fix:js
-        language: system
-        entry: npm run fix:js
-        types_or:
-          - javascript
-          - ts
-          - tsx
-      - id: fix:css
-        name: fix:css
-        language: system
-        entry: npm run fix:css
-        types_or:
-          - css
-          - scss
-      - id: fix:format
-        name: fix:format
-        language: system
-        entry: npm run fix:format
-        types_or:
-          - markdown
-          - css
-          - scss
-          - javascript
-          - ts
-          - tsx
-          - json
-          - yaml
-
   # Template linting
   - repo: https://github.com/rtts/djhtml
     rev: 3.0.6

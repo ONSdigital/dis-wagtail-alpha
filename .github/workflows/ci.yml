@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
     tags:
       - '*'
 
@@ -31,65 +31,7 @@ jobs:
       - name: djhtml
         run: find ons_alpha/ -name '*.html' | xargs djhtml --check
 
-  lint_js:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-      - id: node-cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/.nvmrc') }}-${{ hashFiles('**/package-lock.json') }}
-      - if: steps.node-cache.outputs.cache-hit != 'true'
-        run: npm ci --no-audit
-      - name: Lint JS
-        run: npm run lint:js
-      - name: Lint CSS
-        run: npm run lint:css
-      - name: Lint Format
-        run: npm run lint:format
-
-  test_js:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-      - id: node-cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/.nvmrc') }}-${{ hashFiles('**/package-lock.json') }}
-      - if: steps.node-cache.outputs.cache-hit != 'true'
-        run: npm ci --no-audit
-      - run: npm run test
-
-  compile_static:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-      - id: node-cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/.nvmrc') }}-${{ hashFiles('**/package-lock.json') }}
-      - if: steps.node-cache.outputs.cache-hit != 'true'
-        run: npm ci --no-audit
-      - run: npm run build:prod
-      - uses: actions/upload-artifact@v4
-        with:
-          name: static
-          path: ons_alpha/static_compiled/
-
   test_python:
-    needs: compile_static
     runs-on: ubuntu-latest
 
     env:
@@ -124,10 +66,8 @@ jobs:
           poetry config virtualenvs.create false
           poetry install
           coverage erase
-      - uses: actions/download-artifact@v4
-        with:
-          name: static
-          path: ons_alpha/static_compiled/
+      - name: Fetch Design System templates
+        run: make load-design-system-templates
       - name: collectstatic
         run: ./manage.py collectstatic --verbosity 0 --noinput --clear
       - name: System checks

@@ -5,17 +5,20 @@ Django settings for ons_alpha project.
 import os
 import sys
 
+from pathlib import Path
+
 import dj_database_url
 
 from django.core.exceptions import ImproperlyConfigured
+from django_jinja.builtins import DEFAULT_EXTENSIONS
 
 
 env = os.environ.copy()
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# Build paths inside the project like this: BASE_DIR / "something"
 
-PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = os.path.dirname(PROJECT_DIR)
+PROJECT_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = PROJECT_DIR.parent
 
 
 # Switch off DEBUG mode explicitly in the base settings.
@@ -91,9 +94,7 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",  # Must be before `django.contrib.staticfiles`
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
-    "ons_alpha.project_styleguide.apps.ProjectStyleguideConfig",
     "wagtailaccessibility",
-    "birdbath",
     "django_jinja",
 ]
 
@@ -122,12 +123,13 @@ ROOT_URLCONF = "ons_alpha.urls"
 TEMPLATES = [
     {
         "BACKEND": "django_jinja.jinja2.Jinja2",
-        "DIRS": [],
+        "DIRS": [
+            PROJECT_DIR / "jinja2",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
-            "match_extension": ".jinja",
-            "match_regex": None,
-            "app_dirname": "templates",
+            "match_extension": ".html",
+            "app_dirname": "jinja2",
             "undefined": "jinja2.ChainableUndefined",
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -138,6 +140,14 @@ TEMPLATES = [
                 # This is a custom context processor that lets us add custom
                 # global variables to all the templates.
                 "ons_alpha.core.context_processors.global_vars",
+            ],
+            "extensions": DEFAULT_EXTENSIONS
+            + [
+                "wagtail.jinja2tags.core",
+                "wagtail.admin.jinja2tags.userbar",
+                "wagtail.images.jinja2tags.images",
+                "wagtail.contrib.settings.jinja2tags.settings",
+                "ons_alpha.utils.jinja2tags.UtilsExtension",
             ],
         },
     },
@@ -272,7 +282,7 @@ STORAGES = {
 }
 
 # Place static files that need a specific URL (such as robots.txt and favicon.ico) in the "public" folder
-WHITENOISE_ROOT = os.path.join(BASE_DIR, "public")
+WHITENOISE_ROOT = BASE_DIR / "public"
 
 
 # This is where Django will look for static files outside the directories of
@@ -281,7 +291,7 @@ WHITENOISE_ROOT = os.path.join(BASE_DIR, "public")
 STATICFILES_DIRS = [
     # "static_compiled" is a folder used by the front-end tooling
     # to output compiled static assets.
-    os.path.join(PROJECT_DIR, "static_compiled")
+    PROJECT_DIR / "jinja2" / "assets"
 ]
 
 
@@ -289,7 +299,7 @@ STATICFILES_DIRS = [
 # and custom direcotires set in "STATICFILES_DIRS" when
 # using "django-admin collectstatic" command.
 # https://docs.djangoproject.com/en/stable/ref/settings/#static-root
-STATIC_ROOT = env.get("STATIC_DIR", os.path.join(BASE_DIR, "static"))
+STATIC_ROOT = env.get("STATIC_DIR", BASE_DIR / "static")
 
 
 # This is the URL that will be used when serving static files, e.g.
@@ -302,7 +312,7 @@ STATIC_URL = env.get("STATIC_URL", "/static/")
 # MEDIA_ROOT is not used when S3 backend is set up.
 # Probably only relevant to the local development.
 # https://docs.djangoproject.com/en/stable/ref/settings/#media-root
-MEDIA_ROOT = env.get("MEDIA_DIR", os.path.join(BASE_DIR, "media"))
+MEDIA_ROOT = env.get("MEDIA_DIR", BASE_DIR / "media")
 
 
 # The URL path that media files will be accessible at. This setting won't be
@@ -754,9 +764,13 @@ WAGTAILDOCS_DOCUMENT_MODEL = "documents.CustomDocument"
 WAGTAILDOCS_SERVE_METHOD = "serve_view"
 
 
-WAGTAIL_FRONTEND_LOGIN_TEMPLATE = "pages/standardpages/login_page.html"
+WAGTAIL_FRONTEND_LOGIN_TEMPLATE = (
+    "templates/pages/login_page.html"  # pragma: allowlist secret
+)
 
-PASSWORD_REQUIRED_TEMPLATE = "pages/wagtail/password_required.html"
+PASSWORD_REQUIRED_TEMPLATE = (
+    "templates/pages/wagtail/password_required.html"  # pragma: allowlist secret
+)
 
 
 # Default size of the pagination used on the front-end.
@@ -790,21 +804,6 @@ WAGTAILFORMS_HELP_TEXT_ALLOW_HTML = False
 CRISPY_ALLOWED_TEMPLATE_PACKS = ["tbx"]
 CRISPY_TEMPLATE_PACK = "tbx"
 CRISPY_FAIL_SILENTLY = False  # Default for local development. Gets overridden.
-
-# Birdbath - Database anonymisation
-# -----------------------------------------------------------------------------
-# Configure django-birdbath to anonymise data when syncing database
-BIRDBATH_USER_ANONYMISER_EXCLUDE_SUPERUSERS = True
-BIRDBATH_USER_ANONYMISER_EXCLUDE_EMAIL_RE = r"(torchbox\.com)$"
-# Do not anonymise data on any heroku app containing 'production' in app name
-BIRDBATH_CHECKS = ["birdbath.checks.contrib.heroku.HerokuNotProductionCheck"]
-BIRDBATH_REQUIRED = env.get("BIRDBATH_REQUIRED", "true").lower() == "true"
-# Add project specific processors here to anonymise or delete sensitive data.
-# See https://git.torchbox.com/internal/django-birdbath/#processors
-BIRDBATH_PROCESSORS = [
-    "birdbath.processors.users.UserEmailAnonymiser",
-    "birdbath.processors.users.UserPasswordAnonymiser",
-]
 
 # Isolates the browsing context exclusively to same-origin documents.
 # Cross-origin documents are not loaded in the same browsing context.

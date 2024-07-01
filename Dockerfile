@@ -1,18 +1,3 @@
-# (Keep the version in sync with the node install below)
-FROM node:20-slim as frontend
-
-# Make build & post-install scripts behave as if we were in a CI environment (e.g. for logging verbosity purposes).
-ARG CI=true
-
-# Install front-end dependencies.
-COPY package.json package-lock.json tsconfig.json webpack.config.js tailwind.config.js  ./
-RUN npm ci --omit=optional --no-audit --progress=false
-
-# Compile static files
-COPY ./ons_alpha/ ./ons_alpha/
-RUN npm run build:prod
-
-
 # We use Debian images because they are considered more stable than the alpine
 # ones becase they use a different C compiler. Debian images also come with
 # all useful packages required for image manipulation out of the box. They
@@ -60,6 +45,8 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
     libpq-dev \
     curl \
     git \
+    jq \
+    unzip \
     && apt-get autoremove && rm -rf /var/lib/apt/lists/*
 
 # Install poetry at the system level
@@ -75,10 +62,11 @@ RUN python -m venv $VIRTUAL_ENV
 COPY --chown=ons_alpha pyproject.toml poetry.lock ./
 RUN pip install --no-cache --upgrade pip && poetry install ${POETRY_INSTALL_ARGS} --no-root && rm -rf $HOME/.cache
 
-COPY --chown=ons_alpha --from=frontend ./ons_alpha/static_compiled ./ons_alpha/static_compiled
-
 # Copy application code.
 COPY --chown=ons_alpha . .
+
+# Get the Design System templates
+RUN make load-design-system-templates
 
 # Run poetry install again to install our project (so the the ons_alpha package is always importable)
 RUN poetry install ${POETRY_INSTALL_ARGS}
@@ -108,14 +96,6 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
 
 # Restore user
 USER ons_alpha
-
-# Install nvm and node/npm
-COPY --chown=ons_alpha .nvmrc ./
-RUN curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && \
-    bash --login -c "nvm install --no-progress && nvm alias default $(nvm run --silent --version)"
-
-# Pull in the node modules for the frontend
-COPY --chown=ons_alpha --from=frontend ./node_modules ./node_modules
 
 # do nothing forever - exec commands elsewhere
 CMD tail -f /dev/null
