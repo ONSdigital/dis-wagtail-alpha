@@ -15,6 +15,8 @@ class BulletinPage(BasePage):
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["topics.TopicPage"]
 
+    summary = models.TextField()
+
     release_date = models.DateField()
     next_release_date = models.DateField()
 
@@ -29,6 +31,7 @@ class BulletinPage(BasePage):
     )
 
     content_panels = BasePage.content_panels + [
+        FieldPanel("summary"),
         MultiFieldPanel(
             [
                 FieldPanel("release_date"),
