@@ -65,6 +65,9 @@ RUN pip install --no-cache --upgrade pip && poetry install ${POETRY_INSTALL_ARGS
 # Copy application code.
 COPY --chown=ons_alpha . .
 
+# Get the Design System templates
+RUN make load-design-system-templates
+
 # Run poetry install again to install our project (so the the ons_alpha package is always importable)
 RUN poetry install ${POETRY_INSTALL_ARGS}
 
