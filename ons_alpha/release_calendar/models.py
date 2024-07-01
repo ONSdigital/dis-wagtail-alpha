@@ -90,3 +90,28 @@ class ReleasePage(BasePage):
         FieldPanel("contact_details"),
         InlinePanel("related_links", heading="Related links"),
     ]
+
+    @property
+    def status_label(self) -> str:
+        return ReleaseStatus[self.status].label
+
+    def get_template(self, request, *args, **kwargs):
+        if self.status == ReleaseStatus.UPCOMING:
+            return "templates/pages/release_page--upcoming.html"
+        elif self.status == ReleaseStatus.CANCELLED:
+            return "templates/pages/release_page--cancelled.html"
+
+        return super().get_template(request, *args, **kwargs)
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        context["related_links"] = [
+            {
+                "text": item.get_link_text(),
+                "url": item.get_link_url(),
+            }
+            for item in self.related_links.select_related("link_page")
+        ]
+
+        return context

@@ -1,0 +1,64 @@
+{% extends "templates/base_page.html" %}
+{% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
+
+{% block main %}
+    <div class="ons-u-fs-m ons-u-mt-s ons-u-pb-xxs release__document-type">Release</div>
+    <h1 class="ons-u-fs-xxxl ons-u-mb-m">
+        <span>{{ page.title }}</span>
+        {% if page.is_accredited %}
+            <a href="https://uksa.statisticsauthority.gov.uk/about-the-authority/uk-statistical-system/types-of-official-statistics/" class="national-statistics__link ons-u-ml-s">
+                <img src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/v2/uksa-kitemark-en.svg" alt="UK Statistics Authority Kitemark" class="osr__logo" width="90">
+            </a>
+        {% endif %}
+    </h1>
+
+    <div class="ons-grid ons-u-ml-no">
+        <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-col-12@s ons-u-p-no">
+            <span class="ons-u-fs-r--b">Release date:</span>
+            <span class="ons-u-nowrap">{{ page.release_date|date("j F Y g:ia") }}</span>
+        </div>
+    </div>
+
+    <div class="ons-u-pt-s ons-u-pb-m@m ons-u-pb-s@xxs@m">
+        {% from "components/panel/_macro.njk" import onsPanel %}
+    {# fmt:off #}
+        {{
+            onsPanel({
+                "body": '<p>This release is not yet published</p>'
+            })
+        }}
+    {# fmt:on #}
+    </div>
+
+    <div class="ons-grid ons-js-toc-container ons-u-ml-no">
+        <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
+            {# fmt:off #}
+            {{-
+                onsTableOfContents({
+                    "title": 'Contents',
+                    "ariaLabel": 'Pages in this guide',
+                    "skipLink": {
+                        "url": "#0",
+                        "text": 'Skip to guide content'
+                    },
+                    "lists": [
+                        {
+                            "itemsList": [
+                                {
+                                    "url": '#summary',
+                                    "text": 'Summary',
+                                },
+                            ]
+                        }
+                    ]
+                })
+            }}
+            {# fmt:on #}
+        </div>
+        <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+            <section id="summary">
+                {{ page.summary|richtext() }}
+            </section>
+        </div>
+    </div>
+{% endblock %}
