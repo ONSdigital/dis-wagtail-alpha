@@ -1,5 +1,8 @@
 {% extends "templates/base_page.html" %}
 
 {% block main %}
+    {{ table_of_contents(page, "body", {
+        "title": "Table of contents"
+    }) }}
     {% include_block page.body %}
 {% endblock %}
