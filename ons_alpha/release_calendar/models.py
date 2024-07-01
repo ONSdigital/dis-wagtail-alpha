@@ -2,6 +2,7 @@ from functools import cached_property
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
@@ -29,7 +30,12 @@ class ReleaseIndex(BasePage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
-        context["releases"] = ReleasePage.objects.child_of(self).public().live()
+        page = request.GET.get("page", 1)
+
+        context["releases"] = Paginator(
+            ReleasePage.objects.child_of(self).public().live(),
+            settings.DEFAULT_PER_PAGE,
+        ).get_page(page)
 
         return context
 
