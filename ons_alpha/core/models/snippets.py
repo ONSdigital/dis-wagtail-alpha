@@ -94,5 +94,8 @@ class ContactDetails(models.Model):
         FieldPanel("phone"),
     ]
 
+    class Meta:
+        verbose_name_plural = "contact details"
+
     def __str__(self):
         return self.name
