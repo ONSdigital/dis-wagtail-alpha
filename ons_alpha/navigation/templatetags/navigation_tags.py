@@ -38,24 +38,3 @@ def footer_nav(context):
         ].footer_navigation,
         "request": request,
     }
-
-
-# Footer nav snippets
-@register.inclusion_tag("components/navigation/sidebar.html", takes_context=True)
-def sidebar(context):
-    return {
-        "children": context["page"].get_children().live().public().in_menu(),
-        "request": context["request"],
-    }
-
-
-# Footer nav snippets
-@register.inclusion_tag("components/navigation/footer_links.html", takes_context=True)
-def footer_links(context):
-    request = context["request"]
-    return {
-        "footer_links": context["settings"]["navigation"][
-            "NavigationSettings"
-        ].footer_links,
-        "request": request,
-    }

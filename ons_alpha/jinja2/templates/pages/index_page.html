@@ -1,0 +1,50 @@
+{% extends "templates/base_page.html" %}
+
+{% block main %}
+    <h1>{{ page.title }}</h1>
+
+    {% if page.introduction %}
+        <p>{{ page.introduction }}</p>
+    {% endif %}
+
+    {% if subpages %}
+        <div class="grid">
+            {% if subpages.object_list.exists %}
+                {% from "components/card/_macro.njk" import onsCard %}
+                <div class="ons-container">
+                    <div class="ons-grid ons-grid--column@xxs@s">
+                        {% for subpage in subpages.object_list.specific() %}
+                            {%- set card_text -%}
+                                {% if subpage.listing_summary or subpage.introduction %}
+                                    {% if subpage.listing_summary %}{{ subpage.listing_summary }}{% else %}{{ subpage.introduction }}{% endif %}
+                                {% endif %}
+                            {%- endset %}
+                            {% set card_url=pageurl(subpage) %}
+                                {% set card_title %}
+                                    {% if subpage.listing_title %}{{ subpage.listing_title }}{% else %}{{ subpage.title }}{% endif %}
+                                {% endset %}
+                                <div class="ons-grid__col ons-col-4@m">
+                                {# fmt:off #}
+                                    {{
+                                        onsCard({
+                                            "id": page.slug,
+                                            "textId": 'text1',
+                                            "title": card_title,
+                                            "url": card_url,
+                                            "text": card_text
+                                        })
+                                    }}
+                                {# fmt:on #}
+                                </div>
+                            {% endfor %}
+                            </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+{#        {% include "components/pagination/pagination.html" with paginator_page=subpages %}#}
+
+            {% else %}
+        {# no items on any page #}
+            {% endif %}
+    {% endblock %}
