@@ -1,0 +1,29 @@
+{% extends "templates/base_page.html" %}
+
+{% block main %}
+    <div class="ons-u-fs-m ons-u-mt-s ons-u-pb-xxs release__document-type">Release</div>
+    <h1>{{ page.title }}</h1>
+
+    {% if page.summary %}
+        {{ page.summary|richtext() }}
+    {% endif %}
+
+    {% if related_links %}
+        {% from "components/related-content/_macro.njk" import onsRelatedContent %}
+
+        {# fmt:off #}
+        {{
+            onsRelatedContent({
+                "ariaLabel": 'You might also be interested in',
+                "rows": [
+                    {
+                        "id": 'related-links',
+                        "title": 'You might also be interested in',
+                        "itemsList": related_links
+                    }
+                ]
+            })
+        }}
+        {# fmt:on #}
+    {% endif %}
+{% endblock %}
