@@ -27,12 +27,14 @@
                             <p>{% if result.listing_summary %}{{ result.listing_summary }}{% else %}{{ result.search_description }}{% endif %}</p>
                         {% endif %}
                     {% endset %}
+                    {# fmt:off #}
                     {% do documents.append({
-                    "url": pageurl(result),
-                    "title": title,
-                    "description": description
-                    })
+                            "url": pageurl(result),
+                            "title": title,
+                            "description": description
+                        })
                     %}
+                    {# fmt:on #}
                 {% endfor %}
 
                 {% from "components/document-list/_macro.njk" import onsDocumentList %}

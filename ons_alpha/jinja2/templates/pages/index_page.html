@@ -24,13 +24,17 @@
                                     {% if subpage.listing_title %}{{ subpage.listing_title }}{% else %}{{ subpage.title }}{% endif %}
                                 {% endset %}
                                 <div class="ons-grid__col ons-col-4@m">
-                                    {{ onsCard({
-                                    "id": page.slug,
-                                    "textId": 'text1',
-                                    "title": card_title,
-                                    "url": card_url,
-                                    "text": card_text
-                                    }) }}
+                                {# fmt:off #}
+                                    {{
+                                        onsCard({
+                                            "id": page.slug,
+                                            "textId": 'text1',
+                                            "title": card_title,
+                                            "url": card_url,
+                                            "text": card_text
+                                        })
+                                    }}
+                                {# fmt:on #}
                                 </div>
                             {% endfor %}
                             </div>

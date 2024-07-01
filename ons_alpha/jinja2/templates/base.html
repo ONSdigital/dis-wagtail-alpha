@@ -4,55 +4,56 @@
     {% if current_site and page.pk == current_site.root_page.pk and current_site.site_name %}{{ current_site.site_name }} | {% endif %}{% block title %}{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title}}{% endif %}{% endblock %}{% block title_suffix %}{% if current_site and page.pk != current_site.root_page.pk and current_site.site_name %} | {{ current_site.site_name }}{% endif %}{% endblock %}
 {% endset %}
 
-{# djlint:off #}
+{# fmt:off #}
 {% set pageConfig = {
-"header": {
-"title": page_title,
-"phase": {
-"badge": 'Alpha',
-"html": 'This is an alpha instance intended for proofs of concept.'
-},
-"language": {
-"languages": [
-{
-"url": "#0",
-"ISOCode": "en",
-"text": "English",
-"current": true
-},
-{
-"url": "#0",
-"ISOCode": "cy",
-"text": "Cymraeg",
-"current": false
-}
-]
-}
-},
-"footer": {
-"rows": [
-{
-"itemsList": [
-{
-"text": 'Contact us',
-"url": '#0'
-},
-{
-"text": 'Cookies and privacy',
-"url": '#0'
-}
-]
-}
-],
-"OGLLink": {
-"pre": 'All content is available under the',
-"link": 'Open Government Licence v3.0',
-"url": 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
-"post": ', except where otherwise stated'
-}
-}
-} %}
-{# djlint:on #}
+    "header": {
+        "title": page_title,
+        "phase": {
+            "badge": 'Alpha',
+            "html": 'This is an alpha instance intended for proofs of concept.'
+        },
+        "language": {
+            "languages": [
+                {
+                    "url": "#0",
+                    "ISOCode": "en",
+                    "text": "English",
+                    "current": true
+                },
+                {
+                    "url": "#0",
+                    "ISOCode": "cy",
+                    "text": "Cymraeg",
+                    "current": false
+                }
+            ]
+        }
+        },
+        "footer": {
+            "rows": [
+                {
+                    "itemsList": [
+                        {
+                            "text": 'Contact us',
+                            "url": '#0'
+                        },
+                        {
+                            "text": 'Cookies and privacy',
+                            "url": '#0'
+                        }
+                    ]
+                }
+            ],
+            "OGLLink": {
+                "pre": 'All content is available under the',
+                "link": 'Open Government Licence v3.0',
+                "url": 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
+                "post": ', except where otherwise stated'
+            }
+        }
+    }
+%}
+{# fmt:on #}
 
 {% block preMain %}
     {{ wagtailuserbar() }}

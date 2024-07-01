@@ -14,10 +14,12 @@
     {% endfor %}
 
     {% do breadcrumbs.append({"text": page.title}) %}
+    {# fmt:off #}
     {{
-    onsBreadcrumbs({
-    "ariaLabel": 'Breadcrumbs',
-    "itemsList": breadcrumbs
-    })
+        onsBreadcrumbs({
+            "ariaLabel": 'Breadcrumbs',
+            "itemsList": breadcrumbs
+        })
     }}
+    {# fmt:on #}
 {% endif %}
