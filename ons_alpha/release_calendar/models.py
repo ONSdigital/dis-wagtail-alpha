@@ -1,8 +1,9 @@
 from functools import cached_property
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
 from wagtail.fields import RichTextField, StreamField
@@ -63,7 +64,7 @@ class ReleasePage(BasePage):
     notice = RichTextField(
         features=settings.RICH_TEXT_BASIC,
         blank=True,
-        help_text="Used for data change or cancellation notices",
+        help_text="Used for data change or cancellation notices. The notice is required when the release is cancelled",
     )
     contact_details = models.ForeignKey(
         "core.ContactDetails",
@@ -93,6 +94,18 @@ class ReleasePage(BasePage):
         FieldPanel("contact_details"),
         InlinePanel("related_links", heading="Related links"),
     ]
+
+    def clean(self):
+        super().clean()
+
+        if self.status == ReleaseStatus.CANCELLED and not self.notice:
+            raise ValidationError(
+                {
+                    "notice": _(
+                        "The notice field is required when the release is cancelled"
+                    )
+                }
+            )
 
     @property
     def status_label(self) -> str:
