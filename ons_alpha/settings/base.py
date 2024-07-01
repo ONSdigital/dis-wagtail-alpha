@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "ons_alpha.home",
     "ons_alpha.images",
     "ons_alpha.navigation",
+    "ons_alpha.release_calendar",
     "ons_alpha.search",
     "ons_alpha.standardpages",
     "ons_alpha.users",
@@ -736,21 +737,13 @@ WAGTAILIMAGES_MAX_IMAGE_PIXELS = int(pixel_limit) if pixel_limit else 10_000_000
 # We normally don't want editors to use the images
 # in the rich text editor, for example.
 # They should use the image stream block instead
+RICH_TEXT_BASIC = ["bold", "italic", "link", "ol", "ul", "document-link"]
+RICH_TEXT_FULL = ["h3", "h4"] + RICH_TEXT_BASIC
+
 WAGTAILADMIN_RICH_TEXT_EDITORS = {
     "default": {
         "WIDGET": "wagtail.admin.rich_text.DraftailRichTextArea",
-        "OPTIONS": {
-            "features": [
-                "bold",
-                "italic",
-                "h3",
-                "h4",
-                "ol",
-                "ul",
-                "link",
-                "document-link",
-            ]
-        },
+        "OPTIONS": {"features": RICH_TEXT_FULL},
     }
 }
 

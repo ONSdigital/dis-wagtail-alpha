@@ -1,0 +1,41 @@
+{% extends "templates/base_page.html" %}
+
+{% block main %}
+    <h1>{{ _("Release calendar") }}</h1>
+
+    <form action="." method="get" role="search">
+        <input type="text" placeholder="Search…" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
+        <button type="submit">{{ _("Search") }}</button>
+    </form>
+
+    {% if releases  %}
+        {% with count=releases.paginator.count %}
+            {{ count }} result{{ count|pluralize }} found.
+        {% endwith %}
+
+        {% set documents=[] %}
+            {% for release in releases %}
+                {% set title %}{% if release.listing_title %}{{ release.listing_title }}{% else %}{{ release.title }}{% endif %}{% endset %}
+                {% set description %}
+                    {{ result.release_date }} | {{ release.status }}
+                {% endset %}
+                {# fmt:off #}
+                {% do documents.append({
+                        "url": pageurl(result),
+                        "title": title,
+                        "description": description
+                    })
+                %}
+                {# fmt:on #}
+            {% endfor %}
+
+            {% from "components/document-list/_macro.njk" import onsDocumentList %}
+            {{ onsDocumentList({"documents": documents}) }}
+
+        {# TODO: pagination#}
+
+        {% elif search_query %}
+            No results found.
+        {% endif %}
+
+    {% endblock %}
