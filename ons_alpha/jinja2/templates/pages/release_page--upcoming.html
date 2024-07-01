@@ -14,7 +14,7 @@
 
     <div class="ons-grid ons-u-ml-no">
         <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-col-12@s ons-u-p-no">
-            <span class="ons-u-fs-r--b">Release date:</span>
+            <span class="ons-u-fs-r--b">{{ _("Release date") }}:</span>
             <span class="ons-u-nowrap">{{ page.release_date|date("j F Y g:ia") }}</span>
         </div>
     </div>
@@ -37,20 +37,7 @@
                 onsTableOfContents({
                     "title": 'Contents',
                     "ariaLabel": 'Pages in this guide',
-                    "skipLink": {
-                        "url": "#0",
-                        "text": 'Skip to guide content'
-                    },
-                    "lists": [
-                        {
-                            "itemsList": [
-                                {
-                                    "url": '#summary',
-                                    "text": 'Summary',
-                                },
-                            ]
-                        }
-                    ]
+                    "itemsList": toc
                 })
             }}
             {# fmt:on #}

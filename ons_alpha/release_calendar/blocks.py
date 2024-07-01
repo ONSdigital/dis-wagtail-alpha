@@ -2,6 +2,7 @@ from functools import cached_property
 
 from django.core.exceptions import ValidationError
 from django.forms.utils import ErrorList
+from django.utils.text import slugify
 from wagtail import blocks
 
 
@@ -75,6 +76,9 @@ class ContentSectionBlock(blocks.StructBlock):
 
     class Meta:
         template = "templates/components/streamfield/release_content_section.html"
+
+    def to_table_of_contents_items(self, value):
+        return [{"url": "#" + slugify(value["title"]), "text": value["title"]}]
 
 
 class ReleaseStoryBlock(blocks.StreamBlock):

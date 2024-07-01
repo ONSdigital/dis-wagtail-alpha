@@ -1,5 +1,8 @@
+from functools import cached_property
+
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext as _
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
 from wagtail.fields import RichTextField, StreamField
@@ -106,7 +109,14 @@ class ReleasePage(BasePage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
-        context["related_links"] = [
+        context["related_links"] = self.related_links_for_context
+        context["toc"] = self.toc
+
+        return context
+
+    @cached_property
+    def related_links_for_context(self):
+        return [
             {
                 "text": item.get_link_text(),
                 "url": item.get_link_url(),
@@ -114,4 +124,20 @@ class ReleasePage(BasePage):
             for item in self.related_links.select_related("link_page")
         ]
 
-        return context
+    @cached_property
+    def toc(self):
+        items = [{"url": "#summary", "text": _("Summary")}]
+
+        if self.status == ReleaseStatus.PUBLISHED:
+            for block in self.content:
+                items += block.block.to_table_of_contents_items(block.value)
+
+            if self.is_accredited:
+                items += [{"url": "#about-the-data", "text": _("About the data")}]
+
+            if self.related_links_for_context:
+                items += [
+                    {"url": "#links", "text": _("You might also be interested in")}
+                ]
+
+        return items
