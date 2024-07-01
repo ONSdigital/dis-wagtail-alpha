@@ -43,6 +43,7 @@ services:
       - ./poetry.lock:/app/poetry.lock:rw
       - ./gunicorn.conf.py:/app/gunicorn.conf.py:rw
       - ./.editorconfig:/app/.editorconfig:rw
+      - ./.design-system-version:/app/design-system-version:rw
     depends_on:
       - db
       - redis

@@ -45,6 +45,8 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
     libpq-dev \
     curl \
     git \
+    jq \
+    unzip \
     && apt-get autoremove && rm -rf /var/lib/apt/lists/*
 
 # Install poetry at the system level
