@@ -1,7 +1,11 @@
 from wagtail.admin.panels import FieldPanel
 from wagtail.blocks import RichTextBlock
 
-from ons_alpha.core.blocks import HeadingBlock, PanelBlock
+from ons_alpha.core.blocks import (
+    HeadingBlock,
+    PanelBlock,
+    TableBlock,
+)
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
 
@@ -15,6 +19,7 @@ class BulletinPage(BasePage):
             ("heading", HeadingBlock()),
             ("rich_text", RichTextBlock()),
             ("panel", PanelBlock()),
+            ("table", TableBlock()),
         ],
         use_json_field=True,
     )
