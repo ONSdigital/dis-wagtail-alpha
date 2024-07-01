@@ -15,12 +15,12 @@
 
     <div class="ons-grid ons-u-ml-no">
         <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-col-12@s ons-u-p-no">
-            <span class="ons-u-fs-r--b">Release date:</span>
+            <span class="ons-u-fs-r--b">{{ _("Release date") }}:</span>
             <span class="ons-u-nowrap">{{ page.release_date|date("j F Y g:ia") }}</span>
         </div>
         {% if page.next_release %}
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
-                <span class="ons-u-fs-r--b">Next release:</span>
+                <span class="ons-u-fs-r--b">{{ _("Next release") }}:</span>
                 <span class="ons-u-nowrap">{{ page.next_release }}</span>
             </div>
         {% endif %}
@@ -28,7 +28,15 @@
 
     <div class="ons-grid ons-js-toc-container ons-u-ml-no">
         <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
-
+            {# fmt:off #}
+            {{-
+                onsTableOfContents({
+                    "title": 'Contents',
+                    "ariaLabel": 'Sections in this page',
+                    "itemsList": toc
+                })
+            }}
+            {# fmt:on #}
         </div>
         <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
             {{ page.summary|richtext() }}
@@ -37,7 +45,7 @@
 
             {% if page.is_accredited %}
                 <section id="about-the-data">
-                    <h2>About the data</h2>
+                    <h2>{{ _("About the data") }}</h2>
                     <div class="ons-u-mb-l national-statistics">
                         <h2 class="ons-u-fs-m ons-u-flex-ai-c">
                             <span>Accredited Official Statistics</span>
@@ -62,11 +70,11 @@
                 <section id="links">
                     {{
                         onsRelatedContent({
-                            "ariaLabel": 'You might also be interested in',
+                            "ariaLabel": _('You might also be interested in'),
                             "rows": [
                                 {
                                     "id": 'related-links',
-                                    "title": 'You might also be interested in',
+                                    "title": _('You might also be interested in'),
                                     "itemsList": related_links
                                 }
                             ]
