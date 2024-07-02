@@ -40,9 +40,9 @@ wagtail-factories = "^4.2.1"
 pudb = "^2024.1"
 tblib = "^3.0.0"
 pre-commit = "~3.7.1"
-ruff = "^0.5.0"
+ruff = "^0.5.0" # keep version in sync with .pre-commit-config.toml
 pylint = "^3.2.4"
-black = "^24.4.2"
+black = "^24.4.2"  # keep version in sync with .pre-commit-config.toml
 djhtml = "~3.0.6"
 setuptools = "^70.2.0"
 
