@@ -1,4 +1,4 @@
-from .base import *  # noqa: F403
+from .base import *  # noqa: F403  # pylint: disable=wildcard-import,unused-wildcard-import
 
 
 # Debugging to be enabled locally only
@@ -63,6 +63,6 @@ CRISPY_FAIL_SILENTLY = False
 # Import settings from local.py file if it exists. Please use it to keep
 # settings that are not meant to be checked into Git and never check it in.
 try:
-    from .local import *  # noqa: F403
+    from .local import *  # noqa: F403  # pylint: disable=wildcard-import
 except ImportError:
     pass

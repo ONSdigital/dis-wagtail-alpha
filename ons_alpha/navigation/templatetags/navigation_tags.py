@@ -9,9 +9,7 @@ register = template.Library()
 def primary_nav(context):
     request = context["request"]
     return {
-        "primary_nav": context["settings"]["navigation"][
-            "NavigationSettings"
-        ].primary_navigation,
+        "primary_nav": context["settings"]["navigation"]["NavigationSettings"].primary_navigation,
         "request": request,
     }
 
@@ -21,9 +19,7 @@ def primary_nav(context):
 def secondary_nav(context):
     request = context["request"]
     return {
-        "secondary_nav": context["settings"]["navigation"][
-            "NavigationSettings"
-        ].secondary_navigation,
+        "secondary_nav": context["settings"]["navigation"]["NavigationSettings"].secondary_navigation,
         "request": request,
     }
 
@@ -33,8 +29,6 @@ def secondary_nav(context):
 def footer_nav(context):
     request = context["request"]
     return {
-        "footer_nav": context["settings"]["navigation"][
-            "NavigationSettings"
-        ].footer_navigation,
+        "footer_nav": context["settings"]["navigation"]["NavigationSettings"].footer_navigation,
         "request": request,
     }

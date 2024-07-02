@@ -1,4 +1,6 @@
-"""Django settings for ons_alpha project."""
+"""
+Django settings for ons_alpha project.
+"""
 
 import os
 import sys
@@ -175,9 +177,7 @@ WSGI_APPLICATION = "ons_alpha.wsgi.application"
 # https://docs.djangoproject.com/en/stable/ref/settings/#databases
 # https://github.com/kennethreitz/dj-database-url
 
-DATABASES = {
-    "default": dj_database_url.config(conn_max_age=600, default="postgres:///ons_alpha")
-}
+DATABASES = {"default": dj_database_url.config(conn_max_age=600, default="postgres:///ons_alpha")}
 
 
 # Server-side cache settings. Do not confuse with front-end cache.
@@ -239,9 +239,7 @@ WAGTAILSEARCH_BACKENDS = {"default": {"BACKEND": "wagtail.search.backends.databa
 # https://docs.djangoproject.com/en/stable/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -274,9 +272,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std-setting-STORAGES
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
-    },
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
 
 # Place static files that need a specific URL (such as robots.txt and favicon.ico) in the "public" folder
@@ -289,7 +285,9 @@ WHITENOISE_ROOT = BASE_DIR / "public"
 STATICFILES_DIRS = [
     # "static_compiled" is a folder used by the front-end tooling
     # to output compiled static assets.
-    PROJECT_DIR / "jinja2" / "assets"
+    PROJECT_DIR
+    / "jinja2"
+    / "assets"
 ]
 
 
@@ -397,11 +395,7 @@ LOGGING = {
             "formatter": "verbose",
         },
     },
-    "formatters": {
-        "verbose": {
-            "format": "[%(asctime)s][%(process)d][%(levelname)s][%(name)s] %(message)s"
-        }
-    },
+    "formatters": {"verbose": {"format": "[%(asctime)s][%(process)d][%(levelname)s][%(name)s] %(message)s"}},
     "loggers": {
         "ons_alpha": {
             "handlers": ["console"],
@@ -441,9 +435,7 @@ if "EMAIL_HOST" in env:
 try:
     EMAIL_PORT = int(env.get("EMAIL_PORT", 587))
 except ValueError:
-    raise ImproperlyConfigured(
-        "The setting EMAIL_PORT should be an integer, e.g. 587"
-    ) from None
+    raise ImproperlyConfigured("The setting EMAIL_PORT should be an integer, e.g. 587") from None
 
 # https://docs.djangoproject.com/en/stable/ref/settings/#email-host-user
 if "EMAIL_HOST_USER" in env:
@@ -516,10 +508,7 @@ if "SENTRY_DSN" in env and not is_in_shell:
 # The backend can be configured to use an account-wide API key, or an API token with
 # restricted access.
 
-if (
-    "FRONTEND_CACHE_CLOUDFLARE_TOKEN" in env
-    or "FRONTEND_CACHE_CLOUDFLARE_BEARER_TOKEN" in env
-):
+if "FRONTEND_CACHE_CLOUDFLARE_TOKEN" in env or "FRONTEND_CACHE_CLOUDFLARE_BEARER_TOKEN" in env:
     INSTALLED_APPS.append("wagtail.contrib.frontend_cache")
     WAGTAILFRONTENDCACHE = {
         "default": {
@@ -545,9 +534,7 @@ if (
         # To use an API token with restricted access, set the following environment variables:
         #  * FRONTEND_CACHE_CLOUDFLARE_BEARER_TOKEN
         #  * FRONTEND_CACHE_CLOUDFLARE_ZONEID
-        WAGTAILFRONTENDCACHE["default"].update(
-            {"BEARER_TOKEN": env["FRONTEND_CACHE_CLOUDFLARE_BEARER_TOKEN"]}
-        )
+        WAGTAILFRONTENDCACHE["default"].update({"BEARER_TOKEN": env["FRONTEND_CACHE_CLOUDFLARE_BEARER_TOKEN"]})
 
     # Set up front-end cache if the S3 uses custom domain. This assumes that
     # the same Cloudflare zone is used.
@@ -565,9 +552,7 @@ except ValueError:
 
 # Give front-end cache 30 second to revalidate the cache to avoid hitting the
 # backend. See urls.py.
-CACHE_CONTROL_STALE_WHILE_REVALIDATE = int(
-    env.get("CACHE_CONTROL_STALE_WHILE_REVALIDATE", 30)
-)
+CACHE_CONTROL_STALE_WHILE_REVALIDATE = int(env.get("CACHE_CONTROL_STALE_WHILE_REVALIDATE", 30))
 
 
 # Required to get e.g. wagtail-sharing working on Heroku and probably many other platforms.
@@ -622,9 +607,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 # https://docs.djangoproject.com/en/stable/ref/middleware/#referrer-policy
-SECURE_REFERRER_POLICY = env.get(
-    "SECURE_REFERRER_POLICY", "no-referrer-when-downgrade"
-).strip()
+SECURE_REFERRER_POLICY = env.get("SECURE_REFERRER_POLICY", "no-referrer-when-downgrade").strip()
 
 
 # Content Security policy settings
@@ -673,18 +656,12 @@ if env.get("BASIC_AUTH_ENABLED", "false").lower().strip() == "true":
     # check. This may be useful to e.g. white-list "llamasavers.com" but not
     # "llamasavers.production.torchbox.com".
     if "BASIC_AUTH_WHITELISTED_HTTP_HOSTS" in env:
-        BASIC_AUTH_WHITELISTED_HTTP_HOSTS = env[
-            "BASIC_AUTH_WHITELISTED_HTTP_HOSTS"
-        ].split(",")
+        BASIC_AUTH_WHITELISTED_HTTP_HOSTS = env["BASIC_AUTH_WHITELISTED_HTTP_HOSTS"].split(",")
 
 
 # Django REST framework settings
 # Change default settings that enable basic auth.
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
-    )
-}
+REST_FRAMEWORK = {"DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.SessionAuthentication",)}
 
 
 AUTH_USER_MODEL = "users.User"
@@ -692,9 +669,7 @@ AUTH_USER_MODEL = "users.User"
 # django-defender
 # Records failed login attempts and blocks access by username and IP
 # https://django-defender.readthedocs.io/en/latest/
-ENABLE_DJANGO_DEFENDER = (
-    REDIS_URL and env.get("ENABLE_DJANGO_DEFENDER", "True").lower().strip() == "true"
-)
+ENABLE_DJANGO_DEFENDER = REDIS_URL and env.get("ENABLE_DJANGO_DEFENDER", "True").lower().strip() == "true"
 
 if ENABLE_DJANGO_DEFENDER:
     INSTALLED_APPS += ["defender"]
@@ -705,9 +680,7 @@ if ENABLE_DJANGO_DEFENDER:
     DEFENDER_REDIS_NAME = "default"
     DEFENDER_LOGIN_FAILURE_LIMIT_IP = 20
     DEFENDER_LOGIN_FAILURE_LIMIT_USERNAME = 5
-    DEFENDER_COOLOFF_TIME = int(
-        env.get("DJANGO_DEFENDER_COOLOFF_TIME", 600)
-    )  # default to 10 minutes
+    DEFENDER_COOLOFF_TIME = int(env.get("DJANGO_DEFENDER_COOLOFF_TIME", 600))  # default to 10 minutes
     DEFENDER_LOCKOUT_TEMPLATE = "pages/defender/lockout.html"
 
 # Wagtail settings
@@ -762,13 +735,9 @@ WAGTAILDOCS_DOCUMENT_MODEL = "documents.CustomDocument"
 WAGTAILDOCS_SERVE_METHOD = "serve_view"
 
 
-WAGTAIL_FRONTEND_LOGIN_TEMPLATE = (
-    "templates/pages/login_page.html"  # pragma: allowlist secret
-)
+WAGTAIL_FRONTEND_LOGIN_TEMPLATE = "templates/pages/login_page.html"  # pragma: allowlist secret
 
-PASSWORD_REQUIRED_TEMPLATE = (
-    "templates/pages/wagtail/password_required.html"  # pragma: allowlist secret
-)
+PASSWORD_REQUIRED_TEMPLATE = "templates/pages/wagtail/password_required.html"  # pragma: allowlist secret
 
 
 # Default size of the pagination used on the front-end.

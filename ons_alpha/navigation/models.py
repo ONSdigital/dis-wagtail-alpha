@@ -8,18 +8,14 @@ from ons_alpha.utils.fields import StreamField
 
 class LinkBlock(blocks.StructBlock):
     page = blocks.PageChooserBlock()
-    title = blocks.CharBlock(
-        help_text="Leave blank to use the page's own title", required=False
-    )
+    title = blocks.CharBlock(help_text="Leave blank to use the page's own title", required=False)
 
     class Meta:
         template = ("components/navigation/menu_item.html",)
 
 
 class LinkColumnWithHeader(blocks.StructBlock):
-    heading = blocks.CharBlock(
-        required=False, help_text="Leave blank if no header required."
-    )
+    heading = blocks.CharBlock(required=False, help_text="Leave blank if no header required.")
     links = blocks.ListBlock(LinkBlock())
 
     class Meta:

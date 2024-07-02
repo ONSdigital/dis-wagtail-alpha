@@ -22,17 +22,13 @@ class BasePage(ListingFieldsMixin, SocialFieldsMixin, Page):
     class Meta:
         abstract = True
 
-    promote_panels = (
-        Page.promote_panels
-        + ListingFieldsMixin.promote_panels
-        + SocialFieldsMixin.promote_panels
-    )
+    promote_panels = Page.promote_panels + ListingFieldsMixin.promote_panels + SocialFieldsMixin.promote_panels
 
     @cached_property
     def related_pages(self) -> PageQuerySet:
-        """Return a `PageQuerySet` of items related to this page via the
+        """
+        Return a `PageQuerySet` of items related to this page via the
         `PageRelatedPage` through model, and are suitable for display.
-
         The result is ordered to match that specified by editors using
         the 'page_related_pages' `InlinePanel`.
         """

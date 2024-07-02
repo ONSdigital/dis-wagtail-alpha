@@ -32,9 +32,7 @@ LOCAL_DATABASE_USERNAME = "ons_alpha"
 
 
 def dexec(cmd, service="web"):
-    args = shlex.split(
-        f"docker compose exec -T {shlex.quote(service)} bash -c {shlex.quote(cmd)}"
-    )
+    args = shlex.split(f"docker compose exec -T {shlex.quote(service)} bash -c {shlex.quote(cmd)}")
     return subprocess.run(args)
 
 
@@ -149,9 +147,7 @@ def delete_docker_database(c, local_database_name=LOCAL_DATABASE_NAME):
         " - default is 'localhost:8000'"
     }
 )
-def import_data(
-    c, database_filename: str, new_default_site_hostname: str = "localhost:8000"
-):
+def import_data(c, database_filename: str, new_default_site_hostname: str = "localhost:8000"):
     """
     Import local data file to the db container.
     """
@@ -179,9 +175,7 @@ def import_data(
         )
         print(f"Default site's hostname was updated to '{hostname}:{port}'.")
 
-    print(
-        "Any superuser accounts you previously created locally will have been wiped and will need to be recreated."
-    )
+    print("Any superuser accounts you previously created locally will have been wiped and will need to be recreated.")
 
 
 def delete_local_renditions(c, local_database_name=LOCAL_DATABASE_NAME):
@@ -256,6 +250,4 @@ def migrate(c):
     """
     Run database migrations
     """
-    subprocess.run(
-        ["docker", "compose", "run", "--rm", "web", "./manage.py", "migrate"]
-    )
+    subprocess.run(["docker", "compose", "run", "--rm", "web", "./manage.py", "migrate"])

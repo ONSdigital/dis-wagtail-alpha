@@ -57,7 +57,7 @@ class CallToActionSnippet(models.Model):
         FieldPanel("link"),
     ]
 
-    def __str__(self):
+    def __str__(self):  # pylint: disable=invalid-str-returned
         return self.title
 
     def get_link_text(self):

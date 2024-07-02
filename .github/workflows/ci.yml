@@ -1,35 +1,37 @@
 name: CI
 
 on:
-  pull_request:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: "${{ github.head_ref || github.ref }}-${{ github.workflow }}"
+  cancel-in-progress: true
 
 jobs:
-  lint_py:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.12
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version-file: .python-version
       - uses: Gr1N/setup-poetry@v8
         with:
-          poetry-version: 1.7.1
+          poetry-version: "1.8.3"
       - name: Install dependencies
         run: |
           poetry config virtualenvs.create false
           poetry install
-      - name: ruff check
-        run: ruff check --output-format=github .
-      - name: ruff format
-        run: ruff format --check .
-      - name: djhtml
-        run: find ons_alpha/ -name '*.html' | xargs djhtml --check
+      - name: Lint Python
+        run: make lint-py
+      - name: Lint HTML
+        run: make lint-html
 
-  test_python:
+  test-python:
     runs-on: ubuntu-latest
 
     env:
@@ -55,49 +57,49 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version-file: .python-version
       - uses: Gr1N/setup-poetry@v8
         with:
-          poetry-version: 1.7.1
+          poetry-version: "1.8.3"
       - name: Install dependencies
         run: |
           poetry config virtualenvs.create false
           poetry install
-          coverage erase
+          poetry run coverage erase
       - name: Fetch Design System templates
         run: make load-design-system-templates
       - name: collectstatic
-        run: ./manage.py collectstatic --verbosity 0 --noinput --clear
+        run: poetry run ./manage.py collectstatic --verbosity 0 --noinput --clear
       - name: System checks
-        run: ./manage.py check
+        run: poetry run ./manage.py check
       - name: Check for missing migrations
-        run: ./manage.py makemigrations --check --noinput
+        run: poetry run ./manage.py makemigrations --check --noinput
       - name: Create cache table
-        run: ./manage.py createcachetable
+        run: poetry run ./manage.py createcachetable
       - name: Test
-        run: coverage run ./manage.py test --parallel
+        run: poetry run coverage run ./manage.py test --parallel
       - name: Report coverage
-        run: coverage combine && coverage report
+        run: poetry run coverage combine && poetry run coverage report
 
   docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.12
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version-file: .python-version
       - uses: Gr1N/setup-poetry@v8
         with:
-          poetry-version: 1.7.1
+          poetry-version: "1.8.3"
       - name: Install dependencies
         run: |
           poetry config virtualenvs.create false
           poetry install
       - name: Build documentation
-        run: mkdocs build
+        run: poetry run mkdocs build
 
-  build_docker:
+  docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

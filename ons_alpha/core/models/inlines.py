@@ -10,7 +10,9 @@ __all__ = [
 
 
 class PageRelatedPage(Orderable):
-    """Related pages."""
+    """
+    Related pages.
+    """
 
     parent = ParentalKey(Page, related_name="page_related_pages")
     page = models.ForeignKey(

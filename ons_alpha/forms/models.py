@@ -37,7 +37,9 @@ class FormPage(AbstractEmailForm, BasePage):
     )
 
     def get_form_parameters(self):
-        """Pass our 'action_text' to the `form_builder`."""
+        """
+        Pass our 'action_text' to the `form_builder`.
+        """
         return {"action_text": self.action_text}
 
     content_panels = BasePage.content_panels + [

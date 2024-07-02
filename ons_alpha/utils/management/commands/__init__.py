@@ -1,5 +1,5 @@
-"""Django creates redundant migrations for Django model changes that do not
-alter the database.
+"""
+Django creates redundant migrations for Django model changes that do not alter the database.
 
 This patches the Django migration machinery to ignore various attrs.
 
@@ -44,17 +44,17 @@ for attr in MIGRATION_IGNORE_RELATED_FIELD_ATTRS:
 
 
 def patch_ignored_model_attrs(cls):
-    for attr in MIGRATION_IGNORE_MODEL_ATTRS:
-        if attr in cls.ALTER_OPTION_KEYS:
-            cls.ALTER_OPTION_KEYS.remove(attr)
+    for attribute in MIGRATION_IGNORE_MODEL_ATTRS:
+        if attribute in cls.ALTER_OPTION_KEYS:
+            cls.ALTER_OPTION_KEYS.remove(attribute)
 
 
 def patch_field_deconstruct(old_func):
     @wraps(old_func)
     def deconstruct_with_ignored_attrs(self):
         name, path, args, kwargs = old_func(self)
-        for attr in MIGRATION_IGNORE_FIELD_ATTRS:
-            kwargs.pop(attr, None)
+        for attribute in MIGRATION_IGNORE_FIELD_ATTRS:
+            kwargs.pop(attribute, None)
         return name, path, args, kwargs
 
     return deconstruct_with_ignored_attrs
@@ -64,8 +64,8 @@ def patch_file_field_deconstruct(old_func):
     @wraps(old_func)
     def deconstruct_with_ignored_attrs(self):
         name, path, args, kwargs = old_func(self)
-        for attr in MIGRATION_IGNORE_FILE_FIELD_ATTRS:
-            kwargs.pop(attr, None)
+        for attribute in MIGRATION_IGNORE_FILE_FIELD_ATTRS:
+            kwargs.pop(attribute, None)
         return name, path, args, kwargs
 
     return deconstruct_with_ignored_attrs
@@ -75,8 +75,8 @@ def patch_related_field_deconstruct(old_func):
     @wraps(old_func)
     def deconstruct_with_ignored_attrs(self):
         name, path, args, kwargs = old_func(self)
-        for attr in MIGRATION_IGNORE_RELATED_FIELD_ATTRS:
-            kwargs.pop(attr, None)
+        for attribute in MIGRATION_IGNORE_RELATED_FIELD_ATTRS:
+            kwargs.pop(attribute, None)
         return name, path, args, kwargs
 
     return deconstruct_with_ignored_attrs

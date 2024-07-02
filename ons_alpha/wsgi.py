@@ -1,4 +1,5 @@
-"""WSGI config for ons_alpha project.
+"""
+WSGI config for ons_alpha project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

@@ -5,8 +5,8 @@ from wagtail.contrib.forms.forms import BaseForm as WagtailBaseForm
 
 
 class BaseFormMixin(tbxforms_forms.TbxFormsMixin):
-    """A base class that should be used/inherited by all forms.
-
+    """
+    A base class that should be used/inherited by all forms.
     Outputs a standard form with the <form> tag.
     """
 
@@ -16,8 +16,10 @@ class BaseFormMixin(tbxforms_forms.TbxFormsMixin):
 
 
 class BaseWagtailForm(BaseFormMixin, WagtailBaseForm):
-    """For forms built by `wagtail.contrib.forms` where we want to utilise our
-    FormPage.action_text as the submit button text."""
+    """
+    For forms built by `wagtail.contrib.forms` where we want to utilise our
+    FormPage.action_text as the submit button text.
+    """
 
     def __init__(self, *args, **kwargs):
         self.action_text = kwargs.pop("action_text", None)
@@ -35,9 +37,9 @@ class BaseWagtailForm(BaseFormMixin, WagtailBaseForm):
 
 
 class WagtailFormBuilder(tbxforms_forms.BaseWagtailFormBuilder):
-    """Instructs a Page model to use our `BaseWagtailForm` form variant, as
-    well as inheriting some field/widget definitions from
-    `BaseWagtailFormBuilder`.
+    """
+    Instructs a Page model to use our `BaseWagtailForm` form variant, as well
+    as inheriting some field/widget definitions from `BaseWagtailFormBuilder`.
 
     Usage: Add `form_builder = WagtailFormBuilder` to your form page model.
     """

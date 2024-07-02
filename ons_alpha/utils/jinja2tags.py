@@ -10,7 +10,7 @@ from ons_alpha.navigation.templatetags.navigation_tags import (
 from ons_alpha.utils.templatetags.util_tags import social_image, social_text
 
 
-class UtilsExtension(Extension):
+class UtilsExtension(Extension):  # pylint: disable=abstract-method
     def __init__(self, environment):
         super().__init__(environment)
 

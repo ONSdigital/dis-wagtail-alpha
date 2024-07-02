@@ -10,9 +10,7 @@ class LinkFields(models.Model):
     <a href="{{ obj.get_link_url }}">{{ obj.get_link_text }}</a>
     """
 
-    link_page = models.ForeignKey(
-        "wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL
-    )
+    link_page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
     link_url = models.URLField(blank=True)
     link_text = models.CharField(blank=True, max_length=255)
 
@@ -23,34 +21,22 @@ class LinkFields(models.Model):
         if not self.link_page and not self.link_url:
             raise ValidationError(
                 {
-                    "link_url": ValidationError(
-                        "You must specify link page or link url."
-                    ),
-                    "link_page": ValidationError(
-                        "You must specify link page or link url."
-                    ),
+                    "link_url": ValidationError("You must specify link page or link url."),
+                    "link_page": ValidationError("You must specify link page or link url."),
                 }
             )
 
         if self.link_page and self.link_url:
             raise ValidationError(
                 {
-                    "link_url": ValidationError(
-                        "You must specify link page or link url. You can't use both."
-                    ),
-                    "link_page": ValidationError(
-                        "You must specify link page or link url. You can't use both."
-                    ),
+                    "link_url": ValidationError("You must specify link page or link url. You can't use both."),
+                    "link_page": ValidationError("You must specify link page or link url. You can't use both."),
                 }
             )
 
         if not self.link_page and not self.link_text:
             raise ValidationError(
-                {
-                    "link_text": ValidationError(
-                        "You must specify link text, if you use the link url field."
-                    )
-                }
+                {"link_text": ValidationError("You must specify link text, if you use the link url field.")}
             )
 
     def get_link_text(self):
