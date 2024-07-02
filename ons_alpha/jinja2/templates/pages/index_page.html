@@ -1,5 +1,7 @@
 {% extends "templates/base_page.html" %}
 
+{% from "components/card/_macro.njk" import onsCard %}
+
 {% block main %}
     <h1>{{ page.title }}</h1>
 
@@ -9,11 +11,10 @@
 
     {% if subpages %}
         <div class="grid">
-            {% if subpages.object_list.exists %}
-                {% from "components/card/_macro.njk" import onsCard %}
+            {% if subpages.object_list %}
                 <div class="ons-container">
                     <div class="ons-grid ons-grid--column@xxs@s">
-                        {% for subpage in subpages.object_list.specific() %}
+                        {% for subpage in subpages %}
                             {%- set card_text -%}
                                 {% if subpage.listing_summary or subpage.introduction %}
                                     {% if subpage.listing_summary %}{{ subpage.listing_summary }}{% else %}{{ subpage.introduction }}{% endif %}
