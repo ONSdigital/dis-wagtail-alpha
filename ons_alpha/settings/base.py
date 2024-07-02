@@ -761,7 +761,7 @@ WAGTAIL_FRONTEND_LOGIN_TEMPLATE = (
     "templates/pages/login_page.html"  # pragma: allowlist secret
 )
 
-PASSWORD_REQUIRED_TEMPLATE = (
+WAGTAIL_PASSWORD_REQUIRED_TEMPLATE = (
     "templates/pages/wagtail/password_required.html"  # pragma: allowlist secret
 )
 
