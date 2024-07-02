@@ -36,5 +36,6 @@
 {#{% endblock header %}#}
 
 {% block preMain %}
+    {{ super() }}
     {% include "templates/components/navigation/breadcrumbs.html" %}
 {% endblock %}

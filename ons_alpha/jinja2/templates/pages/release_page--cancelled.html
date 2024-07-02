@@ -1,0 +1,46 @@
+{% extends "templates/base_page.html" %}
+{% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
+
+{% block main %}
+    <div class="ons-u-fs-m ons-u-mt-s ons-u-pb-xxs release__document-type">Release</div>
+    <h1 class="ons-u-fs-xxxl ons-u-mb-m">
+        <span>{{ page.title }}</span>
+    </h1>
+
+    <div class="ons-grid ons-u-ml-no">
+        <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-col-12@s ons-u-p-no">
+            <span class="ons-u-fs-r--b">{{ _("Release date") }}:</span>
+            <span class="ons-u-nowrap">{{ _("Cancelled") }}</span>
+        </div>
+    </div>
+
+    <div class="ons-u-pt-s ons-u-pb-m@m ons-u-pb-s@xxs@m">
+        {% from "components/panel/_macro.njk" import onsPanel %}
+    {# fmt:off #}
+        {{
+            onsPanel({
+                "body": page.notice
+            })
+        }}
+    {# fmt:on #}
+    </div>
+
+    <div class="ons-grid ons-js-toc-container ons-u-ml-no">
+        <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
+            {# fmt:off #}
+            {{-
+                onsTableOfContents({
+                    "title": 'Contents',
+                    "ariaLabel": 'Pages in this guide',
+                    "itemsList": toc
+                })
+            }}
+            {# fmt:on #}
+        </div>
+        <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+            <section id="summary">
+                {{ page.summary|richtext() }}
+            </section>
+        </div>
+    </div>
+{% endblock %}

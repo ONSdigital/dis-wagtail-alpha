@@ -7,9 +7,7 @@ from wagtail.snippets.models import register_snippet
 from ons_alpha.utils.fields import StreamField
 
 
-__all__ = [
-    "CallToActionSnippet",
-]
+__all__ = ["CallToActionSnippet", "ContactDetails"]
 
 
 @register_snippet
@@ -82,3 +80,22 @@ class CallToActionSnippet(models.Model):
             return block.value["url"]
 
         return block.value["page"].get_url()
+
+
+@register_snippet
+class ContactDetails(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=255, blank=True)
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("email"),
+        FieldPanel("phone"),
+    ]
+
+    class Meta:
+        verbose_name_plural = "contact details"
+
+    def __str__(self):
+        return str(self.name)

@@ -2,7 +2,6 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.template.response import TemplateResponse
 from django.utils.cache import add_never_cache_headers, patch_cache_control
-from wagtail.contrib.search_promotions.models import Query
 from wagtail.models import Page
 
 from ons_alpha.utils.cache import get_default_cache_control_kwargs
@@ -13,17 +12,7 @@ def search(request):
     page = request.GET.get("page", 1)
 
     # Search
-    if search_query:
-        search_results = Page.objects.live().search(
-            search_query,
-            operator="and",
-        )
-        query = Query.get(search_query)
-
-        # Record hit
-        query.add_hit()
-    else:
-        search_results = Page.objects.none()
+    search_results = Page.objects.live().search(search_query, operator="and") if search_query else Page.objects.none()
 
     # Pagination
     search_results = Paginator(search_results, settings.DEFAULT_PER_PAGE).get_page(page)

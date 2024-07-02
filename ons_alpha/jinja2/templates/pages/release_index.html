@@ -1,0 +1,33 @@
+{% extends "templates/base_page.html" %}
+
+{% block main %}
+    <h1>{{ _("Release calendar") }}</h1>
+
+    {% if releases  %}
+        {% with count=releases.paginator.count %}
+            <p>{{ count }} result{{ count|pluralize }} found.</p>
+        {% endwith %}
+
+        {% set documents=[] %}
+            {% for release in releases %}
+                {% set title %}{% if release.listing_title %}{{ release.listing_title }}{% else %}{{ release.title }}{% endif %}{% endset %}
+                {% set description %}
+                    <strong>{{ _("Release date") }}:</strong> {{ release.release_date|date("j F Y g:ia") }} | {{ release.status_label }}
+                {% endset %}
+                {# fmt:off #}
+                {% do documents.append({
+                        "url": pageurl(release),
+                        "title": title,
+                        "description": description
+                    })
+                %}
+                {# fmt:on #}
+            {% endfor %}
+
+            {% from "components/document-list/_macro.njk" import onsDocumentList %}
+            {{ onsDocumentList({"documents": documents}) }}
+
+        {# TODO: pagination #}
+        {% endif %}
+
+    {% endblock %}

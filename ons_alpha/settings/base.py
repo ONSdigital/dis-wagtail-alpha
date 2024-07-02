@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "ons_alpha.home",
     "ons_alpha.images",
     "ons_alpha.navigation",
+    "ons_alpha.release_calendar",
     "ons_alpha.search",
     "ons_alpha.standardpages",
     "ons_alpha.users",
@@ -94,7 +95,6 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",  # Must be before `django.contrib.staticfiles`
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
-    "wagtailaccessibility",
     "django_jinja",
 ]
 
@@ -285,9 +285,7 @@ WHITENOISE_ROOT = BASE_DIR / "public"
 STATICFILES_DIRS = [
     # "static_compiled" is a folder used by the front-end tooling
     # to output compiled static assets.
-    PROJECT_DIR
-    / "jinja2"
-    / "assets"
+    (PROJECT_DIR / "jinja2" / "assets")
 ]
 
 
@@ -337,7 +335,7 @@ if "AWS_STORAGE_BUCKET_NAME" in env:
     INSTALLED_APPS = INSTALLED_APPS + ["storages", "wagtail_storages"]
 
     # https://docs.djangoproject.com/en/stable/ref/settings/#std-setting-STORAGES
-    STORAGES["default"]["BACKEND"] = "storages.backends.s3boto3.S3Boto3Storage"
+    STORAGES["default"]["BACKEND"] = "storages.backends.s3.S3Storage"
 
     AWS_STORAGE_BUCKET_NAME = env["AWS_STORAGE_BUCKET_NAME"]
 
@@ -707,21 +705,13 @@ WAGTAILIMAGES_MAX_IMAGE_PIXELS = int(pixel_limit) if pixel_limit else 10_000_000
 # We normally don't want editors to use the images
 # in the rich text editor, for example.
 # They should use the image stream block instead
+RICH_TEXT_BASIC = ["bold", "italic", "link", "ol", "ul", "document-link"]
+RICH_TEXT_FULL = ["h3", "h4"] + RICH_TEXT_BASIC
+
 WAGTAILADMIN_RICH_TEXT_EDITORS = {
     "default": {
         "WIDGET": "wagtail.admin.rich_text.DraftailRichTextArea",
-        "OPTIONS": {
-            "features": [
-                "bold",
-                "italic",
-                "h3",
-                "h4",
-                "ol",
-                "ul",
-                "link",
-                "document-link",
-            ]
-        },
+        "OPTIONS": {"features": RICH_TEXT_FULL},
     }
 }
 
@@ -737,7 +727,7 @@ WAGTAILDOCS_SERVE_METHOD = "serve_view"
 
 WAGTAIL_FRONTEND_LOGIN_TEMPLATE = "templates/pages/login_page.html"  # pragma: allowlist secret
 
-PASSWORD_REQUIRED_TEMPLATE = "templates/pages/wagtail/password_required.html"  # pragma: allowlist secret
+WAGTAIL_PASSWORD_REQUIRED_TEMPLATE = "templates/pages/wagtail/password_required.html"  # pragma: allowlist secret
 
 
 # Default size of the pagination used on the front-end.
