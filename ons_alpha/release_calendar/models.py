@@ -45,9 +45,7 @@ class ReleasePageRelatedLink(Orderable, LinkFields):
     Related links. e.g. https://www.ons.gov.uk/releases/welshlanguagecensus2021inwales
     """
 
-    parent = ParentalKey(
-        "ReleasePage", related_name="related_links", on_delete=models.CASCADE
-    )
+    parent = ParentalKey("ReleasePage", related_name="related_links", on_delete=models.CASCADE)
 
 
 class ReleasePage(BasePage):
@@ -55,9 +53,7 @@ class ReleasePage(BasePage):
 
     parent_page_types = ["ReleaseIndex"]
 
-    status = models.CharField(
-        choices=ReleaseStatus.choices, default=ReleaseStatus.UPCOMING, max_length=32
-    )
+    status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.UPCOMING, max_length=32)
 
     summary = RichTextField(features=settings.RICH_TEXT_BASIC)
     # note: this is mocked for the time being. The data would come automatically when the full release
@@ -105,13 +101,7 @@ class ReleasePage(BasePage):
         super().clean()
 
         if self.status == ReleaseStatus.CANCELLED and not self.notice:
-            raise ValidationError(
-                {
-                    "notice": _(
-                        "The notice field is required when the release is cancelled"
-                    )
-                }
-            )
+            raise ValidationError({"notice": _("The notice field is required when the release is cancelled")})
 
     @property
     def status_label(self) -> str:
@@ -120,7 +110,7 @@ class ReleasePage(BasePage):
     def get_template(self, request, *args, **kwargs):
         if self.status == ReleaseStatus.UPCOMING:
             return "templates/pages/release_page--upcoming.html"
-        elif self.status == ReleaseStatus.CANCELLED:
+        if self.status == ReleaseStatus.CANCELLED:
             return "templates/pages/release_page--cancelled.html"
 
         return super().get_template(request, *args, **kwargs)
@@ -148,15 +138,13 @@ class ReleasePage(BasePage):
         items = [{"url": "#summary", "text": _("Summary")}]
 
         if self.status == ReleaseStatus.PUBLISHED:
-            for block in self.content:
+            for block in self.content:  # pylint: disable=not-an-iterable
                 items += block.block.to_table_of_contents_items(block.value)
 
             if self.is_accredited:
                 items += [{"url": "#about-the-data", "text": _("About the data")}]
 
             if self.related_links_for_context:
-                items += [
-                    {"url": "#links", "text": _("You might also be interested in")}
-                ]
+                items += [{"url": "#links", "text": _("You might also be interested in")}]
 
         return items

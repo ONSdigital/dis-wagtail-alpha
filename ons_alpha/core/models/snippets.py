@@ -98,4 +98,4 @@ class ContactDetails(models.Model):
         verbose_name_plural = "contact details"
 
     def __str__(self):
-        return self.name
+        return str(self.name)

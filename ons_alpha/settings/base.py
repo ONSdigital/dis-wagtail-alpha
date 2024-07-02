@@ -285,9 +285,7 @@ WHITENOISE_ROOT = BASE_DIR / "public"
 STATICFILES_DIRS = [
     # "static_compiled" is a folder used by the front-end tooling
     # to output compiled static assets.
-    PROJECT_DIR
-    / "jinja2"
-    / "assets"
+    PROJECT_DIR / "jinja2" / "assets"
 ]
 
 
@@ -729,9 +727,7 @@ WAGTAILDOCS_SERVE_METHOD = "serve_view"
 
 WAGTAIL_FRONTEND_LOGIN_TEMPLATE = "templates/pages/login_page.html"  # pragma: allowlist secret
 
-WAGTAIL_PASSWORD_REQUIRED_TEMPLATE = (
-    "templates/pages/wagtail/password_required.html"  # pragma: allowlist secret
-)
+WAGTAIL_PASSWORD_REQUIRED_TEMPLATE = "templates/pages/wagtail/password_required.html"  # pragma: allowlist secret
 
 
 # Default size of the pagination used on the front-end.

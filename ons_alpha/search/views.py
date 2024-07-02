@@ -12,13 +12,7 @@ def search(request):
     page = request.GET.get("page", 1)
 
     # Search
-    if search_query:
-        search_results = Page.objects.live().search(
-            search_query,
-            operator="and",
-        )
-    else:
-        search_results = Page.objects.none()
+    search_results = Page.objects.live().search(search_query, operator="and") if search_query else Page.objects.none()
 
     # Pagination
     search_results = Paginator(search_results, settings.DEFAULT_PER_PAGE).get_page(page)
