@@ -95,7 +95,6 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",  # Must be before `django.contrib.staticfiles`
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
-    "wagtailaccessibility",
     "django_jinja",
 ]
 
@@ -338,7 +337,7 @@ if "AWS_STORAGE_BUCKET_NAME" in env:
     INSTALLED_APPS = INSTALLED_APPS + ["storages", "wagtail_storages"]
 
     # https://docs.djangoproject.com/en/stable/ref/settings/#std-setting-STORAGES
-    STORAGES["default"]["BACKEND"] = "storages.backends.s3boto3.S3Boto3Storage"
+    STORAGES["default"]["BACKEND"] = "storages.backends.s3.S3Storage"
 
     AWS_STORAGE_BUCKET_NAME = env["AWS_STORAGE_BUCKET_NAME"]
 
@@ -730,7 +729,9 @@ WAGTAILDOCS_SERVE_METHOD = "serve_view"
 
 WAGTAIL_FRONTEND_LOGIN_TEMPLATE = "templates/pages/login_page.html"  # pragma: allowlist secret
 
-PASSWORD_REQUIRED_TEMPLATE = "templates/pages/wagtail/password_required.html"  # pragma: allowlist secret
+WAGTAIL_PASSWORD_REQUIRED_TEMPLATE = (
+    "templates/pages/wagtail/password_required.html"  # pragma: allowlist secret
+)
 
 
 # Default size of the pagination used on the front-end.
