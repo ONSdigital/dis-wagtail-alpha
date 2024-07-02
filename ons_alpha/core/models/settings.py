@@ -20,9 +20,7 @@ class SocialMediaSettings(BaseSiteSetting):
         blank=True,
         help_text="Your Twitter username without the @, e.g. katyperry",
     )
-    facebook_app_id = models.CharField(
-        max_length=255, blank=True, help_text="Your Facebook app ID."
-    )
+    facebook_app_id = models.CharField(max_length=255, blank=True, help_text="Your Facebook app ID.")
     default_sharing_text = models.CharField(
         max_length=255,
         blank=True,
@@ -55,9 +53,7 @@ class SystemMessagesSettings(BaseSiteSetting):
         default="<p>You may be trying to find a page that doesn&rsquo;t exist or has been moved.</p>",
     )
 
-    panels = [
-        MultiFieldPanel([FieldPanel("title_404"), FieldPanel("body_404")], "404 page")
-    ]
+    panels = [MultiFieldPanel([FieldPanel("title_404"), FieldPanel("body_404")], "404 page")]
 
 
 @register_setting(icon="view")

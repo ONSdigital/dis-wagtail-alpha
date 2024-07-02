@@ -22,11 +22,7 @@ class BasePage(ListingFieldsMixin, SocialFieldsMixin, Page):
     class Meta:
         abstract = True
 
-    promote_panels = (
-        Page.promote_panels
-        + ListingFieldsMixin.promote_panels
-        + SocialFieldsMixin.promote_panels
-    )
+    promote_panels = Page.promote_panels + ListingFieldsMixin.promote_panels + SocialFieldsMixin.promote_panels
 
     @cached_property
     def related_pages(self) -> PageQuerySet:

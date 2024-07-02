@@ -16,7 +16,6 @@ node_modules/
 /.idea/
 .vscode
 coverage
-.python-version
 
 # Distribution / packaging
 .Python
@@ -47,7 +46,10 @@ coverage.xml
 /database_dumps
 dpl-rendered-patterns
 
+# DS
 /ons_alpha/jinja2/assets/styles/print.css
 /ons_alpha/jinja2/components
 /ons_alpha/jinja2/layout
 
+# mkdocs
+/site

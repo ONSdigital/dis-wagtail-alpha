@@ -1,6 +1,6 @@
 # Most of the settings are set in base.py, that's why this file appears fairly
 # empty.
-from .base import *  # noqa: F403
+from .base import *  # noqa: F403 # pylint: disable=wildcard-import,unused-wildcard-import
 
 
 # Explicitly disable debug mode in production

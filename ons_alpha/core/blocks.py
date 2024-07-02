@@ -34,9 +34,7 @@ class TableBlock(WagtailTableBlock):
         if template and value:
             table_header = (
                 value["data"][0]
-                if value.get("data", None)
-                and len(value["data"]) > 0
-                and value.get("first_row_is_table_header", False)
+                if value.get("data", None) and len(value["data"]) > 0 and value.get("first_row_is_table_header", False)
                 else None
             )
             first_col_is_header = value.get("first_col_is_header", False)
@@ -53,9 +51,7 @@ class TableBlock(WagtailTableBlock):
             else:
                 data = value.get("data", [])
 
-            config["trs"] = [
-                {"tds": [{"value": column} for column in row]} for row in data
-            ]
+            config["trs"] = [{"tds": [{"value": column} for column in row]} for row in data]
 
             new_context.update(
                 {
@@ -70,8 +66,8 @@ class TableBlock(WagtailTableBlock):
                 }
             )
             return render_to_string(template, new_context)
-        else:
-            return self.render_basic(value or "", context=context)
+
+        return self.render_basic(value or "", context=context)
 
     class Meta:
         template = "templates/components/streamfield/table_block.html"
@@ -84,9 +80,7 @@ class TypedTableBlock(blocks.StructBlock):
             ("numeric", blocks.FloatBlock()),
             (
                 "rich_text",
-                blocks.RichTextBlock(
-                    features=["bold", "italic", "link", "ol", "ul", "document-link"]
-                ),
+                blocks.RichTextBlock(features=["bold", "italic", "link", "ol", "ul", "document-link"]),
             ),
         ]
     )
@@ -99,9 +93,7 @@ class TypedTableBlock(blocks.StructBlock):
             config["caption"] = caption
 
         config["ths"] = [{"value": column["heading"]} for column in table.columns]
-        config["trs"] = [
-            {"tds": [{"value": column} for column in row]} for row in table.rows
-        ]
+        config["trs"] = [{"tds": [{"value": column} for column in row]} for row in table.rows]
         context["table_config"] = config
         return context
 

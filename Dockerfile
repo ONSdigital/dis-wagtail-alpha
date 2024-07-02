@@ -5,7 +5,7 @@
 FROM python:3.12-slim as production
 
 ARG POETRY_INSTALL_ARGS="--without=dev"
-ARG POETRY_VERSION=1.7.1
+ARG POETRY_VERSION=1.8.3
 
 # Install dependencies in a virtualenv
 ENV VIRTUAL_ENV=/venv

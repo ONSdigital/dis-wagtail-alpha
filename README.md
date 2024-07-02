@@ -12,12 +12,12 @@ This project contains technical documentation written in Markdown in the `/docs`
 You can view it using `mkdocs` by running:
 
 ```bash
-mkdocs serve
+poetry run mkdocs serve
 ```
 
 The documentation will be available at: http://localhost:8001/
 
-# Setting up a local build
+# Docker Development Setup
 
 This repository includes `docker-compose` configuration for running the project in local Docker containers,
 and a fabfile for provisioning and managing this.
@@ -82,28 +82,6 @@ If you only wish to run the frontend or backend tooling, the commands `honcho` r
 
 Upon first starting the container, the static files may not exist, or may be out of date. To resolve this, simply run `npm run build`.
 
-### Frontend tooling
-
-Here are the common commands:
-
-```bash
-# Install front-end dependencies.
-npm install
-# Start the Webpack build in watch mode, without live-reload.
-npm run start
-# Start the Webpack server build on port 3000 only with live-reload.
-npm run start:reload
-# Do a one-off Webpack development build.
-npm run build
-# Do a one-off Webpack production build.
-npm run build:prod
-```
-
-There are two ways to run the frontend tooling:
-
-- In Docker. This is the default, most portable and secure, but much slower on macOS.
-- Or run npm commands from a terminal on your local machine. Create a `.env` file in the project root (see `.env.example`) with `FRONTEND=local`. `fab start` will no longer start a `frontend` container. Now, when running `fab start`, Docker won't attempt to bind to the ports needed for the frontend dev server, meaning they can be run locally. All the tooling still remains available in the container. Note that you will need to run `honcho start web` rather than `honcho start` once you have connected to the docker container (see above).
-
 ## Installing python packages
 
 Python packages can be installed using `poetry` in the web container:
@@ -135,3 +113,47 @@ Then, exit the terminal and connect again using `fab sh`.
 If you run `fab build`, or the container is rebuilt for some other reason, these packages will need re-installing.
 
 If a package is always needed (eg a Python package requires a system dependency), this should be added to the `Dockerfile`.
+
+
+## Local Development Setup
+
+This project uses `poetry` for dependency management and `make` for common development tasks.
+
+### Pre-requisites
+
+Ensure you have the following installed:
+
+1. **Python**: Version specified in `.python-version`. We recommend using [pyenv](https://github.com/pyenv/pyenv) for
+   managing Python versions.
+2. **[Poetry](https://python-poetry.org/)**: This is used to manage package dependencies and virtual
+   environments.
+
+### Installation
+
+1. Clone the repository:
+
+   ```sh
+   git clone https://github.com/torchbox/ons-alpha.git
+   cd ons-alpha
+   ```
+
+2. Install dependencies:
+   ```sh
+   poetry install
+   ```
+
+### Linting and Formatting
+
+This project uses `Ruff`, `pylint`, and `black` for linting and formatting Python code and `djhtml` for HTML linting.
+
+- To check linting issues:
+
+  ```sh
+  make lint
+  ```
+
+- To format the code:
+
+  ```sh
+  make format
+  ```

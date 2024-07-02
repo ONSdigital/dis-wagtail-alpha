@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "ons_alpha"
 version = "0.1.0"
-description = "ONS Alpha Wagtail site"
-authors = ["Torchbox <hello@torchbox.com>"]
+description = "ONS Wagtail Alpha"
+authors = ["ONSdigital"]
 
 [tool.poetry.dependencies]
+pylint-django = "^2.0.0"
 python = "~3.12"
 dj-database-url = "~0.5"
 django = "~4.2"
@@ -42,37 +43,61 @@ pudb = "^2020.1"
 pymdown-extensions = "9.3"
 tblib = "^3.0.0"
 ruff = "^0.4.10"
+pylint = "^3.2.4"
+black = "^24.4.2"
 
 [build-system]
 requires = ["poetry>=1,<2"]
 build-backend = "poetry.masonry.api"
 
+[tool.black]
+line_length = 120
+target-version = ['py312']
+exclude = '''
+    /(
+        .+/migrations
+      | venv
+      | \.venv
+      | \.git
+    )/
+'''
+
 [tool.ruff]
-target-version = "py312"
+line-length = 120
+indent-width = 4
 
 [tool.ruff.lint]
-extend-select = [
-    "B",    # flake8-bugbear
-    "C4",   # flake8-comprehensions
-    "DJ",   # flake8-django
-    "E",    # pycodestyle errors
-    "F",    # pyflakes
-    "I",    # isort
-    "INT",  # flake8-gettext
-    "PIE",  # flake8-pie
-    "PGH",  # pygrep-hooks
-    "S",    # flake8-bandit
-    "SIM",  # flake8-simplify
-    "W",    # pycodestyle warnings
-    "YTT",  # flake8-2020
-    "UP",   # pyupgrade
-    "RUF100",  # unused noqa
+select = [
+    # Enabling ALL is not recommended it will implicitly enable new rules after upgrade.
+    # "ALL",
+
+    # Ruff rules: https://docs.astral.sh/ruff/rules/
+
+    "E",      # pycodestyle erros
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "UP",     # pyupgrade
+    "I",      # isort
+    "DJ",     # flake8-django
+    "B",      # flake8-bugbear
+    "SIM",    # flake8-simplify
+    "C4",     # flake8-comprehensions
+    "S",      # flake8-bandit
+    "C90",    # mccabe
+    "RUF",    # Ruff specific rules
 ]
 
-extend-ignore = [
-    "E501",  # no line length errors
+ignore = [
+    # Disable line length check as it is handled by black
+    # :TODO: Remove E501 when ruff supports all black rules
+    "E501",
+    # indentation contains tabs
+    "W191",
+    # Ruff checks
+    "RUF005",
+    "RUF012",
+    "RUF003"
 ]
-fixable = ["C4", "E", "F", "I", "UP"]
 
 [tool.ruff.lint.per-file-ignores]
 "fabfile.py" = ["S603", "S607", "T201", "S101", "S608"]
@@ -96,3 +121,7 @@ omit = [
 
 [tool.coverage.report]
 show_missing = true
+
+[tool.poetry.plugins.dotenv]
+ignore = "false"
+location = ".env"

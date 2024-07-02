@@ -11,9 +11,7 @@ MODE_TOGGLE = "__toggle"
 
 
 @register.simple_tag(takes_context=True)
-def querystring_modify(
-    context, base=None, remove_blanks=False, remove_utm=True, **kwargs
-):
+def querystring_modify(context, base=None, remove_blanks=False, remove_utm=True, **kwargs):  # noqa: C901
     """
     Renders a URL and IRI encoded querystring (e.g. "q=Hello%20World&amp;category=1") that is safe to include in links.
     The querystring for the current request (``request.GET``) is used as a base by default, or an alternative

@@ -77,9 +77,7 @@ private_urlpatterns = decorate_urlpatterns(private_urlpatterns, never_cache)
 # (http vs https).
 urlpatterns = decorate_urlpatterns(
     urlpatterns,
-    vary_on_headers(
-        "Cookie", "X-Requested-With", "X-Forwarded-Proto", "Accept-Encoding"
-    ),
+    vary_on_headers("Cookie", "X-Requested-With", "X-Forwarded-Proto", "Accept-Encoding"),
 )
 
 # Join private and public URLs.
