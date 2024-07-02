@@ -1,14 +1,10 @@
 from django.db import models
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
-from wagtail.blocks import RichTextBlock
 
-from ons_alpha.core.blocks import (
-    HeadingBlock,
-    PanelBlock,
-    TableBlock,
-)
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
+
+from .blocks import BulletinStoryBlock
 
 
 class BulletinPage(BasePage):
@@ -20,15 +16,7 @@ class BulletinPage(BasePage):
     release_date = models.DateField()
     next_release_date = models.DateField()
 
-    body = StreamField(
-        [
-            ("heading", HeadingBlock()),
-            ("rich_text", RichTextBlock()),
-            ("panel", PanelBlock()),
-            ("table", TableBlock()),
-        ],
-        use_json_field=True,
-    )
+    body = StreamField(BulletinStoryBlock(), use_json_field=True)
 
     content_panels = BasePage.content_panels + [
         FieldPanel("summary"),
