@@ -71,6 +71,3 @@ class ContentSectionBlock(blocks.StructBlock):
 
 class ReleaseStoryBlock(blocks.StreamBlock):
     release_content = ContentSectionBlock()
-
-    class Meta:
-        template = "templates/components/streamfield/stream_block.html"
