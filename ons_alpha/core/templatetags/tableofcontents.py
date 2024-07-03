@@ -6,7 +6,7 @@ from django_jinja import library
 @library.global_function
 @library.render_with("templates/components/navigation/table-of-contents.html")
 @jinja2.pass_context
-def table_of_contents(context, page, attr_name, options=None):
+def table_of_contents(context, page, attr_name, options=None):  # pylint: disable=unused-argument
     if options is None:
         options = {}
 

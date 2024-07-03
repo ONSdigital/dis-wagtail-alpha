@@ -84,9 +84,7 @@ class SubpageMixin:
     PAGE_SIZE = 24
 
     def get_paginator_page(self, request):
-        paginator = Paginator(
-            self.get_children().live().public().specific(), per_page=self.PAGE_SIZE
-        )
+        paginator = Paginator(self.get_children().live().public().specific(), per_page=self.PAGE_SIZE)
         try:
             return paginator.page(int(request.GET.get("p", 1)))
         except (EmptyPage, ValueError) as e:
