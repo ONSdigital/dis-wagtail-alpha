@@ -141,10 +141,13 @@ class ReleasePage(BasePage):
             for block in self.content:  # pylint: disable=not-an-iterable
                 items += block.block.to_table_of_contents_items(block.value)
 
-            if self.is_accredited:
-                items += [{"url": "#about-the-data", "text": _("About the data")}]
+            if self.contact_details_id:
+                items += [{"url": "#contact-details", "text": _("Contact details")}]
 
-            if self.related_links_for_context:
-                items += [{"url": "#links", "text": _("You might also be interested in")}]
+        if self.is_accredited:
+            items += [{"url": "#about-the-data", "text": _("About the data")}]
+
+        if self.status == ReleaseStatus.PUBLISHED and self.related_links_for_context:
+            items += [{"url": "#links", "text": _("You might also be interested in")}]
 
         return items
