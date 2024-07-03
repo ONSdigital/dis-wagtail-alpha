@@ -5,6 +5,7 @@ from wagtail.contrib.table_block.blocks import TableBlock as WagtailTableBlock
 
 class HeadingBlock(blocks.CharBlock):
     class Meta:
+        icon = "title"
         template = "templates/components/streamfield/heading_block.html"
 
     def to_table_of_contents_items(self, value):
@@ -13,6 +14,7 @@ class HeadingBlock(blocks.CharBlock):
 
 class TableBlock(WagtailTableBlock):
     class Meta:
+        icon = "info-circle"
         template = "templates/components/streamfield/table_block.html"
 
     def get_context(self, value, parent_context=None):
