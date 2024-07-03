@@ -4,9 +4,10 @@ from django.db import models
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.search import index
 
-from ons_alpha.core.blocks import StoryBlock
 from ons_alpha.core.models import BasePage
 from ons_alpha.utils.fields import StreamField
+
+from .blocks import StoryBlock
 
 
 class InformationPage(BasePage):

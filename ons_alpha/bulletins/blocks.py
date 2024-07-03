@@ -10,7 +10,7 @@ from ons_alpha.core.blocks import (
 
 
 class BulletinStoryBlock(StreamBlock):
-    heading = HeadingBlock()
+    heading = HeadingBlock(show_back_to_toc=True)
     rich_text = RichTextBlock()
     panel = PanelBlock()
     table = TableBlock()
