@@ -1,4 +1,6 @@
+from django.core.paginator import EmptyPage, Paginator
 from django.db import models
+from django.http import Http404
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 
 
@@ -76,3 +78,19 @@ class SocialFieldsMixin(models.Model):
             ],
         )
     ]
+
+
+class SubpageMixin:
+    PAGE_SIZE = 24
+
+    def get_paginator_page(self, request):
+        paginator = Paginator(self.get_children().live().public().specific(), per_page=self.PAGE_SIZE)
+        try:
+            return paginator.page(int(request.GET.get("p", 1)))
+        except (EmptyPage, ValueError) as e:
+            raise Http404 from e
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["subpages"] = self.get_paginator_page(request)
+        return context
