@@ -7,6 +7,7 @@ from ons_alpha.core.blocks import (
     HeadingBlock,
     NoticeBlock,
     PanelBlock,
+    RelatedContentBlock,
     TableBlock,
 )
 
@@ -18,6 +19,14 @@ class BulletinStoryBlock(StreamBlock):
     table = TableBlock()
     embed = EmbedBlock()
     image = ImageChooserBlock()
+    related_links = ListBlock(
+        RelatedContentBlock(),
+        icon="list-ul",
+        template="templates/components/streamfield/related_links_block.html",
+    )
+
+    class Meta:
+        block_counts = {"related_links": {"max_num": 1}}
 
 
 class CorrectionsNoticesStoryBlock(StreamBlock):
