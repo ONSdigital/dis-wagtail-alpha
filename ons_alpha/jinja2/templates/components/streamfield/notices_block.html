@@ -1,2 +1,5 @@
-{{ value }}
 <h3>{{ _("Notices") }}</h3>
+
+{% for item in value %}
+    {{ item }}
+{% endfor %}

@@ -3,5 +3,7 @@
 {% block main %}
     {{ table_of_contents(page, "body", {"title": "Table of contents"}) }}
 
+    {% include_block page.updates %}
+
     {% include_block page.body %}
 {% endblock %}

@@ -1,3 +1,5 @@
 <h2>{{ _("Corrections and notices") }}</h2>
 
-{{ value }}
+{% for block in value %}
+    {% include_block block %}
+{% endfor %}

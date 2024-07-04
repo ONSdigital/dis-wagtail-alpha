@@ -1,2 +1,5 @@
-{{ value }}
 <h3>{{ _("Corrections") }}</h2>
+
+{% for item in value %}
+    {{ item }}
+{% endfor %}
