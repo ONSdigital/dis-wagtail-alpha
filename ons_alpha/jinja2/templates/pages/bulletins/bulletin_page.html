@@ -6,4 +6,12 @@
     {% include_block page.updates %}
 
     {% include_block page.body %}
+
 {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ mathjax() }}"></script>
+{% endblock %}
+
+

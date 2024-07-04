@@ -21,6 +21,7 @@ gunicorn = "~22.0"
 psycopg2 = "~2.9"
 sentry-sdk = "~2.7"
 tbxforms = "2.0.0"
+wagtailmath = {git = "https://github.com/wagtail-nest/wagtail-polymath.git", rev = "0f22366"}
 wagtail-storages = "~1.1.0"
 whitenoise = "~6.7"
 boto3 = "^1.34.55"

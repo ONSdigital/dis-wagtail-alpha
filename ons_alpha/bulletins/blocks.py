@@ -1,6 +1,7 @@
 from wagtail.blocks import ListBlock, RichTextBlock, StreamBlock
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
+from wagtailmath.blocks import MathBlock
 
 from ons_alpha.core.blocks import (
     CorrectionBlock,
@@ -16,7 +17,8 @@ class BulletinStoryBlock(StreamBlock):
     heading = HeadingBlock(show_back_to_toc=True)
     rich_text = RichTextBlock()
     panel = PanelBlock()
-    table = TableBlock()
+    table = TableBlock(group="DataVis")
+    equation = MathBlock(icon="decimal", group="DataVis")
     embed = EmbedBlock()
     image = ImageChooserBlock()
     related_links = ListBlock(

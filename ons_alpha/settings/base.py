@@ -98,6 +98,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
     "django_jinja",
+    "wagtailmath",
 ]
 
 
