@@ -7,6 +7,7 @@ from ons_alpha.core.blocks import (
     CorrectionBlock,
     HeadingBlock,
     NoticeBlock,
+    ONSEmbedBlock,
     PanelBlock,
     RelatedContentBlock,
     TableBlock,
@@ -19,6 +20,7 @@ class BulletinStoryBlock(StreamBlock):
     panel = PanelBlock()
     table = TableBlock(group="DataVis")
     equation = MathBlock(icon="decimal", group="DataVis")
+    ons_embed = ONSEmbedBlock(group="DataVis")
     embed = EmbedBlock()
     image = ImageChooserBlock()
     related_links = ListBlock(
