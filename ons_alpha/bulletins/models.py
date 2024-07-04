@@ -1,5 +1,5 @@
 from django.db import models
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel, ObjectList, TabbedInterface
 
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
@@ -34,12 +34,27 @@ class BulletinPage(BasePage):
         FieldPanel("summary"),
         MultiFieldPanel(
             [
-                FieldPanel("release_date"),
-                FieldPanel("next_release_date"),
+                FieldRowPanel(
+                    [
+                        FieldPanel("release_date"),
+                        FieldPanel("next_release_date"),
+                    ]
+                ),
+                FieldPanel("is_accredited"),
+                FieldPanel("contact_details"),
             ],
-            heading="Release dates",
+            heading="Metadata",
         ),
-        FieldPanel("is_accredited"),
-        FieldPanel("contact_details"),
         FieldPanel("body"),
     ]
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading="Content"),
+            ObjectList(
+                [FieldPanel("updates", help_text="Add any corrections or updates")], heading="Corrections & Updates"
+            ),
+            ObjectList(BasePage.promote_panels, heading="Promote"),
+            ObjectList(BasePage.settings_panels, heading="Settings", classname="settings"),
+        ]
+    )
