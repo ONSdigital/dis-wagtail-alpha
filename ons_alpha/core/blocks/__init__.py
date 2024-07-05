@@ -5,15 +5,15 @@ from .related import RelatedContentBlock
 
 
 __all__ = [
-    "DocumentBlock",
-    "ImageBlock",
-    "HeadingBlock",
-    "QuoteBlock",
-    "TableBlock",
-    "TypedTableBlock",
     "CorrectionBlock",
+    "DocumentBlock",
+    "HeadingBlock",
+    "ImageBlock",
     "NoticeBlock",
     "ONSEmbedBlock",
     "PanelBlock",
+    "QuoteBlock",
     "RelatedContentBlock",
+    "TableBlock",
+    "TypedTableBlock",
 ]
