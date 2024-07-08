@@ -1,6 +1,19 @@
-from .embeddable import DocumentBlock, ImageBlock
+from .embeddable import DocumentBlock, ImageBlock, ONSEmbedBlock
 from .markup import HeadingBlock, QuoteBlock, TableBlock, TypedTableBlock
-from .panels import PanelBlock
+from .panels import CorrectionBlock, NoticeBlock, PanelBlock
+from .related import RelatedContentBlock
 
 
-__all__ = ["DocumentBlock", "ImageBlock", "HeadingBlock", "QuoteBlock", "PanelBlock", "TableBlock", "TypedTableBlock"]
+__all__ = [
+    "CorrectionBlock",
+    "DocumentBlock",
+    "HeadingBlock",
+    "ImageBlock",
+    "NoticeBlock",
+    "ONSEmbedBlock",
+    "PanelBlock",
+    "QuoteBlock",
+    "RelatedContentBlock",
+    "TableBlock",
+    "TypedTableBlock",
+]

@@ -1,6 +1,7 @@
 from crispy_forms.utils import render_crispy_form
 from jinja2 import pass_context
 from jinja2.ext import Extension
+from wagtailmath.templatetags.wagtailmath import mathjax
 
 from ons_alpha.navigation.templatetags.navigation_tags import (
     footer_nav,
@@ -20,6 +21,7 @@ class UtilsExtension(Extension):  # pylint: disable=abstract-method
                 "secondary_nav": pass_context(secondary_nav),
                 "footer_nav": pass_context(footer_nav),
                 "crispy": render_crispy_form,
+                "mathjax": mathjax,
             }
         )
 
