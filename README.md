@@ -77,10 +77,9 @@ dj createsuperuser
 
 The site should be available on the host machine at: http://127.0.0.1:8000/
 
+Upon first starting the container, the static files may not exist, or may be out of date. To resolve this, simply run `make load-design-system-templates`.
 
-Upon first starting the container, the static files may not exist, or may be out of date. To resolve this, simply run `npm run build`.
-
-## Installing python packages
+## Installing Python packages
 
 Python packages can be installed using `poetry` in the web container:
 

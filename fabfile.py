@@ -58,11 +58,7 @@ def start(c):
     """
     Start the development environment
     """
-    if FRONTEND == "local":
-        args = "docker compose up -d"
-    else:
-        args = "docker compose --file docker-compose.yml --file docker/docker-compose-frontend.yml up -d"
-    subprocess.run(shlex.split(args))
+    subprocess.run(shlex.split("docker compose --file docker-compose.yml up -d"))
 
 
 @task
