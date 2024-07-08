@@ -13,4 +13,3 @@ if [ -a "$HOME/.nvm/nvm.sh" ]; then
   source "$NVM_DIR/nvm.sh"
 fi
 
-alias honcho="honcho -f docker/Procfile"

@@ -66,7 +66,7 @@ fab start
 ```
 
 This will start the containers in the background, but not Django. To do this, connect to the web container with `fab sh` 
-and run `djrun` or `honcho start` to run Django in the foreground.
+and run `djrun` or `./manage.py runserver 0.0.0.0:8000` to run Django in the foreground.
 
 Then, connect to the running container again (`fab sh`) and:
 
@@ -77,7 +77,6 @@ dj createsuperuser
 
 The site should be available on the host machine at: http://127.0.0.1:8000/
 
-If you only wish to run the frontend or backend tooling, the commands `honcho` runs are in `docker/Procfile`.
 
 Upon first starting the container, the static files may not exist, or may be out of date. To resolve this, simply run `npm run build`.
 
