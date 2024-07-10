@@ -467,8 +467,6 @@ if "SERVER_EMAIL" in env:
 WAGTAILADMIN_NOTIFICATION_INCLUDE_SUPERUSERS = False
 
 # Sentry configuration.
-# See instructions on the intranet:
-# https://intranet.torchbox.com/delivering-projects/tech/starting-new-project/#sentry
 is_in_shell = len(sys.argv) > 1 and sys.argv[1] in ["shell", "shell_plus"]
 
 if "SENTRY_DSN" in env and not is_in_shell:
@@ -655,7 +653,7 @@ if env.get("BASIC_AUTH_ENABLED", "false").lower().strip() == "true":
 
     # This is the list of hosts that website can be accessed without basic auth
     # check. This may be useful to e.g. white-list "llamasavers.com" but not
-    # "llamasavers.production.torchbox.com".
+    # "llamasavers.production.onsdigital.com".
     if "BASIC_AUTH_WHITELISTED_HTTP_HOSTS" in env:
         BASIC_AUTH_WHITELISTED_HTTP_HOSTS = env["BASIC_AUTH_WHITELISTED_HTTP_HOSTS"].split(",")
 

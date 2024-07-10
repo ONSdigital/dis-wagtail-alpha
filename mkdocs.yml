@@ -1,5 +1,5 @@
 site_name: ONS Alpha
-repo_url: https://github.com/torchbox/ons-alpha
+repo_url: https://github.com/ONSdigital/dis-wagtail-alpha
 site_url:
 edit_uri: 'edit/master/docs/'
 

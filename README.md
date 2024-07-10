@@ -58,8 +58,8 @@ If you are using Docker Desktop, ensure the Resources:File Sharing settings allo
 Starting a local build can be done by running:
 
 ```bash
-git clone https://github.com/torchbox/ons-alpha
-cd ons-alpha
+git clone https://github.com/ONSdigital/dis-wagtail-alpha
+cd dis-wagtail-alpha
 fab build
 fab migrate
 fab start
@@ -130,8 +130,8 @@ Ensure you have the following installed:
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/torchbox/ons-alpha.git
-   cd ons-alpha
+   git clone https://github.com/ONSdigital/dis-wagtail-alpha.git
+   cd dis-wagtail-alpha
    ```
 
 2. Install dependencies:
