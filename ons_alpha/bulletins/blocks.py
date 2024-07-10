@@ -10,6 +10,7 @@ from ons_alpha.core.blocks import (
     ONSEmbedBlock,
     PanelBlock,
     RelatedContentBlock,
+    RelatedLinksBlock,
     TableBlock,
 )
 
@@ -23,11 +24,7 @@ class BulletinStoryBlock(StreamBlock):
     ons_embed = ONSEmbedBlock(group="DataVis")
     embed = EmbedBlock()
     image = ImageChooserBlock()
-    related_links = ListBlock(
-        RelatedContentBlock(),
-        icon="list-ul",
-        template="templates/components/streamfield/related_links_block.html",
-    )
+    related_links = RelatedLinksBlock(RelatedContentBlock())
 
     class Meta:
         block_counts = {"related_links": {"max_num": 1}}

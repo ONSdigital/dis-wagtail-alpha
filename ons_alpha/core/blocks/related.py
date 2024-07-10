@@ -2,8 +2,11 @@ from functools import cached_property
 
 from django.core.exceptions import ValidationError
 from django.forms.utils import ErrorList
+from django.utils.text import slugify
+from django.utils.translation import gettext as _
 from wagtail.blocks import (
     CharBlock,
+    ListBlock,
     PageChooserBlock,
     StreamBlockValidationError,
     StructBlock,
@@ -62,3 +65,25 @@ class RelatedContentBlock(StructBlock):
             raise StreamBlockValidationError(block_errors=errors, non_block_errors=non_block_errors)
 
         return value
+
+
+class RelatedLinksBlock(ListBlock):
+    def __init__(self, child_block, search_index=True, **kwargs):
+        super().__init__(child_block, search_index=search_index, **kwargs)
+
+        self.heading = _("Related links")
+        self.slug = slugify(self.heading)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context["heading"] = self.heading
+        context["slug"] = self.slug
+
+        return context
+
+    class Meta:
+        icon = "list-ul"
+        template = "templates/components/streamfield/related_links_block.html"
+
+    def to_table_of_contents_items(self, value):
+        return [{"url": "#" + self.slug, "text": self.heading}]
