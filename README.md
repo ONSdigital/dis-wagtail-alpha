@@ -59,7 +59,7 @@ Starting a local build can be done by running:
 
 ```bash
 git clone https://github.com/torchbox/ons-alpha
-cd ons-alpha
+cd ons_alpha
 fab build
 fab migrate
 fab start
