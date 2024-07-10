@@ -1,7 +1,7 @@
 from .embeddable import DocumentBlock, ImageBlock, ONSEmbedBlock
 from .markup import HeadingBlock, QuoteBlock, TableBlock, TypedTableBlock
 from .panels import CorrectionBlock, NoticeBlock, PanelBlock
-from .related import RelatedContentBlock
+from .related import RelatedContentBlock, RelatedLinksBlock
 
 
 __all__ = [
@@ -14,6 +14,7 @@ __all__ = [
     "PanelBlock",
     "QuoteBlock",
     "RelatedContentBlock",
+    "RelatedLinksBlock",
     "TableBlock",
     "TypedTableBlock",
 ]
