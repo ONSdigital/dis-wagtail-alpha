@@ -1,4 +1,5 @@
 from functools import cached_property
+
 from django.db import models
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel, ObjectList, TabbedInterface
 
@@ -62,7 +63,7 @@ class BulletinPage(BasePage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        
+
         context["toc"] = self.toc
 
         return context
@@ -70,7 +71,7 @@ class BulletinPage(BasePage):
     @cached_property
     def toc(self):
         items = [{"url": "#summary", "text": "Summary"}]
-        
+
         for block in self.body:  # pylint: disable=not-an-iterable
             if hasattr(block.block, "to_table_of_contents_items"):
                 items += block.block.to_table_of_contents_items(block.value)
