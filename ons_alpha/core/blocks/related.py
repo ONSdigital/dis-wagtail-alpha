@@ -85,5 +85,5 @@ class RelatedLinksBlock(ListBlock):
         icon = "list-ul"
         template = "templates/components/streamfield/related_links_block.html"
 
-    def to_table_of_contents_items(self, value):
+    def to_table_of_contents_items(self, value):  # pylint: disable=unused-argument
         return [{"url": "#" + self.slug, "text": self.heading}]
