@@ -15,7 +15,7 @@ from ons_alpha.core.blocks import (
 
 
 class BulletinStoryBlock(StreamBlock):
-    heading = HeadingBlock(show_back_to_toc=True)
+    heading = HeadingBlock(show_back_to_toc=False)
     rich_text = RichTextBlock()
     panel = PanelBlock()
     table = TableBlock(group="DataVis")
