@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 from wagtail import blocks
@@ -94,6 +95,17 @@ class TableBlock(WagtailTableBlock):
 
             trs.append({"tds": tds})
         return trs
+
+    def clean(self, value):
+        if not value or not value.get("table_header_choice"):
+            raise ValidationError("Select an option for Table headers")
+
+        data = value.get("data", [])
+        all_cells_empty = all(not cell for row in data for cell in row)
+        if all_cells_empty:
+            raise ValidationError("Table cannot be empty")
+
+        return super().clean(value)
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
