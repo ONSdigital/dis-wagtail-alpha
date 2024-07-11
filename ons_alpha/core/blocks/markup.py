@@ -103,7 +103,7 @@ class TableBlock(WagtailTableBlock):
         data = value.get("data", [])
         all_cells_empty = all(not cell for row in data for cell in row)
         if all_cells_empty:
-            raise ValidationError("Table cannot be empty")
+            raise ValidationError("The table cannot be empty")
 
         return super().clean(value)
 
