@@ -139,6 +139,7 @@ Ensure you have the following installed:
    poetry install
    ```
 
+
 ### Linting and Formatting
 
 This project uses `Ruff`, `pylint`, and `black` for linting and formatting Python code and `djhtml` for HTML linting.
@@ -154,3 +155,5 @@ This project uses `Ruff`, `pylint`, and `black` for linting and formatting Pytho
   ```sh
   make format
   ```
+
+

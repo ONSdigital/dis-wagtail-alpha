@@ -4,9 +4,7 @@ from django.utils.text import slugify
 from wagtail import blocks
 from wagtail.contrib.table_block.blocks import DEFAULT_TABLE_OPTIONS
 from wagtail.contrib.table_block.blocks import TableBlock as WagtailTableBlock
-from wagtail.contrib.typed_table_block.blocks import (
-    TypedTableBlock as WagtailTypedTableBlock,
-)
+from wagtail.contrib.typed_table_block.blocks import TypedTableBlock as WagtailTypedTableBlock
 
 
 class HeadingBlock(blocks.CharBlock):
