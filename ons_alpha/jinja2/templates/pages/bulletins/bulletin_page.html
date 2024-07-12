@@ -86,6 +86,6 @@
 {% block scripts %}
     {{ super() }}
     <script async src="{{ mathjax() }}"></script>
-    <script async src="{{ assets('js/third-party/pym.min.js') }}"></script>
-    <script async src="{{ assets('js/blocks/embeddable.js') }}"></script>
+    <script async src="{{ static('js/third-party/pym.min.js') }}"></script>
+    <script async src="{{ static('js/blocks/embeddable.js') }}"></script>
 {% endblock %}

@@ -23,7 +23,7 @@ class UtilsExtension(Extension):  # pylint: disable=abstract-method
                 "footer_nav": pass_context(footer_nav),
                 "crispy": render_crispy_form,
                 "mathjax": mathjax,
-                "assets": static,
+                "static": static,
             }
         )
 
