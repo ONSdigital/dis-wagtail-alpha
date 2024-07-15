@@ -1,4 +1,5 @@
 from crispy_forms.utils import render_crispy_form
+from django.templatetags.static import static
 from jinja2 import pass_context
 from jinja2.ext import Extension
 from wagtailmath.templatetags.wagtailmath import mathjax
@@ -22,6 +23,7 @@ class UtilsExtension(Extension):  # pylint: disable=abstract-method
                 "footer_nav": pass_context(footer_nav),
                 "crispy": render_crispy_form,
                 "mathjax": mathjax,
+                "static": static,
             }
         )
 

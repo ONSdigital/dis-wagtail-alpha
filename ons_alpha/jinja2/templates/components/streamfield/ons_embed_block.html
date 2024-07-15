@@ -1,1 +1,10 @@
-<iframe src="{{ value.url }}" class="ons-u-mb-s" width="100%" scrolling="no" marginheight="0" frameborder="0" title="{{ value.title }}"></iframe>
+<div class="ons-u-mb-s">
+    <div class="pym-interactive"
+         id="{{ block_id }}"
+         data-url="{{ value.url }}"
+         data-title="{{ value.title }}">
+        <iframe src="{{ value.url }}"
+                title="{{ value.title }}">
+        </iframe>
+    </div>
+</div>
