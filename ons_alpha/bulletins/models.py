@@ -1,7 +1,16 @@
 from functools import cached_property
 
 from django.db import models
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel, ObjectList, TabbedInterface
+from modelcluster.fields import ParentalKey
+from wagtail.admin.panels import (
+    FieldPanel,
+    FieldRowPanel,
+    MultiFieldPanel,
+    MultipleChooserPanel,
+    ObjectList,
+    TabbedInterface,
+)
+from wagtail.models import Orderable
 
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
@@ -54,6 +63,13 @@ class BulletinPage(BasePage):
         [
             ObjectList(content_panels, heading="Content"),
             ObjectList(
+                [
+                    MultipleChooserPanel("topics", label="Topic", chooser_field_name="topic"),
+                ],
+                help_text="Select the topics that this bulletin relates to.",
+                heading="Taxonomy",
+            ),
+            ObjectList(
                 [FieldPanel("updates", help_text="Add any corrections or updates")], heading="Corrections & Updates"
             ),
             ObjectList(BasePage.promote_panels, heading="Promote"),
@@ -80,3 +96,8 @@ class BulletinPage(BasePage):
             items += [{"url": "#contact-details", "text": "Contact details"}]
 
         return items
+
+
+class BulletinTopicRelationship(Orderable):
+    page = ParentalKey(BulletinPage, on_delete=models.CASCADE, related_name="topics")
+    topic = models.ForeignKey("taxonomy.Topic", on_delete=models.CASCADE, related_name="bulletins")
