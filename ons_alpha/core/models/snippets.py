@@ -2,7 +2,10 @@ from django.db import models
 from wagtail import blocks
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
+from wagtail.models import PreviewableMixin
+from wagtail.search import index
 from wagtail.snippets.models import register_snippet
+from wagtailcharts.blocks import ChartBlock
 
 from ons_alpha.utils.fields import StreamField
 
@@ -99,3 +102,25 @@ class ContactDetails(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+
+@register_snippet
+class Chart(index.Indexed, PreviewableMixin, models.Model):
+    chart = StreamField([("chart", ChartBlock())], use_json_field=True, min_num=1, max_num=1)
+
+    panels = [FieldPanel("chart")]
+
+    search_fields = [index.SearchField("title")]
+
+    def __str__(self):
+        return str(self.title)
+
+    @property
+    def title(self):
+        try:
+            return self.chart[0].value["title"]
+        except IndexError:
+            return ""
+
+    def get_preview_template(self, request, mode_name):
+        return "templates/snippets/chart.html"
