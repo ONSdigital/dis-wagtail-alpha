@@ -106,17 +106,21 @@ class ContactDetails(models.Model):
 
 @register_snippet
 class Chart(index.Indexed, PreviewableMixin, models.Model):
+    name = models.CharField(
+        max_length=255,
+        help_text="Name for the chart (for easier reference). Note this is different to the chart's title.",
+    )
     chart = StreamField([("chart", ChartBlock())], use_json_field=True, min_num=1, max_num=1)
 
-    panels = [FieldPanel("chart")]
+    panels = [FieldPanel("name"), FieldPanel("chart")]
 
-    search_fields = [index.SearchField("title")]
+    search_fields = [index.SearchField("name"), index.SearchField("chart_title")]
 
     def __str__(self):
-        return str(self.title)
+        return str(self.name)
 
     @property
-    def title(self):
+    def chart_title(self):
         try:
             return self.chart[0].value["title"]
         except IndexError:
