@@ -112,7 +112,7 @@ class Chart(index.Indexed, PreviewableMixin, models.Model):
     )
     chart = StreamField([("chart", ChartBlock())], use_json_field=True, min_num=1, max_num=1)
 
-    panels = [FieldPanel("name"), FieldPanel("chart")]
+    panels = [FieldPanel("name"), FieldPanel("chart", attrs={"data-auto-expand": True})]
 
     search_fields = [index.SearchField("name"), index.SearchField("chart_title")]
 
