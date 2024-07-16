@@ -30,10 +30,8 @@ private_urlpatterns += [
     path("documents/", include(wagtaildocs_urls)),
 ]
 
-
 # Public URLs that are meant to be cached.
 urlpatterns = [path("sitemap.xml", sitemap)]
-
 
 if settings.DEBUG:
     from django.conf.urls.static import static
@@ -64,7 +62,6 @@ if settings.DEBUG:
         import debug_toolbar
 
         urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
-
 
 # Set public URLs to use the "default" cache settings.
 urlpatterns = decorate_urlpatterns(urlpatterns, get_default_cache_control_decorator())

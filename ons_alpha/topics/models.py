@@ -13,7 +13,7 @@ class TopicPage(SubpageMixin, BasePage):
 
     template = "templates/pages/topics/topic_page.html"
     parent_page_types = ["topics.TopicSectionPage"]
-    subpage_types = ["bulletins.BulletinPage"]
+    subpage_types = ["bulletins.BulletinSeriesPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
 
     topic = models.OneToOneField(

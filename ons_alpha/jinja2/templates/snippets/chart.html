@@ -1,0 +1,11 @@
+{% extends "layout/_template.njk" %}
+
+{% block main %}
+    {% include_block object.chart %}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {# HACK: We can't use the built-in inclusion tag, so import the template _directly_. #}
+    {{ include_django("wagtailcharts/tags/render_charts.html") }}
+{% endblock %}
