@@ -135,6 +135,7 @@ class ChartViewSet(SnippetViewSet):
     model = Chart
     icon = "chart-simple"
     list_display = ["name", "chart_title", UpdatedAtColumn()]
+    add_to_admin_menu = True
 
 
 register_snippet(ChartViewSet)
