@@ -2,6 +2,7 @@ from crispy_forms.utils import render_crispy_form
 from django.templatetags.static import static
 from jinja2 import pass_context
 from jinja2.ext import Extension
+from wagtail.contrib.routable_page.templatetags.wagtailroutablepage_tags import routablepageurl
 from wagtailmath.templatetags.wagtailmath import mathjax
 
 from ons_alpha.navigation.templatetags.navigation_tags import footer_nav, primary_nav, secondary_nav
@@ -20,6 +21,7 @@ class UtilsExtension(Extension):  # pylint: disable=abstract-method
                 "crispy": render_crispy_form,
                 "mathjax": mathjax,
                 "static": static,
+                "routablepageurl": pass_context(routablepageurl),
             }
         )
 

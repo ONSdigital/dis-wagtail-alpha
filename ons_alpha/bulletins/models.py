@@ -1,7 +1,12 @@
 from functools import cached_property
 
 from django.db import models
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel, ObjectList, TabbedInterface
+from django.http import Http404
+from django.shortcuts import redirect
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, HelpPanel, MultiFieldPanel, ObjectList, TabbedInterface
+from wagtail.contrib.routable_page.models import RoutablePageMixin, path
+from wagtail.models import Page
+from wagtail.search import index
 
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
@@ -11,13 +16,11 @@ from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
 
 class BulletinPage(BasePage):
     template = "templates/pages/bulletins/bulletin_page.html"
-    parent_page_types = ["topics.TopicPage"]
+    parent_page_types = ["BulletinSeriesPage"]
 
     summary = models.TextField()
-
     release_date = models.DateField()
     next_release_date = models.DateField()
-
     contact_details = models.ForeignKey(
         "core.ContactDetails",
         null=True,
@@ -25,11 +28,8 @@ class BulletinPage(BasePage):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-
     is_accredited = models.BooleanField(default=False)
-
     body = StreamField(BulletinStoryBlock(), use_json_field=True)
-
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
 
     content_panels = BasePage.content_panels + [
@@ -61,22 +61,83 @@ class BulletinPage(BasePage):
         ]
     )
 
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
+    search_fields = BasePage.search_fields + [
+        index.SearchField("summary"),
+        index.SearchField("body"),
+        index.SearchField("get_admin_display_title", boost=2),
+        index.AutocompleteField("get_admin_display_title"),
+    ]
 
-        context["toc"] = self.toc
+    @property
+    def full_title(self):
+        return f"{self.get_parent().title}: {self.title}"
 
-        return context
+    @property
+    def is_latest(self):
+        latest_id = (
+            BulletinPage.objects.sibling_of(self).live().order_by("-release_date").values_list("id", flat=True).first()
+        )
+        return self.pk == latest_id
 
     @cached_property
     def toc(self):
         items = [{"url": "#summary", "text": "Summary"}]
-
         for block in self.body:  # pylint: disable=not-an-iterable
             if hasattr(block.block, "to_table_of_contents_items"):
                 items += block.block.to_table_of_contents_items(block.value)
-
         if self.contact_details_id:
             items += [{"url": "#contact-details", "text": "Contact details"}]
-
         return items
+
+    def get_admin_display_title(self):
+        # tweak the admin display title to include the parent title
+        return f"{self.get_parent().title}: {self.draft_title or self.title}"
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["toc"] = self.toc
+        return context
+
+
+class BulletinSeriesPage(RoutablePageMixin, Page):
+    parent_page_types = ["topics.TopicPage"]
+    subpage_types = ["BulletinPage"]
+    preview_modes = []  # Disabling the preview mode due to it being a container page.
+    page_description = "A container for Bulletin series"
+
+    content_panels = Page.content_panels + [
+        HelpPanel(
+            content="This is a container for the Bulletin series. It provides the <code>/latest</code>,"
+            "<code>/previous-release</code> evergreen paths, as well as the actual bulletins. "
+            "Add a new Bulletin page under this container. Note: for the purpose of this "
+            "proof of concept, we only look at published Bulletin pages to power the view "
+            "previous/view latest behaviour"
+        )
+    ]
+
+    def get_latest_bulletin(self):
+        return BulletinPage.objects.live().child_of(self).order_by("-release_date").first()
+
+    @path("")
+    def index(self, request):
+        # Redirect to /latest as this is a container page without its own content
+        return redirect(self.get_url(request) + self.reverse_subpage("latest_bulletin"))
+
+    @path("latest/")
+    def latest_bulletin(self, request):
+        latest = self.get_latest_bulletin()
+        if not latest:
+            raise Http404
+
+        return self.render(
+            request, context_overrides={"page": latest}, template="templates/pages/bulletins/bulletin_page.html"
+        )
+
+    @path("previous-releases/")
+    def previous_releases(self, request):
+        previous = BulletinPage.objects.live().child_of(self).order_by("-release_date")
+        return self.render(
+            request,
+            context_overrides={"bulletins": previous},
+            template="templates/pages/bulletins/previous_releases.html",
+        )
