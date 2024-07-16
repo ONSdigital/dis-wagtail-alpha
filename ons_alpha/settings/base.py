@@ -100,6 +100,7 @@ INSTALLED_APPS = [
     "django_jinja",
     "wagtailmath",
     "wagtailcharts",
+    "wagtailfontawesomesvg",
 ]
 
 
