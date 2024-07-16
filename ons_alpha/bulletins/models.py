@@ -21,6 +21,7 @@ from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
 
 from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
+from .forms import BulletinPageAdminForm
 
 
 class BulletinTopicRelationship(Orderable):
@@ -29,6 +30,7 @@ class BulletinTopicRelationship(Orderable):
 
 
 class BulletinPage(BasePage):
+    base_form_class = BulletinPageAdminForm
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
 
