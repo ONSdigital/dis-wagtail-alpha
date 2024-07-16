@@ -26,7 +26,7 @@ class BulletinStoryBlock(StreamBlock):
     embed = EmbedBlock()
     image = ImageChooserBlock()
     related_links = RelatedLinksBlock(RelatedContentBlock())
-    chart = ChartChooserBlock()
+    chart = ChartChooserBlock(group="DataVis")
 
     class Meta:
         block_counts = {"related_links": {"max_num": 1}}
