@@ -23,6 +23,11 @@ from ons_alpha.utils.fields import StreamField
 from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
 
 
+class BulletinTopicRelationship(Orderable):
+    page = ParentalKey("bulletins.BulletinPage", on_delete=models.CASCADE, related_name="topics")
+    topic = models.ForeignKey("taxonomy.Topic", on_delete=models.CASCADE, related_name="bulletins")
+
+
 class BulletinPage(BasePage):
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
@@ -157,8 +162,3 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
             context_overrides={"bulletins": previous},
             template="templates/pages/bulletins/previous_releases.html",
         )
-
-
-class BulletinTopicRelationship(Orderable):
-    page = ParentalKey(BulletinPage, on_delete=models.CASCADE, related_name="topics")
-    topic = models.ForeignKey("taxonomy.Topic", on_delete=models.CASCADE, related_name="bulletins")

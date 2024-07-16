@@ -10,7 +10,7 @@ from wagtail.search import index
 # This is the main 'node' model, it inherits mp_node
 # mp_node is short for materialized path, it means the tree has a clear path
 class Topic(index.Indexed, MP_Node):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=100)
 
     node_order_by = ["name"]
 
@@ -27,9 +27,6 @@ class Topic(index.Indexed, MP_Node):
         index.SearchField("name"),
         index.AutocompleteField("name"),
     ]
-
-    class Meta:
-        verbose_name_plural = "Topics"
 
     def __str__(self):
         return self.name_with_depth()
