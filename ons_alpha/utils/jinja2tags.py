@@ -4,11 +4,7 @@ from jinja2 import pass_context
 from jinja2.ext import Extension
 from wagtailmath.templatetags.wagtailmath import mathjax
 
-from ons_alpha.navigation.templatetags.navigation_tags import (
-    footer_nav,
-    primary_nav,
-    secondary_nav,
-)
+from ons_alpha.navigation.templatetags.navigation_tags import footer_nav, primary_nav, secondary_nav
 from ons_alpha.utils.templatetags.util_tags import social_image, social_text
 
 

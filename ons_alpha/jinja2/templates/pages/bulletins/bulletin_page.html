@@ -88,4 +88,7 @@
     <script async src="{{ mathjax() }}"></script>
     <script async src="{{ static('js/third-party/pym.min.js') }}"></script>
     <script async src="{{ static('js/blocks/embeddable.js') }}"></script>
+
+    {# HACK: We can't use the built-in inclusion tag, so import the template _directly_. #}
+    {{ include_django("wagtailcharts/tags/render_charts.html") }}
 {% endblock %}

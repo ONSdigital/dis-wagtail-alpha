@@ -1,8 +1,13 @@
 from django.db import models
 from wagtail import blocks
 from wagtail.admin.panels import FieldPanel
+from wagtail.admin.ui.tables import UpdatedAtColumn
 from wagtail.fields import RichTextField
+from wagtail.models import PreviewableMixin
+from wagtail.search import index
 from wagtail.snippets.models import register_snippet
+from wagtail.snippets.views.snippets import SnippetViewSet
+from wagtailcharts.blocks import ChartBlock
 
 from ons_alpha.utils.fields import StreamField
 
@@ -99,3 +104,38 @@ class ContactDetails(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+
+class Chart(index.Indexed, PreviewableMixin, models.Model):
+    name = models.CharField(
+        max_length=255,
+        help_text="Name for the chart (for easier reference). Note this is different to the chart's title.",
+    )
+    chart = StreamField([("chart", ChartBlock())], use_json_field=True, min_num=1, max_num=1)
+
+    panels = [FieldPanel("name"), FieldPanel("chart", attrs={"data-auto-expand": True})]
+
+    search_fields = [index.SearchField("name"), index.SearchField("chart_title")]
+
+    def __str__(self):
+        return str(self.name)
+
+    @property
+    def chart_title(self):
+        try:
+            return self.chart[0].value["title"]
+        except IndexError:
+            return ""
+
+    def get_preview_template(self, request, mode_name):
+        return "templates/snippets/chart.html"
+
+
+class ChartViewSet(SnippetViewSet):
+    model = Chart
+    icon = "chart-simple"
+    list_display = ["name", "chart_title", UpdatedAtColumn()]
+    add_to_admin_menu = True
+
+
+register_snippet(ChartViewSet)
