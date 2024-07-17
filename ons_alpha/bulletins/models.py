@@ -3,18 +3,34 @@ from functools import cached_property
 from django.db import models
 from django.http import Http404
 from django.shortcuts import redirect
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, HelpPanel, MultiFieldPanel, ObjectList, TabbedInterface
+from modelcluster.fields import ParentalKey
+from wagtail.admin.panels import (
+    FieldPanel,
+    FieldRowPanel,
+    HelpPanel,
+    MultiFieldPanel,
+    MultipleChooserPanel,
+    ObjectList,
+    TabbedInterface,
+)
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
-from wagtail.models import Page
+from wagtail.models import Orderable, Page
 from wagtail.search import index
 
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
 
 from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
+from .forms import BulletinPageAdminForm
+
+
+class BulletinTopicRelationship(Orderable):
+    page = ParentalKey("bulletins.BulletinPage", on_delete=models.CASCADE, related_name="topics")
+    topic = models.ForeignKey("taxonomy.Topic", on_delete=models.CASCADE, related_name="bulletins")
 
 
 class BulletinPage(BasePage):
+    base_form_class = BulletinPageAdminForm
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
 
@@ -53,6 +69,13 @@ class BulletinPage(BasePage):
     edit_handler = TabbedInterface(
         [
             ObjectList(content_panels, heading="Content"),
+            ObjectList(
+                [
+                    MultipleChooserPanel("topics", label="Topic", chooser_field_name="topic"),
+                ],
+                help_text="Select the topics that this bulletin relates to.",
+                heading="Taxonomy",
+            ),
             ObjectList(
                 [FieldPanel("updates", help_text="Add any corrections or updates")], heading="Corrections & Updates"
             ),
