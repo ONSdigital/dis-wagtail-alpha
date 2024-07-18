@@ -48,6 +48,21 @@
             {{ page.summary|richtext() }}
 
             {% block release_content %}
+                {% if page.pk and related_bulletins %}
+                    <section id="bulletins">
+                        <h2>{{ _("Bulletins") }}</h2>
+                        <ul class="ons-list ons-list--bare">
+                            {% for bulletin in related_bulletins %}
+                                <li class="ons-list__item">
+                                    <p><a href="{{ pageurl(bulletin) }}">{{ bulletin.title }}</a></p>
+                                    {% if bulletin.summary %}
+                                        <p>{{ bulletin.summary }}</p>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                {% endif %}
                 {% include_block page.content %}
 
                 {% if page.contact_details %}

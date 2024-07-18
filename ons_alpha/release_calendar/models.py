@@ -132,6 +132,8 @@ class ReleasePage(BasePage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
+        if self.pk:
+            context["related_bulletins"] = self.related_bulletins.all().live()
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
 
@@ -152,6 +154,9 @@ class ReleasePage(BasePage):
         items = [{"url": "#summary", "text": _("Summary")}]
 
         if self.is_released:
+            if self.pk and self.related_bulletins.live().exists():
+                items += [{"url": "#bulletins", "text": _("Bulletins")}]
+
             for block in self.content:  # pylint: disable=not-an-iterable
                 items += block.block.to_table_of_contents_items(block.value)
 
