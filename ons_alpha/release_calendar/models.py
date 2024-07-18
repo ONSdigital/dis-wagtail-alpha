@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import models
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
@@ -16,8 +17,8 @@ from ons_alpha.utils.models import LinkFields
 
 
 class ReleaseStatus(models.TextChoices):
-    UPCOMING = "UPCOMING", "Upcoming"
-    PUBLISHED = "PUBLISHED", "Published"
+    PROVISIONAL = "PROVISIONAL", "Provisional"
+    CONFIRMED = "CONFIRMED", "Confirmed"
     CANCELLED = "CANCELLED", "Cancelled"
 
 
@@ -53,7 +54,7 @@ class ReleasePage(BasePage):
 
     parent_page_types = ["ReleaseIndex"]
 
-    status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.UPCOMING, max_length=32)
+    status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.PROVISIONAL, max_length=32)
 
     summary = RichTextField(features=settings.RICH_TEXT_BASIC)
     # note: this is mocked for the time being. The data would come automatically when the full release
@@ -97,21 +98,34 @@ class ReleasePage(BasePage):
         InlinePanel("related_links", heading="Related links"),
     ]
 
+    @property
+    def is_released(self):
+        # cancelled releases should stay the same regardless
+        if self.status == ReleaseStatus.CANCELLED:
+            return False
+
+        # if tentative or confirmed and the release date has past, treat as released
+        return self.release_date <= now()
+
+    @property
+    def status_label(self) -> str:
+        if self.is_released:
+            return _("Published")
+
+        return ReleaseStatus[self.status].label
+
     def clean(self):
         super().clean()
 
         if self.status == ReleaseStatus.CANCELLED and not self.notice:
             raise ValidationError({"notice": _("The notice field is required when the release is cancelled")})
 
-    @property
-    def status_label(self) -> str:
-        return ReleaseStatus[self.status].label
-
     def get_template(self, request, *args, **kwargs):
-        if self.status == ReleaseStatus.UPCOMING:
-            return "templates/pages/release_page--upcoming.html"
         if self.status == ReleaseStatus.CANCELLED:
             return "templates/pages/release_page--cancelled.html"
+
+        if not self.is_released:
+            return "templates/pages/release_page--upcoming.html"
 
         return super().get_template(request, *args, **kwargs)
 
@@ -137,7 +151,7 @@ class ReleasePage(BasePage):
     def toc(self):
         items = [{"url": "#summary", "text": _("Summary")}]
 
-        if self.status == ReleaseStatus.PUBLISHED:
+        if self.is_released:
             for block in self.content:  # pylint: disable=not-an-iterable
                 items += block.block.to_table_of_contents_items(block.value)
 
@@ -147,7 +161,7 @@ class ReleasePage(BasePage):
         if self.is_accredited:
             items += [{"url": "#about-the-data", "text": _("About the data")}]
 
-        if self.status == ReleaseStatus.PUBLISHED and self.related_links_for_context:
+        if self.is_released and self.related_links_for_context:
             items += [{"url": "#links", "text": _("You might also be interested in")}]
 
         return items
