@@ -3,6 +3,7 @@ from functools import cached_property
 from django.db import models
 from django.http import Http404
 from django.shortcuts import redirect
+from django.utils.timezone import now
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import (
     FieldPanel,
@@ -129,6 +130,12 @@ class BulletinPage(BasePage):
         context = super().get_context(request, *args, **kwargs)
         context["toc"] = self.toc
         return context
+
+    def clean(self):
+        super().clean()
+
+        if self.release_calendar_page and self.release_calendar_page.release_date > now():
+            self.go_live_at = self.release_calendar_page.release_date
 
 
 class BulletinSeriesPage(RoutablePageMixin, Page):
