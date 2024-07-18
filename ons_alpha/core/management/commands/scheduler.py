@@ -11,8 +11,8 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    def handle(self, **options):
-        self.scheduler = BlockingScheduler(executors={"default": ThreadPoolExecutor()})
+    def handle(self, **options):  # pylint: disable=W0221
+        self.scheduler = BlockingScheduler(executors={"default": ThreadPoolExecutor()})  # pylint: disable=W0201
 
         self.setup_signals()
 
@@ -25,7 +25,7 @@ class Command(BaseCommand):
         signal.signal(signal.SIGTERM, self.shutdown)
         atexit.register(self.shutdown)
 
-    def shutdown(self, *args, **kwargs):
+    def shutdown(self, _signum, _frame):
         if self.scheduler.running:
             self.scheduler.shutdown(wait=False)
 
