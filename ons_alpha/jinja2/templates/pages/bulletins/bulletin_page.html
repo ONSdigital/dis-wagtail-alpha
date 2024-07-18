@@ -47,6 +47,7 @@
         {% endif %}
 
         <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
+            {# fmt:off #}
             {{-
                 onsTableOfContents({
                     "title": 'Table of contents',
@@ -54,6 +55,7 @@
                     "itemsList": toc
                 })
             }}
+            {# fmt:on #}
         </div>
 
         <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
@@ -98,5 +100,6 @@
     <script async src="{{ static('js/third-party/pym.min.js') }}"></script>
     <script async src="{{ static('js/blocks/embeddable.js') }}"></script>
 
+    {# HACK: We can't use the built-in inclusion tag, so import the template _directly_. #}
     {{ include_django("wagtailcharts/tags/render_charts.html") }}
 {% endblock %}

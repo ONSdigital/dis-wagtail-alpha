@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from django.db import models
 from django.http import Http404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import (
     FieldPanel,
@@ -22,6 +22,7 @@ from wagtail.search import index
 from ons_alpha.core.models.base import BasePage
 
 from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
+from .forms import BulletinPageAdminForm
 
 
 class BulletinTopicRelationship(Orderable):
@@ -30,6 +31,7 @@ class BulletinTopicRelationship(Orderable):
 
 
 class BulletinPage(BasePage):
+    base_form_class = BulletinPageAdminForm
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
 
@@ -46,9 +48,6 @@ class BulletinPage(BasePage):
     is_accredited = models.BooleanField(default=False)
     body = StreamField(BulletinStoryBlock(), use_json_field=True)
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
-    previous_version = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.SET_NULL, related_name="corrections"
-    )
 
     content_panels = BasePage.content_panels + [
         FieldPanel("summary"),
@@ -107,8 +106,7 @@ class BulletinPage(BasePage):
     @cached_property
     def toc(self) -> List[Dict[str, str]]:
         items = [{"url": "#summary", "text": "Summary"}]
-        body = self.body  # pylint: disable=not-an-iterable
-        for block in body:
+        for block in self.body:  # pylint: disable=not-an-iterable
             if hasattr(block.block, "to_table_of_contents_items"):
                 items += block.block.to_table_of_contents_items(block.value)
         if self.contact_details_id:
@@ -123,14 +121,6 @@ class BulletinPage(BasePage):
         context = super().get_context(request, *args, **kwargs)
         context["toc"] = self.toc
         return context
-
-    def save(self, *args, **kwargs):
-        # Set the previous_version field for corrections
-        if self.revisions.exists() and not self.previous_version:
-            latest_revision = self.revisions.order_by("-created_at").first()
-            if latest_revision:
-                self.previous_version = latest_revision.page
-        super().save(*args, **kwargs)
 
 
 class BulletinSeriesPage(RoutablePageMixin, Page):
@@ -163,9 +153,7 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
         if not latest:
             raise Http404
 
-        return self.render(
-            request, context_overrides={"page": latest}, template="templates/pages/bulletins/bulletin_page.html"
-        )
+        return self.render(request, context_overrides={"page": latest})
 
     @path("previous-releases/")
     def previous_releases(self, request):
@@ -178,13 +166,11 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
 
     @path("previous/v<int:version>/")
     def previous_version(self, request, version):
-        try:
-            page_revision = Revision.objects.get(pk=version)
-        except Revision.DoesNotExist:
-            raise Http404 from None
+        page_revision = get_object_or_404(Revision, pk=version)
 
-        return self.render(
-            request,
-            context_overrides={"page": page_revision.as_page_object()},
-            template="templates/pages/bulletins/bulletin_page.html",
-        )
+        # Ensure the revision is of the correct page type and is published
+        page = page_revision.as_page_object()
+        if not isinstance(page, BulletinPage) or not page.live:
+            raise Http404
+
+        return self.render(request, context_overrides={"page": page})
