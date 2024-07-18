@@ -1,0 +1,9 @@
+{% if value.header %}
+    {{ value.header|richtext }}
+{% endif %}
+
+{{ table }}
+
+{% if value.footer %}
+    {{ value.footer|richtext }}
+{% endif %}

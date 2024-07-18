@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 from wagtail import blocks
+from wagtail.blocks import RichTextBlock
 from wagtail.contrib.table_block.blocks import DEFAULT_TABLE_OPTIONS
 from wagtail.contrib.table_block.blocks import TableBlock as WagtailTableBlock
 from wagtail.contrib.typed_table_block.blocks import TypedTableBlock as WagtailTypedTableBlock
@@ -28,9 +29,9 @@ class HeadingBlock(blocks.CharBlock):
         return [{"url": "#" + slugify(value), "text": value}]
 
 
-class TableBlock(WagtailTableBlock):
+class ONSTableBlock(WagtailTableBlock):
     class Meta:
-        icon = "info-circle"
+        icon = "table-cells"
         template = "templates/components/streamfield/table_block.html"
 
     def __init__(self, required=True, help_text=None, table_options=None, **kwargs):
@@ -131,6 +132,7 @@ class TableBlock(WagtailTableBlock):
 
         return {
             "options": {
+                "variants": "responsive",
                 "caption": value.get("table_caption"),
                 "ths": self._get_header(value, hidden, spans),
                 "trs": self._get_rows(value, classnames, hidden, spans),
@@ -141,6 +143,21 @@ class TableBlock(WagtailTableBlock):
     def render(self, value, context=None):
         # TableBlock has a very custom `render` method. We don't want that
         return super(blocks.FieldBlock, self).render(value, context)
+
+
+class TableBlock(blocks.StructBlock):
+    header = RichTextBlock(required=False)
+    footer = RichTextBlock(required=False)
+    table = ONSTableBlock()
+
+    class Meta:
+        icon = "table"
+        template = "templates/components/streamfield/ons_table_block.html"
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context["table"] = self.child_blocks["table"].render(value["table"], context=parent_context)
+        return context
 
 
 class TypedTableBlock(blocks.StructBlock):
