@@ -1,4 +1,5 @@
 from functools import cached_property
+
 from django.db import models
 from django.http import Http404
 from django.shortcuts import redirect
@@ -20,7 +21,6 @@ from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
 
 from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
-from .forms import BulletinPageAdminForm
 
 
 class BulletinTopicRelationship(Orderable):
@@ -29,7 +29,6 @@ class BulletinTopicRelationship(Orderable):
 
 
 class BulletinPage(BasePage):
-    base_form_class = BulletinPageAdminForm
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
 
@@ -46,7 +45,9 @@ class BulletinPage(BasePage):
     is_accredited = models.BooleanField(default=False)
     body = StreamField(BulletinStoryBlock(), use_json_field=True)
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
-    previous_version = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='corrections')
+    previous_version = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.SET_NULL, related_name="corrections"
+    )
 
     content_panels = BasePage.content_panels + [
         FieldPanel("summary"),
@@ -124,7 +125,7 @@ class BulletinPage(BasePage):
     def save(self, *args, **kwargs):
         # Set the previous_version field for corrections
         if self.revisions.exists() and not self.previous_version:
-            latest_revision = self.revisions.order_by('-created_at').first()
+            latest_revision = self.revisions.order_by("-created_at").first()
             if latest_revision:
                 self.previous_version = latest_revision.page
         super().save(*args, **kwargs)
@@ -180,5 +181,7 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
             raise Http404
 
         return self.render(
-            request, context_overrides={"page": page_revision.as_page_object()}, template="templates/pages/bulletins/bulletin_page.html"
+            request,
+            context_overrides={"page": page_revision.as_page_object()},
+            template="templates/pages/bulletins/bulletin_page.html",
         )

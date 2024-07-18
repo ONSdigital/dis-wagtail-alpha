@@ -1,13 +1,15 @@
 from django import forms
 from wagtail.admin.forms import WagtailAdminPageForm
+
 from .models import BulletinPage
+
 
 class BulletinPageAdminForm(WagtailAdminPageForm):
     previous_version = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
         model = BulletinPage
-        fields = '__all__'
+        fields = "__all__"
 
     def clean(self):
         cleaned_data = super().clean()
