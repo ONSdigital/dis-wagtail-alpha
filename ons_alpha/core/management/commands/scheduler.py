@@ -1,13 +1,13 @@
 import atexit
-import logging
 import signal
+
+from functools import partial
 
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.triggers.cron import CronTrigger
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
-
-
-logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -18,7 +18,6 @@ class Command(BaseCommand):
 
         self.configure_scheduler()
 
-        logger.info("Starting scheduler")
         self.scheduler.start()
 
     def setup_signals(self):
@@ -28,8 +27,11 @@ class Command(BaseCommand):
 
     def shutdown(self, *args, **kwargs):
         if self.scheduler.running:
-            logger.info("Shutting down scheduler")
             self.scheduler.shutdown(wait=False)
 
+    def add_management_command(self, command_name, trigger, **kwargs):
+        func = partial(call_command, command_name, **kwargs)
+        self.scheduler.add_job(func, name=command_name, trigger=trigger)
+
     def configure_scheduler(self):
-        pass
+        self.add_management_command("publish_scheduled", CronTrigger(second=0))
