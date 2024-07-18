@@ -1,4 +1,5 @@
 from functools import cached_property
+
 from django.db import models
 from django.http import Http404
 from django.shortcuts import redirect
@@ -18,11 +19,14 @@ from wagtail.models import Orderable, Page, Revision
 from wagtail.search import index
 
 from ons_alpha.core.models.base import BasePage
+
 from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
+
 
 class BulletinTopicRelationship(Orderable):
     page = ParentalKey("bulletins.BulletinPage", on_delete=models.CASCADE, related_name="topics")
     topic = models.ForeignKey("taxonomy.Topic", on_delete=models.CASCADE, related_name="bulletins")
+
 
 class BulletinPage(BasePage):
     template = "templates/pages/bulletins/bulletin_page.html"
@@ -41,7 +45,9 @@ class BulletinPage(BasePage):
     is_accredited = models.BooleanField(default=False)
     body = StreamField(BulletinStoryBlock(), use_json_field=True)
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
-    previous_version = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='corrections')
+    previous_version = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.SET_NULL, related_name="corrections"
+    )
 
     content_panels = BasePage.content_panels + [
         FieldPanel("summary"),
@@ -119,10 +125,11 @@ class BulletinPage(BasePage):
     def save(self, *args, **kwargs):
         # Set the previous_version field for corrections
         if self.revisions.exists() and not self.previous_version:
-            latest_revision = self.revisions.order_by('-created_at').first()
+            latest_revision = self.revisions.order_by("-created_at").first()
             if latest_revision:
                 self.previous_version = latest_revision.page
         super().save(*args, **kwargs)
+
 
 class BulletinSeriesPage(RoutablePageMixin, Page):
     parent_page_types = ["topics.TopicPage"]
@@ -172,8 +179,10 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
         try:
             page_revision = Revision.objects.get(pk=version)
         except Revision.DoesNotExist:
-            raise Http404
+            raise Http404 from None
 
         return self.render(
-            request, context_overrides={"page": page_revision.as_page_object()}, template="templates/pages/bulletins/bulletin_page.html"
+            request,
+            context_overrides={"page": page_revision.as_page_object()},
+            template="templates/pages/bulletins/bulletin_page.html",
         )
