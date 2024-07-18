@@ -48,6 +48,7 @@ pylint = "^3.2.4"
 black = "^24.4.2"  # keep version in sync with .pre-commit-config.toml
 djhtml = "~3.0.6"
 setuptools = "^70.2.0"
+honcho = "^1.1.0"
 
 [build-system]
 requires = ["poetry>=1,<2"]
@@ -124,7 +125,3 @@ omit = [
 
 [tool.coverage.report]
 show_missing = true
-
-[tool.poetry.plugins.dotenv]
-ignore = "false"
-location = ".env"
