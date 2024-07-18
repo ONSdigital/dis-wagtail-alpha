@@ -1,5 +1,4 @@
 from functools import cached_property
-
 from django.db import models
 from django.http import Http404
 from django.shortcuts import redirect
@@ -14,7 +13,7 @@ from wagtail.admin.panels import (
     TabbedInterface,
 )
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
-from wagtail.models import Orderable, Page
+from wagtail.models import Orderable, Page, Revision
 from wagtail.search import index
 
 from ons_alpha.core.models.base import BasePage
@@ -47,6 +46,7 @@ class BulletinPage(BasePage):
     is_accredited = models.BooleanField(default=False)
     body = StreamField(BulletinStoryBlock(), use_json_field=True)
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
+    previous_version = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='corrections')
 
     content_panels = BasePage.content_panels + [
         FieldPanel("summary"),
@@ -105,7 +105,7 @@ class BulletinPage(BasePage):
     @cached_property
     def toc(self):
         items = [{"url": "#summary", "text": "Summary"}]
-        for block in self.body:  # pylint: disable=not-an-iterable
+        for block in self.body:
             if hasattr(block.block, "to_table_of_contents_items"):
                 items += block.block.to_table_of_contents_items(block.value)
         if self.contact_details_id:
@@ -120,6 +120,14 @@ class BulletinPage(BasePage):
         context = super().get_context(request, *args, **kwargs)
         context["toc"] = self.toc
         return context
+
+    def save(self, *args, **kwargs):
+        # Set the previous_version field for corrections
+        if self.revisions.exists() and not self.previous_version:
+            latest_revision = self.revisions.order_by('-created_at').first()
+            if latest_revision:
+                self.previous_version = latest_revision.page
+        super().save(*args, **kwargs)
 
 
 class BulletinSeriesPage(RoutablePageMixin, Page):
@@ -163,4 +171,14 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
             request,
             context_overrides={"bulletins": previous},
             template="templates/pages/bulletins/previous_releases.html",
+        )
+
+    @path("previous/v<int:version>/")
+    def previous_version(self, request, version):
+        page_revision = Revision.objects.get(pk=version)
+        if not page_revision:
+            raise Http404
+
+        return self.render(
+            request, context_overrides={"page": page_revision.as_page_object()}, template="templates/pages/bulletins/bulletin_page.html"
         )

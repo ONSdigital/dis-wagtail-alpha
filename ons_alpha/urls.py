@@ -14,7 +14,6 @@ from wagtail.utils.urlpatterns import decorate_urlpatterns
 from ons_alpha.search import views as search_views
 from ons_alpha.utils.cache import get_default_cache_control_decorator
 
-
 private_urlpatterns = []
 
 # django-defender
