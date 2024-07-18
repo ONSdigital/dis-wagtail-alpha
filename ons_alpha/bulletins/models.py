@@ -34,6 +34,14 @@ class BulletinPage(BasePage):
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
 
+    release_calendar_page = models.ForeignKey(
+        "release_calendar.ReleasePage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="related_bulletins",
+    )
+
     summary = models.TextField()
     release_date = models.DateField()
     next_release_date = models.DateField()
@@ -49,6 +57,7 @@ class BulletinPage(BasePage):
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
 
     content_panels = BasePage.content_panels + [
+        FieldPanel("release_calendar_page"),
         FieldPanel("summary"),
         MultiFieldPanel(
             [
