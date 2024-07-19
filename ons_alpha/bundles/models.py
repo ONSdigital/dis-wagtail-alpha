@@ -2,6 +2,7 @@ from functools import cached_property
 
 from django.db import models
 from wagtail.admin.panels import FieldPanel, FieldRowPanel
+from wagtail.search import index
 
 
 class BundleStatus(models.TextChoices):
@@ -11,7 +12,7 @@ class BundleStatus(models.TextChoices):
     RELEASED = "RELEASED", "Released"
 
 
-class Bundle(models.Model):
+class Bundle(index.Indexed, models.Model):
     name = models.CharField(max_length=255)
     collection_reference = models.CharField(max_length=255, blank=True, help_text="Florence Collection reference")
     topic = models.ForeignKey(
@@ -53,6 +54,11 @@ class Bundle(models.Model):
             heading="Scheduling",
         ),
         FieldPanel("status"),
+    ]
+
+    search_fields = [
+        index.SearchField("name"),
+        index.AutocompleteField("name"),
     ]
 
     def __str__(self):
