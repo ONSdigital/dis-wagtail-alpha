@@ -1,7 +1,12 @@
 from functools import cached_property
 
+from django.conf import settings
 from django.db import models
-from wagtail.admin.panels import FieldPanel, FieldRowPanel
+from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, PageChooserPanel
+from wagtail.fields import RichTextField
+from wagtail.models import Orderable
 from wagtail.search import index
 
 
@@ -12,7 +17,29 @@ class BundleStatus(models.TextChoices):
     RELEASED = "RELEASED", "Released"
 
 
-class Bundle(index.Indexed, models.Model):
+class BundlePage(Orderable):
+    parent = ParentalKey("Bundle", related_name="bundled_pages", on_delete=models.CASCADE)
+    page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
+
+    panels = [
+        PageChooserPanel("page", ["bulletins.BulletinPage"]),
+    ]
+
+
+class BundleLink(Orderable):
+    parent = ParentalKey("Bundle", related_name="bundled_links", on_delete=models.CASCADE)
+    url = models.URLField(blank=True)
+    title = models.CharField(blank=True, max_length=255)
+    description = RichTextField(blank=True, features=settings.RICH_TEXT_BASIC)
+
+    panels = [
+        FieldPanel("url", heading="URL"),
+        FieldPanel("title"),
+        FieldPanel("description"),
+    ]
+
+
+class Bundle(index.Indexed, ClusterableModel):
     name = models.CharField(max_length=255)
     collection_reference = models.CharField(max_length=255, blank=True, help_text="Florence Collection reference")
     topic = models.ForeignKey(
@@ -44,7 +71,7 @@ class Bundle(index.Indexed, models.Model):
 
     panels = [
         FieldPanel("name"),
-        FieldPanel("topic"),
+        FieldPanel("topic", icon="tag"),
         FieldPanel("collection_reference"),
         FieldRowPanel(
             [
@@ -52,8 +79,11 @@ class Bundle(index.Indexed, models.Model):
                 FieldPanel("release_calendar_page", heading="or Release Calendar page"),
             ],
             heading="Scheduling",
+            icon="calendar",
         ),
         FieldPanel("status"),
+        InlinePanel("bundled_pages", heading="Bundled pages", icon="doc-empty"),
+        InlinePanel("bundled_links", heading="Bundled links (datasets, time series)", icon="link"),
     ]
 
     search_fields = [
