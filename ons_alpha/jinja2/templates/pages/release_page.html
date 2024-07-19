@@ -49,6 +49,9 @@
 
             {% block release_content %}
                 {% include_block page.content %}
+                {% if page.datasets %}
+                    {% include_block page.datasets %}
+                {% endif %}
 
                 {% if page.contact_details %}
                     <section id="contact-details">
