@@ -20,6 +20,7 @@ def global_admin_js():
 def register_icons(icons):
     return icons + [
         "wagtailfontawesomesvg/solid/chart-simple.svg",
+        "wagtailfontawesomesvg/solid/boxes-stacked.svg",
     ]
 
 
