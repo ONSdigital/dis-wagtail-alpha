@@ -6,7 +6,7 @@ from wagtail.admin.views.generic.chooser import ChooseView
 from wagtail.admin.viewsets.chooser import ChooserViewSet
 from wagtail.admin.viewsets.model import ModelViewSet
 
-from .models import Bundle, BundleStatus
+from .models import Bundle
 
 
 class BundleCrateView(CreateView):
@@ -57,7 +57,7 @@ class BundleChooserViewSet(ChooserViewSet):
     url_filter_parameters = ["topic"]
 
     def get_object_list(self):
-        return self.model.objects.exclude(status_in=[BundleStatus.APPROVED, BundleStatus.RELEASED])
+        return self.model.active_objects.all()
 
 
 class BundleViewSet(ModelViewSet):

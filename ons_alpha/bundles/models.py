@@ -17,6 +17,9 @@ class BundleStatus(models.TextChoices):
     RELEASED = "RELEASED", "Released"
 
 
+ACTIVE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW]
+
+
 class BundlePage(Orderable):
     parent = ParentalKey("Bundle", related_name="bundled_pages", on_delete=models.CASCADE)
     page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
@@ -37,6 +40,11 @@ class BundleLink(Orderable):
         FieldPanel("title"),
         FieldPanel("description"),
     ]
+
+
+class ActiveBundlesManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status__in=ACTIVE_BUNDLE_STATUSES)
 
 
 class Bundle(index.Indexed, ClusterableModel):
@@ -68,6 +76,9 @@ class Bundle(index.Indexed, ClusterableModel):
         related_name="bundles",
     )
     status = models.CharField(choices=BundleStatus.choices, default=BundleStatus.PENDING, max_length=32)
+
+    objects = models.Manager()
+    active_objects = ActiveBundlesManager()
 
     panels = [
         FieldPanel("name"),
