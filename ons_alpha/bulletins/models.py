@@ -131,7 +131,11 @@ class BulletinPage(BasePage):
                     if block.block_type == "corrections_notices_story":
                         latest_correction_block = block
                         break
-                if latest_correction_block and "previous_version" not in latest_correction_block.value:
+                if (
+                    latest_correction_block
+                    and ("previous_version" not in latest_correction_block.value
+                         or not latest_correction_block.value["previous_version"])
+                ):
                     latest_correction_block.value["previous_version"] = latest_revision.pk
         super().save(*args, **kwargs)
 
