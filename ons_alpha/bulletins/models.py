@@ -22,10 +22,7 @@ from wagtail.search import index
 from ons_alpha.core.models.base import BasePage
 
 from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
-
-
-# Import BulletinPageAdminForm lazily to avoid circular import
-BulletinPageAdminForm = None
+from .forms import BulletinPageAdminForm
 
 
 class BulletinTopicRelationship(Orderable):
@@ -34,7 +31,7 @@ class BulletinTopicRelationship(Orderable):
 
 
 class BulletinPage(BasePage):
-    base_form_class = BulletinPageAdminForm  # Reference the form here
+    base_form_class = BulletinPageAdminForm
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
 
@@ -94,6 +91,14 @@ class BulletinPage(BasePage):
         index.SearchField("get_admin_display_title", boost=2),
         index.AutocompleteField("get_admin_display_title"),
     ]
+
+    def save(self, *args, **kwargs):
+        # Set the previous_version field for corrections
+        if self.revisions.exists():
+            latest_revision = self.revisions.order_by("-created_at").first()
+            if latest_revision and not self.updates:
+                self.updates.append({"previous_version": latest_revision.pk})
+        super().save(*args, **kwargs)
 
     @property
     def full_title(self):

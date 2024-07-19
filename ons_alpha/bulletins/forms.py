@@ -1,5 +1,4 @@
 from django import forms
-from django.apps import apps
 from wagtail.admin.forms import WagtailAdminPageForm
 
 
@@ -7,7 +6,7 @@ class BulletinPageAdminForm(WagtailAdminPageForm):
     previous_version = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
-        model = apps.get_model("bulletins", "BulletinPage")  # Lazy reference to avoid circular dependency
+        model = "bulletins.BulletinPage"
         fields = "__all__"
 
     def clean(self):
