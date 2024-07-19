@@ -1,6 +1,7 @@
 import logging
 
 from django.conf import settings
+from django.utils.dateformat import format as date_format
 from django.utils.html import format_html
 from slack_sdk.webhook import WebhookClient
 from wagtail import hooks
@@ -29,6 +30,7 @@ def notify_slack_of_publish(request, page):
 
     revision = page.latest_revision
     user = revision.user
+    go_live_time = revision.approved_go_live_at or page.last_published_at
 
     client = WebhookClient(webhook_url)
 
@@ -40,6 +42,11 @@ def notify_slack_of_publish(request, page):
                 "fields": [
                     {"title": "Title", "value": page.title, "short": True},
                     {"title": "Published by", "value": user.get_full_name() if user else "System", "short": True},
+                    {
+                        "title": "Go-live time",
+                        "value": date_format(go_live_time, settings.SHORT_DATETIME_FORMAT),
+                        "short": True,
+                    },
                     {"title": "Link", "value": page.get_full_url(request=request), "short": False},
                 ],
             }
