@@ -92,14 +92,6 @@ class BulletinPage(BasePage):
         index.AutocompleteField("get_admin_display_title"),
     ]
 
-    def save(self, *args, **kwargs):
-        # Set the previous_version field for corrections
-        if self.revisions.exists():
-            latest_revision = self.revisions.order_by("-created_at").first()
-            if latest_revision and not self.updates:
-                self.updates.append({"previous_version": latest_revision.pk})
-        super().save(*args, **kwargs)
-
     @property
     def full_title(self):
         return f"{self.get_parent().title}: {self.title}"
@@ -129,6 +121,19 @@ class BulletinPage(BasePage):
         context = super().get_context(request, *args, **kwargs)
         context["toc"] = self.toc
         return context
+
+    def save(self, *args, **kwargs):
+        if self.revisions.exists():
+            latest_revision = self.revisions.order_by("-created_at").first()
+            if latest_revision:
+                latest_correction_block = None
+                for block in self.updates:  # pylint: disable=not-an-iterable
+                    if block.block_type == "corrections_notices_story":
+                        latest_correction_block = block
+                        break
+                if latest_correction_block and "previous_version" not in latest_correction_block.value:
+                    latest_correction_block.value["previous_version"] = latest_revision.pk
+        super().save(*args, **kwargs)
 
 
 class BulletinSeriesPage(RoutablePageMixin, Page):
@@ -176,7 +181,7 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
     def previous_version(self, request, version):
         page_revision = get_object_or_404(Revision, pk=version)
 
-        # Ensure the revision is of the correct page type and is published
+        # Ensures that the revision is of the correct page type and is published
         page = page_revision.as_page_object()
         if not isinstance(page, BulletinPage) or not page.live:
             raise Http404
