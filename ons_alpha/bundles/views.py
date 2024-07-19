@@ -9,7 +9,7 @@ from wagtail.admin import messages
 from wagtail.models import Page
 
 from .forms import AddToBundleForm
-from .models import BundlePage
+from .models import BundledPageMixin, BundlePage
 
 
 if TYPE_CHECKING:
@@ -18,20 +18,33 @@ if TYPE_CHECKING:
 
 def add_to_bundle(request: "HttpRequest", page_to_add_id: "Page"):
     page_to_add = get_object_or_404(Page, id=page_to_add_id)
+    page_to_add = page_to_add.specific
+
+    if not issubclass(type(page_to_add), BundledPageMixin):
+        raise PermissionDenied
+
     page_perms = page_to_add.permissions_for_user(request.user)
     # note: add the relevant permission checks
     if not (page_perms.can_edit() or page_perms.can_publish()):
         raise PermissionDenied
 
-    add_form = AddToBundleForm(
-        request.POST or None,
-        page_to_add=page_to_add,
-    )
-
     next = None
     redirect_to = request.GET.get("next", None)
     if redirect_to and url_has_allowed_host_and_scheme(url=redirect_to, allowed_hosts={request.get_host()}):
         next = redirect_to
+
+    if page_to_add.in_active_bundle:
+        bundles = ", ".join(list(page_to_add.active_bundles.values_list("name", flat=True)))
+        messages.warning(request, f"Page {page_to_add.get_admin_display_title()} is already in a bundle ('{bundles}')")
+        if next:
+            return redirect(next)
+        else:
+            return reverse("wagtailadmin_home")
+
+    add_form = AddToBundleForm(
+        request.POST or None,
+        page_to_add=page_to_add,
+    )
 
     if request.method == "POST":  # noqa SIM102
         if add_form.is_valid() and (bundle := add_form.cleaned_data.get("bundle")):

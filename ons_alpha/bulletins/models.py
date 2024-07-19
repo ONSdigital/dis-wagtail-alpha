@@ -17,6 +17,7 @@ from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.models import Orderable, Page
 from wagtail.search import index
 
+from ons_alpha.bundles.models import BundledPageMixin
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
 
@@ -29,7 +30,7 @@ class BulletinTopicRelationship(Orderable):
     topic = models.ForeignKey("taxonomy.Topic", on_delete=models.CASCADE, related_name="bulletins")
 
 
-class BulletinPage(BasePage):
+class BulletinPage(BundledPageMixin, BasePage):
     base_form_class = BulletinPageAdminForm
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
@@ -49,23 +50,27 @@ class BulletinPage(BasePage):
     body = StreamField(BulletinStoryBlock(), use_json_field=True)
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
 
-    content_panels = BasePage.content_panels + [
-        FieldPanel("summary"),
-        MultiFieldPanel(
-            [
-                FieldRowPanel(
-                    [
-                        FieldPanel("release_date"),
-                        FieldPanel("next_release_date"),
-                    ]
-                ),
-                FieldPanel("is_accredited"),
-                FieldPanel("contact_details"),
-            ],
-            heading="Metadata",
-        ),
-        FieldPanel("body"),
-    ]
+    content_panels = (
+        BasePage.content_panels
+        + BundledPageMixin.panels
+        + [
+            FieldPanel("summary"),
+            MultiFieldPanel(
+                [
+                    FieldRowPanel(
+                        [
+                            FieldPanel("release_date"),
+                            FieldPanel("next_release_date"),
+                        ]
+                    ),
+                    FieldPanel("is_accredited"),
+                    FieldPanel("contact_details"),
+                ],
+                heading="Metadata",
+            ),
+            FieldPanel("body"),
+        ]
+    )
 
     edit_handler = TabbedInterface(
         [

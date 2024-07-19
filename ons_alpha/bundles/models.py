@@ -2,12 +2,15 @@ from functools import cached_property
 
 from django.conf import settings
 from django.db import models
+from django.db.models import QuerySet
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, PageChooserPanel
 from wagtail.fields import RichTextField
 from wagtail.models import Orderable
 from wagtail.search import index
+
+from .panels import BundleNotePanel
 
 
 class BundleStatus(models.TextChoices):
@@ -17,7 +20,8 @@ class BundleStatus(models.TextChoices):
     RELEASED = "RELEASED", "Released"
 
 
-ACTIVE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW]
+ACTIVE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW, BundleStatus.APPROVED]
+EDITABLE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW]
 
 
 class BundlePage(Orderable):
@@ -27,6 +31,9 @@ class BundlePage(Orderable):
     panels = [
         PageChooserPanel("page", ["bulletins.BulletinPage"]),
     ]
+
+    def __str__(self):
+        return f"BundlePage: page {self.page_id} in bundle {self.parent_id}"
 
 
 class BundleLink(Orderable):
@@ -45,6 +52,11 @@ class BundleLink(Orderable):
 class ActiveBundlesManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(status__in=ACTIVE_BUNDLE_STATUSES)
+
+
+class EditableBundlesManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status__in=EDITABLE_BUNDLE_STATUSES)
 
 
 class Bundle(index.Indexed, ClusterableModel):
@@ -79,6 +91,7 @@ class Bundle(index.Indexed, ClusterableModel):
 
     objects = models.Manager()
     active_objects = ActiveBundlesManager()
+    editable_objects = EditableBundlesManager()
 
     panels = [
         FieldPanel("name"),
@@ -108,3 +121,23 @@ class Bundle(index.Indexed, ClusterableModel):
     @cached_property
     def scheduled_publication_date(self):
         return self.publication_date or self.release_calendar_page.release_date
+
+
+class BundledPageMixin:
+    """
+    A helper page mixin for bundled content
+    """
+
+    panels = [BundleNotePanel(heading="Bundle", icon="boxes-stacked")]
+
+    @cached_property
+    def bundles(self) -> QuerySet[Bundle]:
+        return Bundle.objects.filter(pk__in=self.bundlepage_set.all().values_list("parent", flat=True))
+
+    @cached_property
+    def active_bundles(self) -> QuerySet[Bundle]:
+        return self.bundles.filter(status__in=ACTIVE_BUNDLE_STATUSES)
+
+    @cached_property
+    def in_active_bundle(self) -> bool:
+        return self.bundlepage_set.filter(parent__status__in=ACTIVE_BUNDLE_STATUSES).exists()

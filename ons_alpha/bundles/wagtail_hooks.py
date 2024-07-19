@@ -4,6 +4,7 @@ from wagtail import hooks
 from wagtail.admin.widgets import PageListingButton
 
 from . import admin_urls
+from .models import BundledPageMixin
 from .viewsets import bundle_chooser_viewset, bundle_viewset
 
 
@@ -19,7 +20,13 @@ class PageAddToBundleButton(PageListingButton):
     url_name = "bundles:add_to_bundle"
 
     @property
-    def show(self):
+    def show(self) -> bool:
+        if not issubclass(type(self.page), BundledPageMixin):
+            return False
+
+        if self.page.in_active_bundle:
+            return False
+
         # Note: limit to pages that are not in an active bundle
         return self.page_perms.can_edit() or self.page_perms.can_publish()
 
