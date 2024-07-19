@@ -33,6 +33,7 @@ class BulletinPage(BasePage):
     base_form_class = BulletinPageAdminForm
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
+    subpage_types = []
 
     summary = models.TextField()
     release_date = models.DateField()

@@ -52,6 +52,7 @@ class ReleasePage(BasePage):
     template = "templates/pages/release_page.html"
 
     parent_page_types = ["ReleaseIndex"]
+    subpage_types = []
 
     status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.UPCOMING, max_length=32)
 
