@@ -131,10 +131,7 @@ class BulletinPage(BasePage):
                     if block.block_type == "corrections_notices_story":
                         latest_correction_block = block
                         break
-                if latest_correction_block and (
-                    "previous_version" not in latest_correction_block.value
-                    or not latest_correction_block.value["previous_version"]
-                ):
+                if latest_correction_block and not latest_correction_block.value.get("previous_version"):
                     latest_correction_block.value["previous_version"] = latest_revision.pk
         super().save(*args, **kwargs)
 
@@ -184,7 +181,7 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
     def previous_version(self, request, version):
         page_revision = get_object_or_404(Revision, pk=version)
 
-        # Ensures that the revision is of the correct page type and is published
+        # Ensure the revision is of the correct page type and is published
         page = page_revision.as_page_object()
         if not isinstance(page, BulletinPage) or not page.live:
             raise Http404
