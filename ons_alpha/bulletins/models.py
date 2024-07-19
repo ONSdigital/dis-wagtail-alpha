@@ -18,6 +18,7 @@ from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.fields import StreamField
 from wagtail.models import Orderable, Page, Revision
 from wagtail.search import index
+from django.contrib.contenttypes.models import ContentType
 
 from ons_alpha.core.models.base import BasePage
 
