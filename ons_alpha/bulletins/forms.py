@@ -1,9 +1,6 @@
 from django import forms
 from wagtail.admin.forms import WagtailAdminPageForm
 
-from .models import BulletinPage
-
-
 class BulletinPageAdminForm(WagtailAdminPageForm):
     previous_version = forms.CharField(widget=forms.HiddenInput(), required=False)
 
@@ -12,6 +9,8 @@ class BulletinPageAdminForm(WagtailAdminPageForm):
         fields = "__all__"
 
     def clean(self):
+        from .models import BulletinPage  # Lazy import to avoid circular dependency
+
         cleaned_data = super().clean()
 
         # Remove duplicate topics
