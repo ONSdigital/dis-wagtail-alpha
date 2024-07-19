@@ -1,8 +1,39 @@
+from django.urls import include, path
+from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
+from wagtail.admin.widgets import PageListingButton
 
+from . import admin_urls
 from .viewsets import bundle_chooser_viewset, bundle_viewset
 
 
 @hooks.register("register_admin_viewset")
 def register_viewset():
     return [bundle_viewset, bundle_chooser_viewset]
+
+
+class PageAddToBundleButton(PageListingButton):
+    label = _("Add to Bundle")
+    icon_name = "boxes-stacked"
+    aria_label_format = _("Add '%(title)s' to a bundle")
+    url_name = "bundles:add_to_bundle"
+
+    @property
+    def show(self):
+        # Note: limit to pages that are not in an active bundle
+        return self.page_perms.can_edit() or self.page_perms.can_publish()
+
+
+@hooks.register("register_page_header_buttons")
+def page_header_buttons(page, user, view_name, next_url=None):
+    yield PageAddToBundleButton(page=page, user=user, priority=10, next_url=next_url)
+
+
+@hooks.register("register_page_listing_buttons")
+def page_listing_buttons(page, user, next_url=None):
+    yield PageAddToBundleButton(page=page, user=user, priority=10, next_url=next_url)
+
+
+@hooks.register("register_admin_urls")
+def register_admin_urls():
+    return [path("bundles/", include(admin_urls))]
