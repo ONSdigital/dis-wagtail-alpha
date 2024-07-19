@@ -22,7 +22,10 @@ from wagtail.search import index
 from ons_alpha.core.models.base import BasePage
 
 from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
-from .forms import BulletinPageAdminForm
+
+
+# Import BulletinPageAdminForm lazily to avoid circular import
+BulletinPageAdminForm = None
 
 
 class BulletinTopicRelationship(Orderable):
@@ -31,7 +34,7 @@ class BulletinTopicRelationship(Orderable):
 
 
 class BulletinPage(BasePage):
-    base_form_class = BulletinPageAdminForm
+    base_form_class = BulletinPageAdminForm  # Reference the form here
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
 
