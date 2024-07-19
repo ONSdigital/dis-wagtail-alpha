@@ -31,11 +31,12 @@ def notify_slack_of_publish(request, page):
     revision = page.latest_revision
     user = revision.user
     go_live_time = revision.approved_go_live_at or page.last_published_at
+    is_new_page = page.first_published_at == page.last_published_at
 
     client = WebhookClient(webhook_url)
 
     response = client.send(
-        text="A new page has been published",
+        text="A new page has been published" if is_new_page else "A page has been updated",
         attachments=[
             {
                 "color": "good",
