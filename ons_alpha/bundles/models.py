@@ -4,11 +4,12 @@ from django.conf import settings
 from django.db import models
 from django.db.models import F, QuerySet
 from django.db.models.functions import Coalesce
+from django.utils.timezone import now
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, PageChooserPanel
 from wagtail.fields import RichTextField
-from wagtail.models import Orderable
+from wagtail.models import Orderable, Page
 from wagtail.search import index
 
 from .panels import BundleNotePanel
@@ -131,6 +132,20 @@ class Bundle(index.Indexed, ClusterableModel):
     @cached_property
     def scheduled_publication_date(self):
         return self.publication_date or (self.release_calendar_page_id and self.release_calendar_page.release_date)
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+
+        if self.scheduled_publication_date and self.scheduled_publication_date >= now():
+            # Schedule publishing for related pages
+            for bundled_page in Page.objects.filter(
+                pk__in=self.bundled_pages.values_list("page__pk", flat=True)
+            ).specific():
+                if bundled_page.go_live_at == self.scheduled_publication_date:
+                    continue
+                bundled_page.go_live_at = self.scheduled_publication_date
+                revision = bundled_page.save_revision()
+                revision.publish()
 
 
 class BundledPageMixin:

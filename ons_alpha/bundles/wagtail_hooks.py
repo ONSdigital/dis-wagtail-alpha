@@ -1,4 +1,5 @@
 from django.urls import include, path
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.widgets import PageListingButton
@@ -44,3 +45,16 @@ def page_listing_buttons(page, user, next_url=None):
 @hooks.register("register_admin_urls")
 def register_admin_urls():
     return [path("bundles/", include(admin_urls))]
+
+
+@hooks.register("before_edit_page")
+def preset_golive_date(request, page):  # pylint: disable=unused-argument
+    if not issubclass(type(page), BundledPageMixin):
+        return
+
+    if not page.in_active_bundle:
+        return
+
+    if now() < page.active_bundle.scheduled_publication_date != page.go_live_at:
+        # pre-set the scheduled publishing time
+        page.go_live_at = page.active_bundle.scheduled_publication_date
