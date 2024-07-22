@@ -133,16 +133,22 @@ class Bundle(index.Indexed, ClusterableModel):
     def scheduled_publication_date(self):
         return self.publication_date or (self.release_calendar_page_id and self.release_calendar_page.release_date)
 
+    def get_bundled_pages(self) -> QuerySet[Page]:
+        return Page.objects.filter(pk__in=self.bundled_pages.values_list("page__pk", flat=True))
+
     def save(self, **kwargs):
         super().save(**kwargs)
 
+        if self.status == BundleStatus.RELEASED:
+            return
+
         if self.scheduled_publication_date and self.scheduled_publication_date >= now():
             # Schedule publishing for related pages
-            for bundled_page in Page.objects.filter(
-                pk__in=self.bundled_pages.values_list("page__pk", flat=True)
-            ).specific():
+            for bundled_page in self.get_bundled_pages().specific():
                 if bundled_page.go_live_at == self.scheduled_publication_date:
                     continue
+
+                # note: this could use a custom log action for history
                 bundled_page.go_live_at = self.scheduled_publication_date
                 revision = bundled_page.save_revision()
                 revision.publish()
