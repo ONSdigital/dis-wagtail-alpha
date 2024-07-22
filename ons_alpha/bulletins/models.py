@@ -3,8 +3,9 @@ from typing import Dict, List
 
 from django.db import models
 from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from modelcluster.fields import ParentalKey
+from wagtail.admin.forms import WagtailAdminPageForm  # Ensure WagtailAdminPageForm is imported
 from wagtail.admin.panels import (
     FieldPanel,
     FieldRowPanel,
@@ -22,7 +23,27 @@ from wagtail.search import index
 from ons_alpha.core.models.base import BasePage
 
 from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
-from .forms import BulletinPageAdminForm
+
+
+class BulletinPageAdminForm(WagtailAdminPageForm):
+    class Meta:
+        fields = "__all__"
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Remove duplicate topics
+        chosen = []
+        for idx, form in enumerate(self.formsets["topics"].forms):
+            if not form.is_valid():
+                continue
+            topic = form.clean().get("topic")
+            if topic in chosen:
+                self.formsets["topics"].forms[idx].cleaned_data["DELETE"] = True
+            else:
+                chosen.append(topic)
+
+        return cleaned_data
 
 
 class BulletinTopicRelationship(Orderable):
@@ -31,7 +52,7 @@ class BulletinTopicRelationship(Orderable):
 
 
 class BulletinPage(BasePage):
-    base_form_class = BulletinPageAdminForm
+    base_form_class = BulletinPageAdminForm  # Ensure this is correctly defined
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
 
@@ -131,8 +152,9 @@ class BulletinPage(BasePage):
                     if block.block_type == "corrections_notices_story":
                         latest_correction_block = block
                         break
-                if latest_correction_block and (
-                    "previous_version" not in latest_correction_block.value
+                if (
+                    latest_correction_block
+                    and "previous_version" not in latest_correction_block.value
                     or not latest_correction_block.value["previous_version"]
                 ):
                     latest_correction_block.value["previous_version"] = latest_revision.pk
@@ -182,11 +204,11 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
 
     @path("previous/v<int:version>/")
     def previous_version(self, request, version):
-        page_revision = get_object_or_404(Revision, pk=version)
-
-        # Ensures that the revision is of the correct page type and is published
-        page = page_revision.as_page_object()
-        if not isinstance(page, BulletinPage) or not page.live:
-            raise Http404
-
-        return self.render(request, context_overrides={"page": page})
+        try:
+            page_revision = Revision.objects.get(pk=version)
+            page = page_revision.as_page_object()
+            if not isinstance(page, BulletinPage) or not page.live:
+                raise Http404
+            return self.render(request, context_overrides={"page": page})
+        except Revision.DoesNotExist as err:
+            raise Http404 from err
