@@ -776,3 +776,7 @@ CRISPY_FAIL_SILENTLY = False  # Default for local development. Gets overridden.
 # Set to "same-origin-allow-popups" to allow popups
 # from third-party applications like PayPal or Zoom as needed
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin"
+
+SLACK_PUBLISH_NOTIFICATION_WEBHOOK_URL = env.get("SLACK_PUBLISH_NOTIFICATION_WEBHOOK_URL")
+
+SHORT_DATETIME_FORMAT = "d/m/Y P"
