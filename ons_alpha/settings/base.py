@@ -421,6 +421,11 @@ LOGGING = {
             "level": "WARNING",
             "propagate": False,
         },
+        "apscheduler": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }
 
