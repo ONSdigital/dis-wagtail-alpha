@@ -33,7 +33,7 @@ class PageAddToBundleButton(PageListingButton):
 
 
 @hooks.register("register_page_header_buttons")
-def page_header_buttons(page, user, view_name, next_url=None):
+def page_header_buttons(page, user, view_name, next_url=None):  # pylint: disable=unused-argument
     yield PageAddToBundleButton(page=page, user=user, priority=10, next_url=next_url)
 
 

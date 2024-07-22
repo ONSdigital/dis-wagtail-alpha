@@ -127,7 +127,7 @@ class Bundle(index.Indexed, ClusterableModel):
     ]
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     @cached_property
     def scheduled_publication_date(self):

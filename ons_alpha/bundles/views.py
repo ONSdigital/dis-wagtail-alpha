@@ -28,18 +28,18 @@ def add_to_bundle(request: "HttpRequest", page_to_add_id: "Page"):
     if not (page_perms.can_edit() or page_perms.can_publish()):
         raise PermissionDenied
 
-    next = None
+    goto_next = None
     redirect_to = request.GET.get("next", None)
     if redirect_to and url_has_allowed_host_and_scheme(url=redirect_to, allowed_hosts={request.get_host()}):
-        next = redirect_to
+        goto_next = redirect_to
 
     if page_to_add.in_active_bundle:
         bundles = ", ".join(list(page_to_add.active_bundles.values_list("name", flat=True)))
         messages.warning(request, f"Page {page_to_add.get_admin_display_title()} is already in a bundle ('{bundles}')")
-        if next:
-            return redirect(next)
-        else:
-            return reverse("wagtailadmin_home")
+        if goto_next:
+            return redirect(goto_next)
+
+        return redirect("wagtailadmin_home")
 
     add_form = AddToBundleForm(
         request.POST or None,
@@ -67,8 +67,8 @@ def add_to_bundle(request: "HttpRequest", page_to_add_id: "Page"):
                 redirect_to = request.POST.get("next", None)
                 if redirect_to and url_has_allowed_host_and_scheme(url=redirect_to, allowed_hosts={request.get_host()}):
                     return redirect(redirect_to)
-                else:
-                    (reverse("wagtailadmin_explore", args=[page_to_add.get_parent().id]),)
+
+                return redirect("wagtailadmin_explore", page_to_add.get_parent().id)
 
     return TemplateResponse(
         request,
@@ -76,6 +76,6 @@ def add_to_bundle(request: "HttpRequest", page_to_add_id: "Page"):
         {
             "page_to_add": page_to_add,
             "add_form": add_form,
-            "next": next,
+            "next": goto_next,
         },
     )
