@@ -42,6 +42,7 @@ class BundleChooseView(ChooseView):
     def columns(self):
         return super().columns + [
             Column("topic", label="Topic", accessor="topic.title"),
+            Column("scheduled_publication_date"),
             UserColumn("created_by"),
         ]
 

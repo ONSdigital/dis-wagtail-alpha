@@ -2,7 +2,8 @@ from functools import cached_property
 
 from django.conf import settings
 from django.db import models
-from django.db.models import QuerySet
+from django.db.models import F, QuerySet
+from django.db.models.functions import Coalesce
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, PageChooserPanel
@@ -49,12 +50,21 @@ class BundleLink(Orderable):
     ]
 
 
-class ActiveBundlesManager(models.Manager):
+class BundleManager(models.Manager):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.annotate(
+            release_date=Coalesce("publication_date", "release_calendar_page__release_date")
+        ).order_by(F("release_date").desc(nulls_last=True))
+        return queryset
+
+
+class ActiveBundlesManager(BundleManager):
     def get_queryset(self):
         return super().get_queryset().filter(status__in=ACTIVE_BUNDLE_STATUSES)
 
 
-class EditableBundlesManager(models.Manager):
+class EditableBundlesManager(BundleManager):
     def get_queryset(self):
         return super().get_queryset().filter(status__in=EDITABLE_BUNDLE_STATUSES)
 
@@ -89,7 +99,7 @@ class Bundle(index.Indexed, ClusterableModel):
     )
     status = models.CharField(choices=BundleStatus.choices, default=BundleStatus.PENDING, max_length=32)
 
-    objects = models.Manager()
+    objects = BundleManager()
     active_objects = ActiveBundlesManager()
     editable_objects = EditableBundlesManager()
 
@@ -120,7 +130,7 @@ class Bundle(index.Indexed, ClusterableModel):
 
     @cached_property
     def scheduled_publication_date(self):
-        return self.publication_date or self.release_calendar_page.release_date
+        return self.publication_date or (self.release_calendar_page_id and self.release_calendar_page.release_date)
 
 
 class BundledPageMixin:
@@ -141,3 +151,7 @@ class BundledPageMixin:
     @cached_property
     def in_active_bundle(self) -> bool:
         return self.bundlepage_set.filter(parent__status__in=ACTIVE_BUNDLE_STATUSES).exists()
+
+    @property
+    def active_bundle(self) -> Bundle:
+        return self.active_bundles.first()
