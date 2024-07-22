@@ -1,8 +1,14 @@
+import json
+import uuid
+
 from django.core.management.base import BaseCommand
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.utils import timezone
+from django.utils.html import strip_tags
 
 from ons_alpha.bundles.models import Bundle, BundleStatus
+from ons_alpha.release_calendar.models import ReleaseStatus
 
 
 class Command(BaseCommand):
@@ -15,6 +21,42 @@ class Command(BaseCommand):
             help="Dry run -- don't change anything.",
         )
 
+    def _update_related_release_calendar_page(self, bundle: Bundle):
+        content = []
+        pages = []
+        for page in bundle.get_bundled_pages():
+            pages.append(
+                {
+                    "id": uuid.uuid4(),
+                    "type": "item",
+                    "value": {"page": page.pk, "title": "", "description": "", "external_url": ""},
+                }
+            )
+        if pages:
+            content.append({"type": "release_content", "value": {"title": "Articles", "links": pages}})
+        links = []
+        for related in bundle.bundled_links.all():
+            links.append(
+                {
+                    "id": uuid.uuid4(),
+                    "type": "item",
+                    "value": {
+                        "page": None,
+                        "title": related.title,
+                        # note: description here is a simple CharBlock
+                        "description": strip_tags(related.description),
+                        "external_url": related.url,
+                    },
+                }
+            )
+        if links:
+            content.append({"type": "release_content", "value": {"title": "Datasets", "links": links}})
+        page = bundle.release_calendar_page
+        page.content = json.dumps(content, cls=DjangoJSONEncoder)
+        page.status = ReleaseStatus.PUBLISHED
+        revision = page.save_revision(log_action=True)
+        revision.publish()
+
     @transaction.atomic
     def handle_bundle(self, bundle: Bundle):
         bundled_pages = bundle.get_bundled_pages()
@@ -26,6 +68,8 @@ class Command(BaseCommand):
             revision.publish(log_action="wagtail.publish.scheduled")
 
         # update the related release calendar and publish
+        if bundle.release_calendar_page_id:
+            self._update_related_release_calendar_page(bundle)
 
         bundle.status = BundleStatus.RELEASED
         bundle.save()
