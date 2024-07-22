@@ -65,8 +65,10 @@ fab migrate
 fab start
 ```
 
-This will start the containers in the background, but not Django. To do this, connect to the web container with `fab sh` 
-and run `djrun` or `./manage.py runserver 0.0.0.0:8000` to run Django in the foreground.
+This will start the containers in the background, but not Django. To do this, connect to the web container with `fab sh`
+and run `honcho start` to start both Django and the scheduler in the foreground.
+
+If you only want to run Django, run `honcho start web` or `./manage.py runserver 0.0.0.0:8000`.
 
 Then, connect to the running container again (`fab sh`) and:
 
@@ -155,5 +157,3 @@ This project uses `Ruff`, `pylint`, and `black` for linting and formatting Pytho
   ```sh
   make format
   ```
-
-
