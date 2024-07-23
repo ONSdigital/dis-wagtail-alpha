@@ -1,1 +1,27 @@
-{% extends "templates/pages/index_page.html" %}
+{% extends "templates/base_page.html" %}
+
+{% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
+
+{% block main %}
+<h1 class="ons-u-fs-xxxl ons-u-mb-m" xmlns="http://www.w3.org/1999/html">
+    <span>{{ page.title }}</span>
+    </br>
+    <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+        <section id="summary">
+            <p>{{ page.summary }}</p>
+        </section>
+    </div>
+
+</h1>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script async src="{{ mathjax() }}"></script>
+<script async src="{{ static('js/third-party/pym.min.js') }}"></script>
+<script async src="{{ static('js/blocks/embeddable.js') }}"></script>
+
+{# HACK: We can't use the built-in inclusion tag, so import the template _directly_. #}
+{{ include_django("wagtailcharts/tags/render_charts.html") }}
+{% endblock %}å
