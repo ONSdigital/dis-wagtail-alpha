@@ -12,6 +12,7 @@ from wagtail.fields import RichTextField
 from wagtail.models import Orderable, Page
 from wagtail.search import index
 
+from .forms import BundleAdminForm
 from .panels import BundleNotePanel
 
 
@@ -71,6 +72,7 @@ class EditableBundlesManager(BundleManager):
 
 
 class Bundle(index.Indexed, ClusterableModel):
+    base_form_class = BundleAdminForm
     name = models.CharField(max_length=255)
     collection_reference = models.CharField(max_length=255, blank=True, help_text="Florence Collection reference")
     topic = models.ForeignKey(
