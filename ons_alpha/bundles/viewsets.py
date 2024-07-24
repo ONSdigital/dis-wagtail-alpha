@@ -9,7 +9,7 @@ from wagtail.admin.viewsets.model import ModelViewSet
 from .models import Bundle
 
 
-class BundleCrateView(CreateView):
+class BundleCreateView(CreateView):
     def save_instance(self):
         instance = super().save_instance()
         instance.created_by = self.request.user
@@ -64,7 +64,7 @@ class BundleChooserViewSet(ChooserViewSet):
 class BundleViewSet(ModelViewSet):
     model = Bundle
     icon = "boxes-stacked"
-    add_view_class = BundleCrateView
+    add_view_class = BundleCreateView
     index_view_class = BundleIndexView
     chooser_viewset_class = BundleChooserViewSet
     list_filter = ["status", "created_by"]

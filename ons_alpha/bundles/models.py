@@ -57,7 +57,7 @@ class BundleManager(models.Manager):
         queryset = super().get_queryset()
         queryset = queryset.annotate(
             release_date=Coalesce("publication_date", "release_calendar_page__release_date")
-        ).order_by(F("release_date").desc(nulls_last=True))
+        ).order_by(F("release_date").desc(nulls_last=True), "-pk")
         return queryset
 
 
