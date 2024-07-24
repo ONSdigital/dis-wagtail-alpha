@@ -37,6 +37,7 @@ class BundleIndexView(IndexView):
         # disable the edit URL for released bundles
         if instance.status != BundleStatus.RELEASED:
             return super().get_edit_url(instance)
+        return None
 
     def get_copy_url(self, instance):
         # disable copy

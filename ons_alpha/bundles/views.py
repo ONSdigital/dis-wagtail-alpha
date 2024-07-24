@@ -8,7 +8,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from wagtail.admin import messages
 from wagtail.models import Page
 
-from .forms import AddToBundleForm
+from .admin_forms import AddToBundleForm
 from .models import BundledPageMixin, BundlePage
 
 
