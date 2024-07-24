@@ -1,5 +1,9 @@
 from django.conf import settings
+from django.forms import Media
+from django.utils.functional import cached_property
 from wagtail import blocks
+from wagtail.blocks.field_block import FieldBlockAdapter
+from wagtail.telepath import register
 
 
 class PanelBlock(blocks.StructBlock):
@@ -22,10 +26,26 @@ class PanelBlock(blocks.StructBlock):
         template = "templates/components/streamfield/panel_block.html"
 
 
+class PreviousVersionBlock(blocks.IntegerBlock):
+    pass
+
+
 class CorrectionBlock(blocks.StructBlock):
     when = blocks.DateTimeBlock()
     text = blocks.RichTextBlock(features=settings.RICH_TEXT_BASIC)
-    previous_version = ...
+    previous_version = PreviousVersionBlock(required=False)
+
+
+class PreviousVersionBlockAdapter(FieldBlockAdapter):
+    js_constructor = "ons_alpha.core.blocks.panels.PreviousVersionBlock"
+
+    @cached_property
+    def media(self):
+        structblock_media = super().media
+        return Media(js=structblock_media._js + ["js/previous-version-block.js"], css=structblock_media._css)
+
+
+register(PreviousVersionBlockAdapter(), PreviousVersionBlock)
 
 
 class NoticeBlock(blocks.StructBlock):

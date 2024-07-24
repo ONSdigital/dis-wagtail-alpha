@@ -1,4 +1,4 @@
-from wagtail.blocks import ListBlock, RichTextBlock, StreamBlock
+from wagtail.blocks import RichTextBlock, StreamBlock
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmath.blocks import MathBlock
@@ -33,9 +33,8 @@ class BulletinStoryBlock(StreamBlock):
 
 
 class CorrectionsNoticesStoryBlock(StreamBlock):
-    corrections = ListBlock(CorrectionBlock(), template="templates/components/streamfield/corrections_block.html")
-    notices = ListBlock(NoticeBlock(), template="templates/components/streamfield/notices_block.html")
+    correction = CorrectionBlock(template="templates/components/streamfield/corrections_block.html")
+    notice = NoticeBlock(template="templates/components/streamfield/notices_block.html")
 
     class Meta:
-        block_counts = {"corrections": {"max_num": 1}, "notices": {"max_num": 1}}
         template = "templates/components/streamfield/corrections_notices_block.html"
