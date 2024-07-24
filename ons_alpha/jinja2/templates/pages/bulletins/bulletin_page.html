@@ -29,6 +29,12 @@
         {% endblock release_meta %}
     </div>
 
+    {% if latest_version_url %}
+        {% call onsPanel({"variant": 'warn', "classes": "ons-u-mt-s"}) %}
+            <p>{{ _("This has been superseded.") }} <a href="{{ latest_version_url }}">{{ _("View corrected version") }}</a></p>
+        {% endcall %}
+    {% endif %}
+
     {% if page.is_latest %}
         {% set notice %}
             <p><a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">Previous Releases</a></p>
