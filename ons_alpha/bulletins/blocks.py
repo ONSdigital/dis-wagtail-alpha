@@ -33,8 +33,8 @@ class BulletinStoryBlock(StreamBlock):
 
 
 class CorrectionsNoticesStoryBlock(StreamBlock):
-    correction = CorrectionBlock(template="templates/components/streamfield/corrections_block.html")
-    notice = NoticeBlock(template="templates/components/streamfield/notices_block.html")
+    correction = CorrectionBlock()
+    notice = NoticeBlock()
 
     class Meta:
         template = "templates/components/streamfield/corrections_notices_block.html"

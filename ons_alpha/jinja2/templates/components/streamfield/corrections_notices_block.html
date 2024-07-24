@@ -1,5 +1,21 @@
 <h2>{{ _("Corrections and notices") }}</h2>
 
-{% for block in value %}
-    {% include_block block %}
-{% endfor %}
+{% set correction_blocks = value.blocks_by_name("correction") %}
+{% set notic_blocks = value.blocks_by_name("notice") %}
+
+{% if correction_blocks %}
+    <h3>{{ _("Corrections") }}</h3>
+
+    {% for block in correction_blocks %}
+        {% set version_num = loop.index %}
+        {% include_block block %}
+    {% endfor %}
+{% endif %}
+
+{% if notic_blocks %}
+    <h3>{{ _("Notices") }}</h3>
+
+    {% for block in notic_blocks %}
+        {% include_block block %}
+    {% endfor %}
+{% endif %}

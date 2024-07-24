@@ -126,7 +126,7 @@ class BulletinPage(RoutablePageMixin, BasePage):
         if version <= 0:
             raise Http404
 
-        corrections = [block for block in self.updates if block.block_type == "correction"]
+        corrections = self.updates.blocks_by_name("correction")
 
         try:
             correction = corrections[version - 1]

@@ -35,6 +35,9 @@ class CorrectionBlock(blocks.StructBlock):
     text = blocks.RichTextBlock(features=settings.RICH_TEXT_BASIC)
     previous_version = PreviousVersionBlock(required=False)
 
+    class Meta:
+        template = "templates/components/streamfield/corrections_block.html"
+
 
 class PreviousVersionBlockAdapter(FieldBlockAdapter):
     js_constructor = "ons_alpha.core.blocks.panels.PreviousVersionBlock"
@@ -51,3 +54,6 @@ register(PreviousVersionBlockAdapter(), PreviousVersionBlock)
 class NoticeBlock(blocks.StructBlock):
     when = blocks.DateTimeBlock()
     text = blocks.RichTextBlock(features=settings.RICH_TEXT_BASIC)
+
+    class Meta:
+        template = "templates/components/streamfield/notices_block.html"
