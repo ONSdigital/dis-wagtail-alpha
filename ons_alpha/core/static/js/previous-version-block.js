@@ -13,7 +13,7 @@ class PreviousVersionBlock {
     renderContent(state) {
         if (state) {
             this.element.innerHTML = `
-                <a class="button button-small button-secondary" href="../revisions/${state}/view/">Preview revision</a>
+                <a class="button button-small button-secondary" target="_blank" href="../revisions/${state}/view/">Preview revision</a>
             `;
         } else {
             this.element.innerHTML = `
