@@ -37,6 +37,7 @@ class CorrectionBlock(blocks.StructBlock):
 
     class Meta:
         template = "templates/components/streamfield/corrections_block.html"
+        help_text = "Warning: Reordering or deleting a correction will change its (and others') version number."
 
 
 class PreviousVersionBlockAdapter(FieldBlockAdapter):
