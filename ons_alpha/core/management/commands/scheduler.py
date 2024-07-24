@@ -35,4 +35,5 @@ class Command(BaseCommand):
 
     def configure_scheduler(self):
         # "second=0" run the task every minute, on the minute (ie when the seconds = 0)
-        self.add_management_command("publish_scheduled", CronTrigger(second=0))
+        self.add_management_command("publish_bundles", CronTrigger(second=0))
+        self.add_management_command("publish_scheduled_without_bundles", CronTrigger(minute=5))
