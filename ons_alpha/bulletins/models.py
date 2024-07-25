@@ -17,10 +17,11 @@ from wagtail.models import Page
 from wagtail.search import index
 
 from ons_alpha.bundles.models import BundledPageMixin
+from ons_alpha.core.blocks.stream_blocks import CoreStoryBlock
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
 
-from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
+from .blocks import CorrectionsNoticesStoryBlock
 from .forms import BulletinPageAdminForm
 
 
@@ -41,7 +42,7 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
         related_name="+",
     )
     is_accredited = models.BooleanField(default=False)
-    body = StreamField(BulletinStoryBlock(), use_json_field=True)
+    body = StreamField(CoreStoryBlock(), use_json_field=True)
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
 
     content_panels = (
