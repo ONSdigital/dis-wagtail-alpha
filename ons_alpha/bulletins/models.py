@@ -25,7 +25,7 @@ from ons_alpha.utils.fields import StreamField
 
 class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
     base_form_class = PageWithUpdatesAdminForm
-    template = "templates/pages/bulletins/bulletin_page.html"
+    template = "templates/pages/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
     subpage_types = []
 
@@ -170,15 +170,12 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
         if not latest:
             raise Http404
 
-        return self.render(
-            request, context_overrides={"page": latest}, template="templates/pages/bulletins/bulletin_page.html"
-        )
+        return self.render(request, context_overrides={"page": latest}, template="templates/pages/bulletin_page.html")
 
     @path("previous-releases/")
     def previous_releases(self, request):
-        previous = BulletinPage.objects.live().child_of(self).order_by("-release_date")
         return self.render(
             request,
-            context_overrides={"bulletins": previous},
-            template="templates/pages/bulletins/previous_releases.html",
+            context_overrides={"pages": BulletinPage.objects.live().child_of(self).order_by("-release_date")},
+            template="templates/pages/previous_releases.html",
         )
