@@ -3,7 +3,6 @@ from functools import cached_property
 from django.db import models
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
-from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import (
     FieldPanel,
     FieldRowPanel,
@@ -14,7 +13,7 @@ from wagtail.admin.panels import (
     TabbedInterface,
 )
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
-from wagtail.models import Orderable, Page
+from wagtail.models import Page
 from wagtail.search import index
 
 from ons_alpha.bundles.models import BundledPageMixin
@@ -23,11 +22,6 @@ from ons_alpha.utils.fields import StreamField
 
 from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
 from .forms import BulletinPageAdminForm
-
-
-class BulletinTopicRelationship(Orderable):
-    page = ParentalKey("bulletins.BulletinPage", on_delete=models.CASCADE, related_name="topics")
-    topic = models.ForeignKey("taxonomy.Topic", on_delete=models.CASCADE, related_name="bulletins")
 
 
 class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
