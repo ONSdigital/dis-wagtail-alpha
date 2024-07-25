@@ -5,7 +5,9 @@ from wagtailmath.blocks import MathBlock
 
 from ons_alpha.core.blocks import (
     ChartChooserBlock,
+    CorrectionBlock,
     HeadingBlock,
+    NoticeBlock,
     ONSEmbedBlock,
     PanelBlock,
     RelatedContentBlock,
@@ -28,3 +30,11 @@ class CoreStoryBlock(StreamBlock):
 
     class Meta:
         block_counts = {"related_links": {"max_num": 1}}
+
+
+class CorrectionsNoticesStoryBlock(StreamBlock):
+    correction = CorrectionBlock()
+    notice = NoticeBlock()
+
+    class Meta:
+        template = "templates/components/streamfield/corrections_notices_block.html"
