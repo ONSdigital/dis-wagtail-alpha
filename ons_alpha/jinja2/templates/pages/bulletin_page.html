@@ -4,7 +4,7 @@
 {% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
 
 {% block main %}
-    <div class="ons-u-fs-m ons-u-mt-s ons-u-pb-xxs release__document-type">Bulletin</div>
+    <div class="ons-u-fs-m ons-u-mt-s ons-u-pb-xxs release__document-type">{{ page.document_type|default("Bulletin") }}</div>
     <h1 class="ons-u-fs-xxxl ons-u-mb-m">
         <span>{{ page.full_title }}</span>
         {% if page.is_accredited %}
@@ -42,7 +42,7 @@
         {{ onsPanel({"body": notice}) }}
     {% else %}
         {% set notice %}
-            <p><a href="{{  routablepageurl(page.get_parent().specific, "latest_bulletin") }}">View Latest Release</a></p>
+            <p><a href="{{  routablepageurl(page.get_parent().specific, "latest_release") }}">View Latest Release</a></p>
         {% endset %}
         {{ onsPanel({"body": notice}) }}
     {% endif %}

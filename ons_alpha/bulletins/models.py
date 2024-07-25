@@ -156,17 +156,17 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
         )
     ]
 
-    def get_latest_bulletin(self):
+    def get_latest(self):
         return BulletinPage.objects.live().child_of(self).order_by("-release_date").first()
 
     @path("")
     def index(self, request):
         # Redirect to /latest as this is a container page without its own content
-        return redirect(self.get_url(request) + self.reverse_subpage("latest_bulletin"))
+        return redirect(self.get_url(request) + self.reverse_subpage("latest_release"))
 
     @path("latest/")
-    def latest_bulletin(self, request):
-        latest = self.get_latest_bulletin()
+    def latest_release(self, request):
+        latest = self.get_latest()
         if not latest:
             raise Http404
 
