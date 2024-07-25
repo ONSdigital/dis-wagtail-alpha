@@ -22,7 +22,7 @@ class PageAddToBundleButton(PageListingButton):
 
     @property
     def show(self) -> bool:
-        if not issubclass(type(self.page), BundledPageMixin):
+        if not isinstance(self.page, BundledPageMixin):
             return False
 
         if self.page.in_active_bundle:
@@ -49,10 +49,10 @@ def register_admin_urls():
 
 @hooks.register("before_edit_page")
 def preset_golive_date(request, page):  # pylint: disable=unused-argument
-    if not issubclass(type(page), BundledPageMixin):
+    if not isinstance(page, BundledPageMixin):
         return
 
-    if not page.in_active_bundle:
+    if not (page.in_active_bundle and page.active_bundle.scheduled_publication_date):
         return
 
     if now() < page.active_bundle.scheduled_publication_date != page.go_live_at:

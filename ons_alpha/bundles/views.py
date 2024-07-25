@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -17,11 +18,10 @@ if TYPE_CHECKING:
 
 
 def add_to_bundle(request: "HttpRequest", page_to_add_id: "Page"):
-    page_to_add = get_object_or_404(Page, id=page_to_add_id)
-    page_to_add = page_to_add.specific
+    page_to_add = get_object_or_404(Page.objects.specific(), id=page_to_add_id)
 
-    if not issubclass(type(page_to_add), BundledPageMixin):
-        raise PermissionDenied
+    if not isinstance(page_to_add, BundledPageMixin):
+        raise Http404("Cannot add this page type to a bundle")
 
     page_perms = page_to_add.permissions_for_user(request.user)
     # note: add the relevant permission checks

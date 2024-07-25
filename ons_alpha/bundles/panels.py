@@ -1,3 +1,4 @@
+from django.utils.html import format_html, format_html_join
 from wagtail.admin.panels import HelpPanel
 
 
@@ -12,11 +13,19 @@ class BundleNotePanel(HelpPanel):
                 return ""
 
             if bundles := instance.bundles:
-                content = "This page is in the following bundle(s):<ul>"
+                content_html = format_html_join(
+                    "\n",
+                    "<li>{} (Status: {})</li>",
+                    (
+                        (
+                            bundle.name,
+                            bundle.get_status_display(),
+                        )
+                        for bundle in bundles
+                    ),
+                )
 
-                for bundle in bundles:
-                    content += f"<li>{bundle.name} (Status: {bundle.get_status_display()})</li>"
-                content += "</ul>"
+                content = format_html("<p>This page is in the following bundle(s):</p><ul>{}</ul>", content_html)
             else:
-                content = "This page is not part of any bundles"
+                content = format_html("<p>This page is not part of any bundles</p>")
             return content
