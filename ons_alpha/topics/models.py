@@ -39,7 +39,7 @@ class BaseTopicPage(SubpageMixin, BasePage):
 class TopicPage(BaseTopicPage):
     template = "templates/pages/topics/topic_page.html"
     parent_page_types = ["topics.TopicSectionPage"]
-    subpage_types = ["bulletins.BulletinSeriesPage"]
+    subpage_types = ["bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
 
     def clean(self):

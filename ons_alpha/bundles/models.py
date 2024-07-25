@@ -161,6 +161,8 @@ class BundledPageMixin:
 
     @cached_property
     def bundles(self) -> QuerySet[Bundle]:
+        if not self.pk:
+            return Bundle.objects.none()
         return Bundle.objects.filter(pk__in=self.bundlepage_set.all().values_list("parent", flat=True))
 
     @cached_property

@@ -1,0 +1,95 @@
+{% extends "templates/base_page.html" %}
+
+{% from "components/panel/_macro.njk" import onsPanel %}
+{% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
+
+{% block main %}
+    <div class="ons-u-fs-m ons-u-mt-s ons-u-pb-xxs release__document-type">Methodology</div>
+    <h1 class="ons-u-fs-xxxl ons-u-mb-m">
+        <span>{{ page.full_title }}</span>
+        {% if page.is_accredited %}
+            <a href="https://uksa.statisticsauthority.gov.uk/about-the-authority/uk-statistical-system/types-of-official-statistics/" class="national-statistics__link ons-u-ml-s">
+                <img src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/v2/uksa-kitemark-en.svg" alt="UK Statistics Authority Kitemark" class="osr__logo" width="90">
+            </a>
+        {% endif %}
+    </h1>
+
+    <div class="ons-grid ons-u-ml-no">
+        {% if page.last_revised_date %}
+            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-col-12@s ons-u-p-no">
+                <span class="ons-u-fs-r--b">{{ _("Last revised") }}:</span>
+                <span class="ons-u-nowrap">{{ page.last_revised_date|date("j F Y") }}</span>
+            </div>
+        {% endif %}
+        {% if page.how_it_was_revised %}
+            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-col-12@s ons-u-p-no">
+                <span class="ons-u-fs-r--b">{{ _("How it was compiled") }}:</span>
+                <span class="ons-u-nowrap">{{ page.how_it_was_revised }}</span>
+            </div>
+        {% endif %}
+        {% if page.geographic_coverage %}
+            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-col-12@s ons-u-p-no">
+                <span class="ons-u-fs-r--b">{{ _("Geographic coverage") }}:</span>
+                <span class="ons-u-nowrap">{{ page.geographic_coverage }}</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
+        <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
+            {# fmt:off #}
+            {{-
+                onsTableOfContents({
+                    "title": 'Table of contents',
+                    "ariaLabel": 'Sections in this page',
+                    "itemsList": toc
+                })
+            }}
+            {# fmt:on #}
+        </div>
+
+        <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+            <section id="summary">
+                <h2>{{ _("Summary")}}</h2>
+                <p>{{ page.summary }}</p>
+            </section>
+
+            {% for content_block in page.body %}
+                {% with block_id = content_block.id %}
+                    {% include_block content_block %}
+                {% endwith %}
+            {% endfor %}
+
+            {% if page.contact_details %}
+                <section id="contact-details">
+                    <h2>{{ _("Contact details") }}</h2>
+
+                    <div>
+                        <h3 class="ons-u-mb-no ons-u-fs-r--b">Name</h3>
+                        <p>{{ page.contact_details.name }}</p>
+                        <h3 class="ons-u-mb-no ons-u-fs-r--b">Email</h3>
+                        <p>
+                            <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.email }}</a>
+                        </p>
+                        {% if page.contact_details.phone %}
+                            <h3 class="ons-u-mb-no ons-u-fs-r--b">Phone</h3>
+                            <p>
+                                <a href="tel:{{ page.contact_details.phone|urlencode() }}">{{ page.contact_details.phone }}</a>
+                            </p>
+                        {% endif %}
+                    </div>
+                </section>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script async src="{{ mathjax() }}"></script>
+    <script async src="{{ static('js/third-party/pym.min.js') }}"></script>
+    <script async src="{{ static('js/blocks/embeddable.js') }}"></script>
+
+    {# HACK: We can't use the built-in inclusion tag, so import the template _directly_. #}
+    {{ include_django("wagtailcharts/tags/render_charts.html") }}
+{% endblock %}

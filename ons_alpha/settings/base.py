@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "ons_alpha.forms",
     "ons_alpha.home",
     "ons_alpha.images",
+    "ons_alpha.methodologies",
     "ons_alpha.navigation",
     "ons_alpha.release_calendar",
     "ons_alpha.search",
