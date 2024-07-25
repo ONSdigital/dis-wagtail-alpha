@@ -1,8 +1,6 @@
-import json
 import uuid
 
 from django.core.management.base import BaseCommand
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.utils import timezone
 from django.utils.html import strip_tags
@@ -52,17 +50,16 @@ class Command(BaseCommand):
         if links:
             content.append({"type": "release_content", "value": {"title": "Datasets", "links": links}})
         page = bundle.release_calendar_page
-        page.content = json.dumps(content, cls=DjangoJSONEncoder)
+        page.content = content
         page.status = ReleaseStatus.PUBLISHED
         revision = page.save_revision(log_action=True)
         revision.publish()
 
     @transaction.atomic
     def handle_bundle(self, bundle: Bundle):
-        bundled_pages = bundle.get_bundled_pages()
-
-        bundled_revisions = [page.scheduled_revision for page in bundled_pages if page.scheduled_revision]
-        for revision in bundled_revisions:
+        for page in bundle.get_bundled_pages():
+            if (revision := page.scheduled_revision) is None:
+                continue
             # just run publish for the revision -- since the approved go
             # live datetime is before now it will make the object live
             revision.publish(log_action="wagtail.publish.scheduled")

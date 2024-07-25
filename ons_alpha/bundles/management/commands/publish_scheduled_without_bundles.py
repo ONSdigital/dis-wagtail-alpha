@@ -1,17 +1,9 @@
 from django.apps import apps
 from django.core.management.base import BaseCommand
-from django.utils import dateparse, timezone
+from django.utils import timezone
 from wagtail.models import DraftStateMixin, Page, Revision
 
 from ons_alpha.bundles.models import BundledPageMixin
-
-
-def revision_date_expired(r):
-    expiry_str = r.content.get("expire_at")
-    if not expiry_str:
-        return False
-    expire_at = dateparse.parse_datetime(expiry_str)
-    return expire_at < timezone.now()
 
 
 class Command(BaseCommand):
@@ -32,37 +24,6 @@ class Command(BaseCommand):
 
         self._unpublish_expired(dry_run)
         self._publish_scheduled_without_bundles(dry_run)
-
-    def _publish_scheduled_without_bundles(self, dry_run):
-        # 2. get all revisions that need to be published
-        preliminary_revs_for_publishing = Revision.objects.filter(approved_go_live_at__lt=timezone.now()).order_by(
-            "approved_go_live_at"
-        )
-        revs_for_publishing = []
-        for rev in preliminary_revs_for_publishing:
-            content_object = rev.as_object()
-            if not isinstance(content_object, BundledPageMixin) or not content_object.in_active_bundle:
-                revs_for_publishing.append(rev)
-        if dry_run:
-            self.stdout.write("\n---------------------------------")
-            if revs_for_publishing:
-                self.stdout.write("Revisions to be published:")
-                self.stdout.write("Go live datetime\tModel\t\tSlug\t\tName")
-                self.stdout.write("----------------\t-----\t\t----\t\t----")
-                for rp in revs_for_publishing:
-                    model = rp.content_type.model_class()
-                    rev_data = rp.content
-                    self.stdout.write(
-                        f'{rp.approved_go_live_at.strftime("%Y-%m-%d %H:%M")}\t'
-                        f'{model.__name__}\t{rev_data.get("slug", "")}\t\t{rev_data.get("title", rp.object_str)}'
-                    )
-            else:
-                self.stdout.write("No objects to go live.")
-        else:
-            for rp in revs_for_publishing:
-                # just run publish for the revision -- since the approved go
-                # live datetime is before now it will make the object live
-                rp.publish(log_action="wagtail.publish.scheduled")
 
     def _unpublish_expired(self, dry_run):
         models = [Page]
@@ -101,3 +62,34 @@ class Command(BaseCommand):
                 # before unpublishing anything
                 for obj in list(queryset):
                     obj.unpublish(set_expired=True, log_action="wagtail.unpublish.scheduled")
+
+    def _publish_scheduled_without_bundles(self, dry_run):
+        # 2. get all revisions that need to be published
+        preliminary_revs_for_publishing = Revision.objects.filter(approved_go_live_at__lt=timezone.now()).order_by(
+            "approved_go_live_at"
+        )
+        revs_for_publishing = []
+        for rev in preliminary_revs_for_publishing:
+            content_object = rev.as_object()
+            if not isinstance(content_object, BundledPageMixin) or not content_object.in_active_bundle:
+                revs_for_publishing.append(rev)
+        if dry_run:
+            self.stdout.write("\n---------------------------------")
+            if revs_for_publishing:
+                self.stdout.write("Revisions to be published:")
+                self.stdout.write("Go live datetime\tModel\t\tSlug\t\tName")
+                self.stdout.write("----------------\t-----\t\t----\t\t----")
+                for rp in revs_for_publishing:
+                    model = rp.content_type.model_class()
+                    rev_data = rp.content
+                    self.stdout.write(
+                        f'{rp.approved_go_live_at.strftime("%Y-%m-%d %H:%M")}\t'
+                        f'{model.__name__}\t{rev_data.get("slug", "")}\t\t{rev_data.get("title", rp.object_str)}'
+                    )
+            else:
+                self.stdout.write("No objects to go live.")
+        else:
+            for rp in revs_for_publishing:
+                # just run publish for the revision -- since the approved go
+                # live datetime is before now it will make the object live
+                rp.publish(log_action="wagtail.publish.scheduled")
