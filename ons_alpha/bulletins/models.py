@@ -2,7 +2,7 @@ from functools import cached_property
 
 from django.db import models
 from django.http import Http404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import (
     FieldPanel,
@@ -30,7 +30,7 @@ class BulletinTopicRelationship(Orderable):
     topic = models.ForeignKey("taxonomy.Topic", on_delete=models.CASCADE, related_name="bulletins")
 
 
-class BulletinPage(BundledPageMixin, BasePage):
+class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
     base_form_class = BulletinPageAdminForm
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
@@ -126,6 +126,25 @@ class BulletinPage(BundledPageMixin, BasePage):
         context = super().get_context(request, *args, **kwargs)
         context["toc"] = self.toc
         return context
+
+    @path("previous/v<int:version>/")
+    def previous_version(self, request, version):
+        if version <= 0:
+            raise Http404
+
+        corrections = self.updates.blocks_by_name("correction")
+
+        try:
+            correction = corrections[version - 1]
+        except IndexError:
+            raise Http404 from None
+
+        # NB: Little validation is done on previous_version, as it's assumed handled on save
+        revision = get_object_or_404(self.revisions, pk=correction.value["previous_version"])
+
+        return self.render(
+            request, context_overrides={"page": revision.as_object(), "latest_version_url": self.get_url(request)}
+        )
 
 
 class BulletinSeriesPage(RoutablePageMixin, Page):

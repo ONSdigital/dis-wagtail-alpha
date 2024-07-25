@@ -1,5 +1,5 @@
-<h3>{{ _("Corrections") }}</h3>
+{{ value.when|date("DATETIME_FORMAT") }}
 
-{% for item in value %}
-    {{ item }}
-{% endfor %}
+{{ value.text|richtext }}
+
+<a href="{{ routablepageurl(page, 'previous_version', version_num) }}">{{ _("View superseded version") }}</a>

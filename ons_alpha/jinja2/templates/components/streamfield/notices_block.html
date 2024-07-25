@@ -1,5 +1,3 @@
-<h3>{{ _("Notices") }}</h3>
+{{ value.when|date("DATETIME_FORMAT") }}
 
-{% for item in value %}
-    {{ item }}
-{% endfor %}
+{{ value.text|richtext }}

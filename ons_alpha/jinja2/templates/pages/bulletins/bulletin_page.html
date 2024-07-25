@@ -29,6 +29,12 @@
         {% endblock release_meta %}
     </div>
 
+    {% if latest_version_url %}
+        {% call onsPanel({"variant": 'warn', "classes": "ons-u-mt-s"}) %}
+            <p>{{ _("This has been superseded.") }} <a href="{{ latest_version_url }}">{{ _("View corrected version") }}</a></p>
+        {% endcall %}
+    {% endif %}
+
     {% if page.is_latest %}
         {% set notice %}
             <p><a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">Previous Releases</a></p>
@@ -42,9 +48,11 @@
     {% endif %}
 
     <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
-        {% if page.updates %}
-            {% include_block page.updates %}
-        {% endif %}
+        <div class="ons-grid__col ons-u-p-no ons-u-mb-s">
+            {% if page.updates %}
+                {% include_block page.updates %}
+            {% endif %}
+        </div>
 
         <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
             {# fmt:off #}
