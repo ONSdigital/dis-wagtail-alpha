@@ -65,7 +65,7 @@ class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
         queryset = super().get_queryset()
         queryset = queryset.annotate(
             release_date=Coalesce("publication_date", "release_calendar_page__release_date")
-        ).order_by(F("release_date").desc(nulls_last=True), "-pk")
+        ).order_by(F("release_date").desc(nulls_last=True), "name", "-pk")
         return queryset
 
 
@@ -142,7 +142,7 @@ class Bundle(index.Indexed, ClusterableModel):
 
         if self.scheduled_publication_date and self.scheduled_publication_date >= now():
             # Schedule publishing for related pages
-            for bundled_page in self.get_bundled_pages().specific():
+            for bundled_page in self.get_bundled_pages().specific(defer=True):
                 if bundled_page.go_live_at == self.scheduled_publication_date:
                     continue
 
