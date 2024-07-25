@@ -78,7 +78,7 @@ class BundleChooserViewSet(ChooserViewSet):
     url_filter_parameters = ["topic"]
 
     def get_object_list(self):
-        return self.model.editable_objects.all()
+        return self.model.objects.editable()
 
 
 class BundleViewSet(ModelViewSet):

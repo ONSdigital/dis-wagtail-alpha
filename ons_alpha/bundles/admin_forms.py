@@ -12,7 +12,7 @@ class AddToBundleForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         self.fields["bundle"] = forms.ModelChoiceField(
-            queryset=Bundle.active_objects.all(),
+            queryset=Bundle.objects.editable(),
             widget=BundleChooserWidget(),
             label=_("Bundle"),
             help_text=_("Select a bundle for this page."),

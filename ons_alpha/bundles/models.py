@@ -52,23 +52,21 @@ class BundleLink(Orderable):
     ]
 
 
-class BundleManager(models.Manager):
+class BundlesQuerySet(QuerySet):
+    def active(self):
+        return self.filter(status__in=ACTIVE_BUNDLE_STATUSES)
+
+    def editable(self):
+        return self.filter(status__in=EDITABLE_BUNDLE_STATUSES)
+
+
+class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.annotate(
             release_date=Coalesce("publication_date", "release_calendar_page__release_date")
         ).order_by(F("release_date").desc(nulls_last=True), "-pk")
         return queryset
-
-
-class ActiveBundlesManager(BundleManager):
-    def get_queryset(self):
-        return super().get_queryset().filter(status__in=ACTIVE_BUNDLE_STATUSES)
-
-
-class EditableBundlesManager(BundleManager):
-    def get_queryset(self):
-        return super().get_queryset().filter(status__in=EDITABLE_BUNDLE_STATUSES)
 
 
 class Bundle(index.Indexed, ClusterableModel):
@@ -103,8 +101,6 @@ class Bundle(index.Indexed, ClusterableModel):
     status = models.CharField(choices=BundleStatus.choices, default=BundleStatus.PENDING, max_length=32)
 
     objects = BundleManager()
-    active_objects = ActiveBundlesManager()
-    editable_objects = EditableBundlesManager()
 
     panels = [
         FieldPanel("name"),
