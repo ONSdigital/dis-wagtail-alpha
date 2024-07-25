@@ -18,14 +18,13 @@ from wagtail.search import index
 
 from ons_alpha.bundles.models import BundledPageMixin
 from ons_alpha.core.blocks.stream_blocks import CoreStoryBlock, CorrectionsNoticesStoryBlock
+from ons_alpha.core.forms import PageWithUpdatesAdminForm
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
 
-from .forms import BulletinPageAdminForm
-
 
 class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
-    base_form_class = BulletinPageAdminForm
+    base_form_class = PageWithUpdatesAdminForm
     template = "templates/pages/bulletins/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
     subpage_types = []

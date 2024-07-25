@@ -4,7 +4,7 @@ from wagtail.models import PageLogEntry
 from ons_alpha.taxonomy.forms import PageWithTopicsAdminForm
 
 
-class BulletinPageAdminForm(PageWithTopicsAdminForm):
+class PageWithUpdatesAdminForm(PageWithTopicsAdminForm):
     def clean_updates(self):
         updates = self.cleaned_data["updates"]
 
