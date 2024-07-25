@@ -55,6 +55,7 @@ if "CSRF_TRUSTED_ORIGINS" in env:
 # Application definition
 
 INSTALLED_APPS = [
+    "ons_alpha.articles",
     "ons_alpha.core",
     "ons_alpha.documents",
     "ons_alpha.forms",
