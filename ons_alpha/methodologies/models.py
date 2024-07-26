@@ -78,9 +78,16 @@ class MethodologyPage(BundledPageMixin, BasePage):
         index.SearchField("body"),
     ]
 
+    @property
+    def has_background_info(self):
+        return self.is_accredited or self.how_it_was_revised or self.geographic_coverage
+
     @cached_property
     def toc(self):
         items = [{"url": "#summary", "text": "Summary"}]
+
+        if self.has_background_info:
+            items += [{"url": "#background", "text": "Methodology background"}]
 
         for block in self.body:
             if hasattr(block.block, "to_table_of_contents_items"):
@@ -92,4 +99,5 @@ class MethodologyPage(BundledPageMixin, BasePage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["toc"] = self.toc
+        context["has_background_info"] = self.has_background_info
         return context
