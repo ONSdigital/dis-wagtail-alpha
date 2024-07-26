@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ("social_text", models.CharField(blank=True, max_length=255)),
                 ("summary", models.TextField()),
                 ("last_revised_date", models.DateField(blank=True, null=True)),
-                ("how_it_was_revised", models.CharField(blank=True, max_length=255)),
+                ("how_it_was_compiled", models.CharField(blank=True, max_length=255)),
                 ("geographic_coverage", models.CharField(blank=True, max_length=255)),
                 ("is_accredited", models.BooleanField(default=False)),
                 ("body", ons_alpha.utils.fields.StreamField()),

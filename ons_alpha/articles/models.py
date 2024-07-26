@@ -109,7 +109,7 @@ class ArticlePage(BundledPageMixin, RoutablePageMixin, BasePage):
     @cached_property
     def toc(self):
         items = [{"url": "#summary", "text": "Summary"}]
-        for block in self.body:  # pylint: disable=not-an-iterable
+        for block in self.body:  # pylint: disable=not-an-iterable,useless-suppression
             if hasattr(block.block, "to_table_of_contents_items"):
                 items += block.block.to_table_of_contents_items(block.value)
         if self.contact_details_id:

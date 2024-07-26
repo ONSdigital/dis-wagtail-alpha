@@ -25,7 +25,7 @@ class MethodologyPage(BundledPageMixin, BasePage):
 
     summary = models.TextField()
     last_revised_date = models.DateField(blank=True, null=True)
-    how_it_was_revised = models.CharField(blank=True, max_length=255)
+    how_it_was_compiled = models.CharField(blank=True, max_length=255)
     geographic_coverage = models.CharField(blank=True, max_length=255)
 
     contact_details = models.ForeignKey(
@@ -48,7 +48,7 @@ class MethodologyPage(BundledPageMixin, BasePage):
                 [
                     FieldPanel("last_revised_date"),
                     FieldPanel("is_accredited"),
-                    FieldPanel("how_it_was_revised"),
+                    FieldPanel("how_it_was_compiled"),
                     FieldPanel("geographic_coverage"),
                     FieldPanel("contact_details"),
                 ],
@@ -80,7 +80,7 @@ class MethodologyPage(BundledPageMixin, BasePage):
 
     @property
     def has_background_info(self):
-        return self.is_accredited or self.how_it_was_revised or self.geographic_coverage
+        return self.is_accredited or self.how_it_was_compiled or self.geographic_coverage
 
     @cached_property
     def toc(self):
@@ -89,7 +89,7 @@ class MethodologyPage(BundledPageMixin, BasePage):
         if self.has_background_info:
             items += [{"url": "#background", "text": "Methodology background"}]
 
-        for block in self.body:
+        for block in self.body:  # pylint: disable=not-an-iterable,useless-suppression
             if hasattr(block.block, "to_table_of_contents_items"):
                 items += block.block.to_table_of_contents_items(block.value)
         if self.contact_details_id:

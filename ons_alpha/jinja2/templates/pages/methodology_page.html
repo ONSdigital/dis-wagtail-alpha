@@ -52,8 +52,8 @@
                             {% endset %}
                             {% do items.append({"term": _("Accreditation"), "descriptions": [{"description": accreditation}]}) %}
                         {% endif %}
-                        {% if page.how_it_was_revised %}
-                            {% do items.append({"term": _("How it was compiled"), "descriptions": [{"description": page.how_it_was_revised}]}) %}
+                        {% if page.how_it_was_compiled %}
+                            {% do items.append({"term": _("How it was compiled"), "descriptions": [{"description": page.how_it_was_compiled}]}) %}
                         {% endif %}
                         {% if page.geographic_coverage %}
                             {% do items.append({"term": _("Geographic coverage"), "descriptions": [{"description": page.geographic_coverage}]}) %}

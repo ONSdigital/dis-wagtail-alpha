@@ -16,7 +16,7 @@ class HeadingBlock(blocks.CharBlock):
 
     def __init__(self, **kwargs):
         self.show_back_to_toc = kwargs.pop("show_back_to_toc", False)
-        kwargs["help_text"] = kwargs.pop("help_text", "This is output as level 2 heading (<code>h2</code>)")
+        kwargs.setdefault("help_text", "This is output as level 2 heading (<code>h2</code>)")
 
         super().__init__(**kwargs)
 
