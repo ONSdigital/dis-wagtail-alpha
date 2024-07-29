@@ -1,5 +1,12 @@
 from django.core.exceptions import ValidationError
-from wagtail.blocks import CharBlock, StreamBlock, StructBlock, StructBlockValidationError, TextBlock, URLBlock
+from wagtail.blocks import (
+    CharBlock,
+    StreamBlock,
+    StructBlock,
+    StructBlockValidationError,
+    TextBlock,
+    URLBlock,
+)
 
 from ons_alpha.datasets.views import dataset_chooser_viewset
 
