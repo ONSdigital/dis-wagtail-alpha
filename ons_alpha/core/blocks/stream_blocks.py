@@ -16,16 +16,16 @@ from ons_alpha.core.blocks import (
 )
 
 
-class BulletinStoryBlock(StreamBlock):
-    heading = HeadingBlock(show_back_to_toc=False)
+class CoreStoryBlock(StreamBlock):
+    heading = HeadingBlock()
     rich_text = RichTextBlock()
     panel = PanelBlock()
-    table = TableBlock(group="DataVis")
-    equation = MathBlock(icon="decimal", group="DataVis")
-    ons_embed = ONSEmbedBlock(group="DataVis")
     embed = EmbedBlock()
     image = ImageChooserBlock()
     related_links = RelatedLinksBlock(RelatedContentBlock())
+    table = TableBlock(group="DataVis")
+    equation = MathBlock(icon="decimal", group="DataVis")
+    ons_embed = ONSEmbedBlock(group="DataVis", label="ONS Embed")
     chart = ChartChooserBlock(group="DataVis")
 
     class Meta:

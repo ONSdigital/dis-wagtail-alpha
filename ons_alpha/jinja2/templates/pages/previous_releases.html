@@ -3,8 +3,8 @@
 {% block main %}
     <h1>Previous Releases</h1>
     <ul>
-        {% for bulletin in bulletins %}
-            <li><a href="{{ pageurl(bulletin) }}">{{ bulletin.title }}</a> - {{ bulletin.release_date }}</li>
+        {% for page in pages %}
+            <li><a href="{{ pageurl(page) }}">{{ page.title }}</a> - {{ page.release_date }}</li>
         {% else %}
             <p>{{ _("There are currently no releases") }}</p>
         {% endfor %}

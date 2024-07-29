@@ -1,9 +1,10 @@
 from django.forms import ValidationError
-from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.models import PageLogEntry
 
+from ons_alpha.taxonomy.forms import PageWithTopicsAdminForm
 
-class BulletinPageAdminForm(WagtailAdminPageForm):
+
+class PageWithUpdatesAdminForm(PageWithTopicsAdminForm):
     def clean_updates(self):
         updates = self.cleaned_data["updates"]
 
@@ -27,19 +28,3 @@ class BulletinPageAdminForm(WagtailAdminPageForm):
                 update.value["previous_version"] = latest_published_revision_id
 
         return updates
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        # Remove duplicate topics
-        chosen = []
-        for idx, form in enumerate(self.formsets["topics"].forms):
-            if not form.is_valid():
-                continue
-            topic = form.clean().get("topic")
-            if topic in chosen:
-                self.formsets["topics"].forms[idx].cleaned_data["DELETE"] = True
-            else:
-                chosen.append(topic)
-
-        return cleaned_data

@@ -31,8 +31,9 @@ class BundlePage(Orderable):
     parent = ParentalKey("Bundle", related_name="bundled_pages", on_delete=models.CASCADE)
     page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
 
+    # note: update so we get this based on the mixin
     panels = [
-        PageChooserPanel("page", ["bulletins.BulletinPage"]),
+        PageChooserPanel("page", ["articles.ArticlePage", "bulletins.BulletinPage", "methodologies.MethodologyPage"]),
     ]
 
     def __str__(self):
@@ -161,6 +162,8 @@ class BundledPageMixin:
 
     @cached_property
     def bundles(self) -> QuerySet[Bundle]:
+        if not self.pk:
+            return Bundle.objects.none()
         return Bundle.objects.filter(pk__in=self.bundlepage_set.all().values_list("parent", flat=True))
 
     @cached_property

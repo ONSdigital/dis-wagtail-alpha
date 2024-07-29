@@ -17,12 +17,14 @@ class PanelBlock(blocks.StructBlock):
             ("success", "Success"),
             ("warn-branded", "Warn (branded)"),
             ("warn", "Warn"),
-        ]
+        ],
+        default="warn",
     )
-    title = blocks.CharBlock(required=False)
     body = blocks.RichTextBlock(features=settings.RICH_TEXT_BASIC)
+    title = blocks.CharBlock(required=False, label="Title (optional)")
 
     class Meta:
+        label = "Warning or information panel"
         template = "templates/components/streamfield/panel_block.html"
 
 
