@@ -22,12 +22,11 @@ class Command(BaseCommand):
         content = []
         pages = []
         for page in bundle.get_bundled_pages():
-            desc = getattr(page.specific_deferred, "summary", "")
             pages.append(
                 {
                     "id": uuid.uuid4(),
                     "type": "item",
-                    "value": {"page": page.pk, "title": "", "description": desc, "external_url": ""},
+                    "value": {"page": page.pk, "title": "", "description": "", "external_url": ""},
                 }
             )
         if pages:
