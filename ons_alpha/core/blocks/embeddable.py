@@ -21,7 +21,7 @@ class DocumentBlockStructValue(blocks.StructValue):
         return {
             "thumbnail": True,
             "url": self["document"].url,
-            "title": self["title"] or self["document"].filename,
+            "title": self["title"] or self["document"].title,
             "description": self["description"],
             "metadata": {
                 "file": {
