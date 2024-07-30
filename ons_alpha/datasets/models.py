@@ -3,6 +3,7 @@ import re
 
 from django.conf import settings
 from django.db import models
+from django.db.models import UniqueConstraint
 from queryish.rest import APIModel, APIQuerySet
 
 
@@ -72,12 +73,15 @@ class ONSDataset(APIModel):
 
 
 class Dataset(models.Model):
-    id = models.CharField(max_length=255, primary_key=True)
+    namespace = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     description = models.TextField()
     version = models.CharField(max_length=255)
     url = models.URLField()
     edition = models.CharField(max_length=255)
+
+    class Meta:
+        constraints = [UniqueConstraint(fields=["namespace", "edition", "version"], name="dataset_id")]
 
     def __str__(self):
         return f"{self.title} (Edition: {self.formatted_edition}, Ver: {self.version})"

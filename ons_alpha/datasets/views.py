@@ -83,14 +83,15 @@ class DatasetChosenView(ChosenViewMixin, ChosenResponseMixin, View):
         # and self.model_class is Dataset, so we get or create the Dataset from ONSDatasets here
         # create the dataset object from the API response
         item = ONSDataset.objects.get(pk=pk)
-        pk = f"{item.id}__{item.edition}_{item.version}"
         dataset, _ = Dataset.objects.get_or_create(
-            pk=pk,
-            title=item.title,
-            description=item.description,
-            version=item.version,
-            url=item.url,
+            namespace=item.id,
             edition=item.edition,
+            version=item.version,
+            defaults={
+                "title": item.title,
+                "description": item.description,
+                "url": item.url,
+            },
         )
         return dataset
 
