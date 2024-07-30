@@ -18,7 +18,8 @@ from wagtail.blocks import (
 class LinkBlockStructValue(StructValue):
     @cached_property
     def link(self) -> dict | None:  # pylint: disable=inconsistent-return-statements
-        title, desc = self.get("title"), self.get("description")
+        title = self.get("title")
+        desc = self.get("description")
         if external_url := self.get("external_url"):
             return {"url": external_url, "text": title, "description": desc}
 

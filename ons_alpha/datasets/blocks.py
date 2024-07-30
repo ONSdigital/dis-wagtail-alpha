@@ -42,7 +42,7 @@ class DatasetStoryBlock(StreamBlock):
         cleaned_value = super().clean(value)
 
         # Check for duplicate datasets selected through the chooser
-        chosen_datasets = [child.value for child in cleaned_value if isinstance(child.block, DatasetChooserBlock)]
+        chosen_datasets = [block.value for block in cleaned_value.blocks_by_name("dataset_lookup")]
         if len(chosen_datasets) != len(set(chosen_datasets)):
             raise StructBlockValidationError(non_block_errors=[ValidationError("Duplicate datasets are not allowed")])
 

@@ -52,7 +52,7 @@ class CustomSearchFilterMixin(forms.Form):
 class CustomFilterForm(CustomSearchFilterMixin, BaseFilterForm): ...
 
 
-class BaseView(BaseChooseView):
+class ONSDatasetBaseChooseView(BaseChooseView):
     model_class = ONSDataset
     filter_form_class = CustomFilterForm
 
@@ -65,10 +65,10 @@ class BaseView(BaseChooseView):
         raise NotImplementedError()
 
 
-class CustomChooseView(ChooseViewMixin, CreationFormMixin, BaseView): ...
+class CustomChooseView(ChooseViewMixin, CreationFormMixin, ONSDatasetBaseChooseView): ...
 
 
-class CustomChooseResultView(ChooseResultsViewMixin, CreationFormMixin, BaseView): ...
+class CustomChooseResultView(ChooseResultsViewMixin, CreationFormMixin, ONSDatasetBaseChooseView): ...
 
 
 class DatasetChooseView(DatasetBaseChooseViewMixin, CustomChooseView): ...
