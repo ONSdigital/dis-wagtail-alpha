@@ -3,7 +3,6 @@ import uuid
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
-from django.utils.html import strip_tags
 
 from ons_alpha.bundles.models import Bundle, BundleStatus
 from ons_alpha.release_calendar.models import ReleaseStatus
@@ -31,26 +30,13 @@ class Command(BaseCommand):
                 }
             )
         if pages:
-            content.append({"type": "release_content", "value": {"title": "Articles", "links": pages}})
-        links = []
-        for related in bundle.bundled_links.all():
-            links.append(
-                {
-                    "id": uuid.uuid4(),
-                    "type": "item",
-                    "value": {
-                        "page": None,
-                        "title": related.title,
-                        # note: description here is a simple CharBlock
-                        "description": strip_tags(related.description),
-                        "external_url": related.url,
-                    },
-                }
-            )
-        if links:
-            content.append({"type": "release_content", "value": {"title": "Datasets", "links": links}})
+            content.append({"type": "release_content", "value": {"title": "Publications", "links": pages}})
+
+        datasets = [{**dataset, "id": uuid.uuid4()} for dataset in bundle.datasets.raw_data]
+
         page = bundle.release_calendar_page
         page.content = content
+        page.datasets = datasets
         page.status = ReleaseStatus.PUBLISHED
         revision = page.save_revision(log_action=True)
         revision.publish()

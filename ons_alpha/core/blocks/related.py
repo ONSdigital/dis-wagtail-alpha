@@ -18,11 +18,17 @@ from wagtail.blocks import (
 class LinkBlockStructValue(StructValue):
     @cached_property
     def link(self) -> dict | None:  # pylint: disable=inconsistent-return-statements
+        title = self.get("title")
+        desc = self.get("description")
         if external_url := self.get("external_url"):
-            return {"url": external_url, "text": self.get("title")}
+            return {"url": external_url, "text": title, "description": desc}
 
         if (page := self.get("page")) and page.live:
-            return {"url": page.url, "text": self.get("title") or page}
+            return {
+                "url": page.url,
+                "text": title or page,
+                "description": desc or getattr(page.specific_deferred, "summary", ""),
+            }
 
 
 class RelatedContentBlock(StructBlock):
@@ -51,7 +57,7 @@ class RelatedContentBlock(StructBlock):
             error = ValidationError("Either Page or External Link is required.", code="invalid")
             errors["page"] = ErrorList([error])
             errors["external_url"] = ErrorList([error])
-            non_block_errors.append(ValidationError("something"))
+            non_block_errors.append(ValidationError("Missing required fields"))
         elif page and external_url:
             error = ValidationError("Please select either a page or a URL, not both.", code="invalid")
             errors["page"] = ErrorList([error])

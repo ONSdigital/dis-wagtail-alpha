@@ -11,6 +11,7 @@ from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Orderable, Page
 
 from ons_alpha.core.models import BasePage
+from ons_alpha.datasets.blocks import DatasetStoryBlock
 from ons_alpha.release_calendar.blocks import ReleaseStoryBlock
 from ons_alpha.utils.models import LinkFields
 
@@ -57,9 +58,11 @@ class ReleasePage(BasePage):
     status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.UPCOMING, max_length=32)
 
     summary = RichTextField(features=settings.RICH_TEXT_BASIC)
-    # note: this is mocked for the time being. The data would come automatically when the full release
-    # is published
+
+    # Note: When linked to a bundle containing bundled pages/datasets,
+    # the content and datasets on the Release Page will be replaced upon publishing the bundle.
     content = StreamField(ReleaseStoryBlock(), blank=True, use_json_field=True)
+    datasets = StreamField(DatasetStoryBlock(), blank=True, use_json_field=True)
 
     release_date = models.DateTimeField()
     next_release = models.CharField(max_length=255, blank=True)
@@ -94,6 +97,7 @@ class ReleasePage(BasePage):
         ),
         FieldPanel("summary"),
         FieldPanel("content"),
+        FieldPanel("datasets", help_text="Select the datasets that this release relates to.", icon="doc-full"),
         FieldPanel("contact_details"),
         InlinePanel("related_links", heading="Related links"),
     ]
@@ -141,6 +145,9 @@ class ReleasePage(BasePage):
         if self.status == ReleaseStatus.PUBLISHED:
             for block in self.content:  # pylint: disable=not-an-iterable
                 items += block.block.to_table_of_contents_items(block.value)
+
+            if self.datasets:
+                items += [{"url": "#datasets", "text": _("Data")}]
 
             if self.contact_details_id:
                 items += [{"url": "#contact-details", "text": _("Contact details")}]
