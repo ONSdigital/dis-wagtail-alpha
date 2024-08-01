@@ -55,11 +55,14 @@ if "CSRF_TRUSTED_ORIGINS" in env:
 # Application definition
 
 INSTALLED_APPS = [
+    "ons_alpha.articles",
     "ons_alpha.core",
+    "ons_alpha.datasets",
     "ons_alpha.documents",
     "ons_alpha.forms",
     "ons_alpha.home",
     "ons_alpha.images",
+    "ons_alpha.methodologies",
     "ons_alpha.navigation",
     "ons_alpha.release_calendar",
     "ons_alpha.search",
@@ -69,6 +72,7 @@ INSTALLED_APPS = [
     "ons_alpha.taxonomy",
     "ons_alpha.topics",
     "ons_alpha.bulletins",
+    "ons_alpha.bundles",
     "crispy_forms",
     "tbxforms",
     "wagtail.contrib.settings",
@@ -780,3 +784,6 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin"
 SLACK_PUBLISH_NOTIFICATION_WEBHOOK_URL = env.get("SLACK_PUBLISH_NOTIFICATION_WEBHOOK_URL")
 
 SHORT_DATETIME_FORMAT = "d/m/Y P"
+
+ONS_API_DATASET_BASE_URL = env.get("ONS_API_DATASET_BASE_URL", "https://api.beta.ons.gov.uk/v1/datasets")
+ONS_WEBSITE_DATASET_BASE_URL = env.get("ONS_WEBSITE_DATASET_BASE_URL", "https://www.ons.gov.uk/datasets")

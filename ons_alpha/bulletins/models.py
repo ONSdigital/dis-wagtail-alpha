@@ -2,8 +2,7 @@ from functools import cached_property
 
 from django.db import models
 from django.http import Http404
-from django.shortcuts import redirect
-from modelcluster.fields import ParentalKey
+from django.shortcuts import get_object_or_404, redirect
 from wagtail.admin.panels import (
     FieldPanel,
     FieldRowPanel,
@@ -14,25 +13,21 @@ from wagtail.admin.panels import (
     TabbedInterface,
 )
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
-from wagtail.models import Orderable, Page
+from wagtail.models import Page
 from wagtail.search import index
 
+from ons_alpha.bundles.models import BundledPageMixin
+from ons_alpha.core.blocks.stream_blocks import CoreStoryBlock, CorrectionsNoticesStoryBlock
+from ons_alpha.core.forms import PageWithUpdatesAdminForm
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
 
-from .blocks import BulletinStoryBlock, CorrectionsNoticesStoryBlock
-from .forms import BulletinPageAdminForm
 
-
-class BulletinTopicRelationship(Orderable):
-    page = ParentalKey("bulletins.BulletinPage", on_delete=models.CASCADE, related_name="topics")
-    topic = models.ForeignKey("taxonomy.Topic", on_delete=models.CASCADE, related_name="bulletins")
-
-
-class BulletinPage(BasePage):
-    base_form_class = BulletinPageAdminForm
-    template = "templates/pages/bulletins/bulletin_page.html"
+class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
+    base_form_class = PageWithUpdatesAdminForm
+    template = "templates/pages/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
+    subpage_types = []
 
     summary = models.TextField()
     release_date = models.DateField()
@@ -45,26 +40,30 @@ class BulletinPage(BasePage):
         related_name="+",
     )
     is_accredited = models.BooleanField(default=False)
-    body = StreamField(BulletinStoryBlock(), use_json_field=True)
+    body = StreamField(CoreStoryBlock(), use_json_field=True)
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
 
-    content_panels = BasePage.content_panels + [
-        FieldPanel("summary"),
-        MultiFieldPanel(
-            [
-                FieldRowPanel(
-                    [
-                        FieldPanel("release_date"),
-                        FieldPanel("next_release_date"),
-                    ]
-                ),
-                FieldPanel("is_accredited"),
-                FieldPanel("contact_details"),
-            ],
-            heading="Metadata",
-        ),
-        FieldPanel("body"),
-    ]
+    content_panels = (
+        BasePage.content_panels
+        + BundledPageMixin.panels
+        + [
+            FieldPanel("summary"),
+            MultiFieldPanel(
+                [
+                    FieldRowPanel(
+                        [
+                            FieldPanel("release_date"),
+                            FieldPanel("next_release_date"),
+                        ]
+                    ),
+                    FieldPanel("is_accredited"),
+                    FieldPanel("contact_details"),
+                ],
+                heading="Metadata",
+            ),
+            FieldPanel("body"),
+        ]
+    )
 
     edit_handler = TabbedInterface(
         [
@@ -105,7 +104,7 @@ class BulletinPage(BasePage):
     @cached_property
     def toc(self):
         items = [{"url": "#summary", "text": "Summary"}]
-        for block in self.body:  # pylint: disable=not-an-iterable
+        for block in self.body:  # pylint: disable=not-an-iterable,useless-suppression
             if hasattr(block.block, "to_table_of_contents_items"):
                 items += block.block.to_table_of_contents_items(block.value)
         if self.contact_details_id:
@@ -120,6 +119,25 @@ class BulletinPage(BasePage):
         context = super().get_context(request, *args, **kwargs)
         context["toc"] = self.toc
         return context
+
+    @path("previous/v<int:version>/")
+    def previous_version(self, request, version):
+        if version <= 0:
+            raise Http404
+
+        corrections = self.updates.blocks_by_name("correction")
+
+        try:
+            correction = corrections[version - 1]
+        except IndexError:
+            raise Http404 from None
+
+        # NB: Little validation is done on previous_version, as it's assumed handled on save
+        revision = get_object_or_404(self.revisions, pk=correction.value["previous_version"])
+
+        return self.render(
+            request, context_overrides={"page": revision.as_object(), "latest_version_url": self.get_url(request)}
+        )
 
 
 class BulletinSeriesPage(RoutablePageMixin, Page):
@@ -138,29 +156,26 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
         )
     ]
 
-    def get_latest_bulletin(self):
+    def get_latest(self):
         return BulletinPage.objects.live().child_of(self).order_by("-release_date").first()
 
     @path("")
     def index(self, request):
         # Redirect to /latest as this is a container page without its own content
-        return redirect(self.get_url(request) + self.reverse_subpage("latest_bulletin"))
+        return redirect(self.get_url(request) + self.reverse_subpage("latest_release"))
 
     @path("latest/")
-    def latest_bulletin(self, request):
-        latest = self.get_latest_bulletin()
+    def latest_release(self, request):
+        latest = self.get_latest()
         if not latest:
             raise Http404
 
-        return self.render(
-            request, context_overrides={"page": latest}, template="templates/pages/bulletins/bulletin_page.html"
-        )
+        return self.render(request, context_overrides={"page": latest}, template="templates/pages/bulletin_page.html")
 
     @path("previous-releases/")
     def previous_releases(self, request):
-        previous = BulletinPage.objects.live().child_of(self).order_by("-release_date")
         return self.render(
             request,
-            context_overrides={"bulletins": previous},
-            template="templates/pages/bulletins/previous_releases.html",
+            context_overrides={"pages": BulletinPage.objects.live().child_of(self).order_by("-release_date")},
+            template="templates/pages/previous_releases.html",
         )

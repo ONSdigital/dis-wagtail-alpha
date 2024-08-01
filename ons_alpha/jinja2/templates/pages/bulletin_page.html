@@ -4,7 +4,7 @@
 {% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
 
 {% block main %}
-    <div class="ons-u-fs-m ons-u-mt-s ons-u-pb-xxs release__document-type">Bulletin</div>
+    <div class="ons-u-fs-m ons-u-mt-s ons-u-pb-xxs release__document-type">{{ page.document_type|default("Bulletin") }}</div>
     <h1 class="ons-u-fs-xxxl ons-u-mb-m">
         <span>{{ page.full_title }}</span>
         {% if page.is_accredited %}
@@ -29,6 +29,12 @@
         {% endblock release_meta %}
     </div>
 
+    {% if latest_version_url %}
+        {% call onsPanel({"variant": 'warn', "classes": "ons-u-mt-s"}) %}
+            <p>{{ _("This has been superseded.") }} <a href="{{ latest_version_url }}">{{ _("View corrected version") }}</a></p>
+        {% endcall %}
+    {% endif %}
+
     {% if page.is_latest %}
         {% set notice %}
             <p><a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">Previous Releases</a></p>
@@ -36,15 +42,17 @@
         {{ onsPanel({"body": notice}) }}
     {% else %}
         {% set notice %}
-            <p><a href="{{  routablepageurl(page.get_parent().specific, "latest_bulletin") }}">View Latest Release</a></p>
+            <p><a href="{{  routablepageurl(page.get_parent().specific, "latest_release") }}">View Latest Release</a></p>
         {% endset %}
         {{ onsPanel({"body": notice}) }}
     {% endif %}
 
     <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
-        {% if page.updates %}
-            {% include_block page.updates %}
-        {% endif %}
+        <div class="ons-grid__col ons-u-p-no ons-u-mb-s">
+            {% if page.updates %}
+                {% include_block page.updates %}
+            {% endif %}
+        </div>
 
         <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
             {# fmt:off #}

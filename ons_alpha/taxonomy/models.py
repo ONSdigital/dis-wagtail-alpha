@@ -1,9 +1,11 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
+from modelcluster.fields import ParentalKey
 from treebeard.mp_tree import MP_Node
 from wagtail.admin.forms import WagtailAdminModelForm
 from wagtail.admin.panels import FieldPanel
+from wagtail.models import Orderable
 from wagtail.search import index
 
 
@@ -96,3 +98,8 @@ class TopicForm(WagtailAdminModelForm):
 
 # use our form class override
 Topic.base_form_class = TopicForm
+
+
+class PageTopicRelationship(Orderable):
+    page = ParentalKey("wagtailcore.Page", on_delete=models.CASCADE, related_name="topics")
+    topic = models.ForeignKey("taxonomy.Topic", on_delete=models.CASCADE, related_name="related_pages")

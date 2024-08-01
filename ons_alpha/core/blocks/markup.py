@@ -12,9 +12,11 @@ class HeadingBlock(blocks.CharBlock):
         icon = "title"
         form_classname = "title"
         template = "templates/components/streamfield/heading_block.html"
+        label = "Section heading"
 
     def __init__(self, **kwargs):
         self.show_back_to_toc = kwargs.pop("show_back_to_toc", False)
+        kwargs.setdefault("help_text", "This is output as level 2 heading (<code>h2</code>)")
 
         super().__init__(**kwargs)
 

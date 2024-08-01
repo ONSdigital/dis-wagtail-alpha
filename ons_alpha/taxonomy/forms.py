@@ -1,7 +1,7 @@
 from wagtail.admin.forms import WagtailAdminPageForm
 
 
-class BulletinPageAdminForm(WagtailAdminPageForm):
+class PageWithTopicsAdminForm(WagtailAdminPageForm):
     def clean(self):
         cleaned_data = super().clean()
 
