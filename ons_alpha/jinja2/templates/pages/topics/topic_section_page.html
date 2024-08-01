@@ -1,1 +1,13 @@
 {% extends "templates/pages/index_page.html" %}
+
+{% from "components/panel/_macro.njk" import onsPanel %}
+{% block summary %}
+    <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
+        <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+            <section id="summary">
+                <p>{{ page.summary }}</p>
+            </section>
+
+        </div>
+    </div>
+{% endblock %}
