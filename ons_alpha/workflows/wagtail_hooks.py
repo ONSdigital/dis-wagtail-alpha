@@ -26,13 +26,12 @@ def amend_page_action_menu_items(menu_items: list, request: HttpRequest, context
     page = context["page"]
     task = page.current_workflow_task
 
-    if not isinstance(task, ReadOnlyGroupTask):
+    if not isinstance(task, ReadOnlyGroupTask) or request.user.is_superuser:
         return
 
     if task:
         for idx, menu_item in enumerate(menu_items):
-            # we only want to show the Cancel workflow action for superusers
-            if isinstance(menu_item, CancelWorkflowMenuItem) and not request.user.is_superuser:
+            if isinstance(menu_item, CancelWorkflowMenuItem):
                 del menu_items[idx]
 
         is_final_task = page.current_workflow_state and page.current_workflow_state.is_at_final_task

@@ -7,7 +7,7 @@ class ReadOnlyGroupTask(AbstractGroupApprovalTask):
         return True
 
     def locked_for_user(self, obj, user):
-        return True
+        return not user.is_superuser
 
     @classmethod
     def get_description(cls):
