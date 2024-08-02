@@ -1,0 +1,3 @@
+{% extends "wagtailadmin/pages/edit.html" %}
+{% load ons_workflow_tags %}
+{% block bodyclass %}{{ block.super }}{% if page.current_workflow_task|is_readonly_task %} ons-readonly{% endif %}{% endblock %}

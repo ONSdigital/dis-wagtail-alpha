@@ -58,3 +58,8 @@ def editor_js():
     # note: remove in a future release of Wagtail
     # needed as PageActionMenu.media doesn't consider the PageActionMenu.default_item media
     return format_html('<script src="{}"></script>', static("workflows/js/action-readonly-review.js"))
+
+
+@hooks.register("insert_global_admin_css")
+def global_admin_css():
+    return format_html('<link rel="stylesheet" href="{}">', static("workflows/css/readonly-task.css"))
