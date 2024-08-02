@@ -1,4 +1,3 @@
-from django.contrib.auth.models import Permission
 from django.urls import include, path
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -59,13 +58,3 @@ def preset_golive_date(request, page):  # pylint: disable=unused-argument
     if now() < page.active_bundle.scheduled_publication_date != page.go_live_at:
         # pre-set the scheduled publishing time
         page.go_live_at = page.active_bundle.scheduled_publication_date
-
-
-@hooks.register("register_permissions")
-def register_bundle_permissions():
-    model = "bundle"
-
-    return Permission.objects.filter(
-        content_type__app_label="bundles",
-        codename__in=[f"view_{model}", f"add_{model}", f"change_{model}", f"delete_{model}"],
-    )
