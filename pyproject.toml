@@ -7,7 +7,7 @@ authors = ["ONSdigital"]
 [tool.poetry.dependencies]
 python = "~3.12"
 django = "~4.2"
-wagtail = "~6.1.2"
+wagtail = "~6.2.0"
 dj-database-url = "~2.2.0"
 django-basic-auth-ip-whitelist = "~0.6"
 django-crispy-forms = "^2.1"
@@ -18,7 +18,7 @@ django-redis = "~5.4"
 django-storages = { version = "~1.14", extras = ["s3"] }
 gunicorn = "~22.0"
 psycopg2 = "~2.9"
-sentry-sdk = "~2.7"
+sentry-sdk = "~2.12"
 tbxforms = "2.0.0"
 wagtailmath = {git = "https://github.com/wagtail-nest/wagtail-polymath.git", rev = "0f22366"}
 wagtail-storages = "~1.1.0"
