@@ -22,18 +22,32 @@ function getReactInternalInstance(element) {
 }
 
 function preventContentChanges(editorInstance) {
-  const currentContent = editorInstance.getEditorState().getCurrentContent();
-  const originalOnChange = editorInstance.onChange;
+    let originalContent = editorInstance.getEditorState().getCurrentContent();
+    const originalOnChange = editorInstance.onChange;
 
-  editorInstance.onChange = (editorState) => {
-    if (editorState.getCurrentContent() !== currentContent) {
-      // Prevent content changes by reverting to the original content
-      return originalOnChange(DraftJS.EditorState.undo(editorState));
-    }
-
-    // Allow selection changes
-    return originalOnChange(editorState);
-  };
+    editorInstance.onChange = (editorState) => {
+        if (editorState.getCurrentContent() !== originalContent) {
+            if (editorState.getLastChangeType() === "change-inline-style") {
+                originalOnChange(editorState);
+                originalContent = editorState.getCurrentContent();
+            }
+            else {
+                // preserve selection
+                const state = DraftJS.EditorState.set(
+                DraftJS.EditorState.createWithContent(originalContent, editorState.getDecorator()),
+                {
+                    selection: editorState.getSelection(),
+                      undoStack: editorState.getUndoStack(),
+                      redoStack: editorState.getRedoStack(),
+                      inlineStyleOverride: editorState.getInlineStyleOverride(),
+                },
+            );
+            return originalOnChange(DraftJS.EditorState.acceptSelection(state, state.getSelection()));
+        }
+        else {
+            return originalOnChange(editorState);
+        }
+    };
 }
 
 function initializeReadOnlyDraftail() {
