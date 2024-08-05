@@ -52,6 +52,8 @@ function initializeReadOnlyDraftail() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    initReviewButton();
-    initializeReadOnlyDraftail();
+    if (document.body.classList.contains("ons-readonly")) {
+        initReviewButton();
+        initializeReadOnlyDraftail();
+    }
 });
