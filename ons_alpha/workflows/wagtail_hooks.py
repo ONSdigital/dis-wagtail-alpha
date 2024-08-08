@@ -11,7 +11,7 @@ from ons_alpha.workflows.models import ReadOnlyGroupTask
 
 
 class ReviewActionMenuItem(ActionMenuItem):
-    label = _("Review")
+    label = _("Submit review")
     name = "action-readonly-review"
 
     class Media:
