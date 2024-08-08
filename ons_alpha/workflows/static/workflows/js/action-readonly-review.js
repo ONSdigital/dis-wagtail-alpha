@@ -34,15 +34,16 @@ function preventContentChanges(editorInstance) {
             else {
                 // preserve selection
                 const state = DraftJS.EditorState.set(
-                DraftJS.EditorState.createWithContent(originalContent, editorState.getDecorator()),
-                {
-                    selection: editorState.getSelection(),
-                      undoStack: editorState.getUndoStack(),
-                      redoStack: editorState.getRedoStack(),
-                      inlineStyleOverride: editorState.getInlineStyleOverride(),
-                },
-            );
-            return originalOnChange(DraftJS.EditorState.acceptSelection(state, state.getSelection()));
+                    DraftJS.EditorState.createWithContent(originalContent, editorState.getDecorator()),
+                    {
+                        selection: editorState.getSelection(),
+                        undoStack: editorState.getUndoStack(),
+                        redoStack: editorState.getRedoStack(),
+                        inlineStyleOverride: editorState.getInlineStyleOverride(),
+                    },
+                );
+                return originalOnChange(DraftJS.EditorState.acceptSelection(state, state.getSelection()));
+            }
         }
         else {
             return originalOnChange(editorState);
