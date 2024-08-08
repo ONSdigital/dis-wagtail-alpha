@@ -46,10 +46,11 @@ class TopicPage(BaseTopicPage):
     subpage_types = ["articles.ArticleSeriesPage", "bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
     summary = models.CharField(blank=True, max_length=255)
-
+    topic_page_nav = models.CharField(blank=True, max_length=255)
 
     content_panels = BasePage.content_panels + [
         FieldPanel("summary"),
+        FieldPanel("topic_page_nav")
     ]
 
     edit_handler = TabbedInterface(
@@ -96,3 +97,7 @@ class TopicSectionPage(BaseTopicPage):
         super().clean()
         if TopicPage.objects.filter(topic=self.topic).exists():
             raise ValidationError({"topic": "Topic Page with this topic already exists."})
+
+    def get_object_list(self):
+        print(self.model_class.objects)
+        return self.model_class.objects.filter(limit=1000)
