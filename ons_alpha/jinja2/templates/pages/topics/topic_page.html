@@ -12,39 +12,33 @@
                 </section>
             </div>
         </div>
-
     {% endblock %}
 
     {% block topic_page_nav %}
     <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
         <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
-            <p>
             <section id="topic_page_nav">
                 {% for child in page.get_children() %}
-                    {{ child.specific.page_type_display_name }}
+                    <a href="#{{ child.specific_class.__name__ }}">{{ child.specific.page_type_display_name }}</a>
                 {% endfor %}
             </section>
-            </p>
         </div>
     </div>
     {% endblock %}
 
-    {% if subpages %}
-        <div class="grid">
-
-            {% for subpage in subpages %}
-            <p>{{ subpage.subpage_types[0] }}</p>
-            {% if subpages.object_list %}
-            <h2>{{"Index"}}</h2>
-            {% for subpage in subpages %}
-            <a href="{{ subpage.url }}">
-                {{ subpage }}
+{% block index %}
+<div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
+    <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+        <h2>{{"Index"}}</h2>
+        {% for child in page.get_children() %}
+            <h3 id="{{ child.specific_class.__name__ }}">{{ child.specific.page_type_display_name }}</h3>
+            <a href="{{ child.url }}">
+                {{ child.specific.title}}
             </a>
-            <p>{{ subpage.summary }}</p>
-            <hr>
-            {% endfor %}
-            {% endif %}
-            {% endfor %}
-        </div>
-    {% endif %}
+            <p>{{ child.specific.summary}}</p>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}
 {% endblock %}

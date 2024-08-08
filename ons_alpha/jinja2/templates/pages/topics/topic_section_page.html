@@ -3,33 +3,32 @@
 {% from "components/panel/_macro.njk" import onsPanel %}
 
 {% block main %}
-{% block summary %}
-    <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
-        <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
-            <section>
-                <h2>{{"Summary"}}</h2>
-                <p>{{ page.summary }}</p>
-            </section>
+    {% block summary %}
+        <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
+            <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+                <section>
+                    <h2>{{"Summary"}}</h2>
+                    <p>{{ page.summary }}</p>
+                </section>
+            </div>
         </div>
-    </div>
-{% endblock %}
-{% block index %}
-{% if subpages %}
-    <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
-        {% if subpages.object_list %}
-            <h2>{{"Index"}}</h2>
-            {% for subpage in subpages %}
-                <a href="{{ subpage.url }}">
-                    {{ subpage }}
-                </a>
-                <p>{{ subpage.summary }}</p>
-                <p>{{ subpage.subpage_types }}</p>
-                <hr>
-            {% endfor %}
-        {% endif %}
-    </div>
-{% endif %}
-{% endblock %}
+    {% endblock %}
+    {% block index %}
+            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
+                <h2>{{"Index"}}</h2>
+                {% if subpages %}
+                    {% if subpages.object_list %}
+                        {% for subpage in subpages %}
+                            <a href="{{ subpage.url }}">
+                                {{ subpage }}
+                            </a>
+                            <p>{{ subpage.summary }}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+            </div>
+
+    {% endblock %}
 {% endblock %}
 
 

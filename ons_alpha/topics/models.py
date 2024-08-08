@@ -70,6 +70,10 @@ class TopicPage(BaseTopicPage):
         if TopicSectionPage.objects.filter(topic=self.topic).exists():
             raise ValidationError({"topic": "Topic Section Page with this topic already exists."})
 
+    def get_children(self):
+        return 
+
+
 
 class TopicSectionPage(BaseTopicPage):
     template = "templates/pages/topics/topic_section_page.html"
@@ -98,6 +102,3 @@ class TopicSectionPage(BaseTopicPage):
         if TopicPage.objects.filter(topic=self.topic).exists():
             raise ValidationError({"topic": "Topic Page with this topic already exists."})
 
-    def get_object_list(self):
-        print(self.model_class.objects)
-        return self.model_class.objects.filter(limit=1000)
