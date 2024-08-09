@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "ons_alpha.topics",
     "ons_alpha.bulletins",
     "ons_alpha.bundles",
+    "ons_alpha.workflows",
     "crispy_forms",
     "tbxforms",
     "wagtail.contrib.settings",
