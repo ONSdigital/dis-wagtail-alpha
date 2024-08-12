@@ -1,0 +1,13 @@
+.content-locked.ons-readonly .w-panel__content .w-field__comment-button,
+.content-locked.ons-readonly .w-panel__content .Draftail-CommentControl,
+.content-locked.ons-readonly .w-panel__content .Draftail-ToolbarButton--pin {
+    pointer-events: initial!important;
+}
+
+.content-locked.ons-readonly .w-panel__content .DraftEditor-editorContainer {
+    user-select: initial;
+    -moz-user-select: initial;
+    -webkit-user-select: initial;
+    pointer-events: painted;
+}
+
