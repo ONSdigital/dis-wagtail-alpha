@@ -60,13 +60,12 @@ class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
 class Bundle(index.Indexed, ClusterableModel):
     base_form_class = BundleAdminForm
     name = models.CharField(max_length=255)
-    collection_reference = models.CharField(max_length=255, blank=True, help_text="Florence Collection reference")
-    topic = models.ForeignKey(
-        "topics.TopicPage",
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name="bundles",
-    )
+    # topic = models.ForeignKey(
+    #     "topics.TopicPage",
+    #     null=True,
+    #     on_delete=models.SET_NULL,
+    #     related_name="bundles",
+    # )
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         "users.User",
@@ -94,12 +93,12 @@ class Bundle(index.Indexed, ClusterableModel):
 
     panels = [
         FieldPanel("name"),
-        FieldPanel("topic", icon="tag"),
-        FieldPanel("collection_reference"),
+        # FieldPanel("topic", icon="tag"),  # Topic field removed
+        # FieldPanel("collection_reference"),  # Collection reference field removed
         FieldRowPanel(
             [
-                FieldPanel("publication_date"),
-                FieldPanel("release_calendar_page", heading="or Release Calendar page"),
+                FieldPanel("release_calendar_page", heading="Release Calendar page"),  # Swap order
+                FieldPanel("publication_date", heading="or Publication date"),
             ],
             heading="Scheduling",
             icon="calendar",

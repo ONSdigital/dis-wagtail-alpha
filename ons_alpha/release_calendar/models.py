@@ -17,9 +17,9 @@ from ons_alpha.utils.models import LinkFields
 
 
 class ReleaseStatus(models.TextChoices):
-    UPCOMING = "UPCOMING", "Upcoming"
-    PUBLISHED = "PUBLISHED", "Published"
-    CANCELLED = "CANCELLED", "Cancelled"
+    PROVISIONAL = "provisional", "Provisional"
+    CONFIRMED = "confirmed", "Confirmed"
+    CANCELLED = "cancelled", "Cancelled"
 
 
 class ReleaseIndex(BasePage):
@@ -27,6 +27,7 @@ class ReleaseIndex(BasePage):
 
     parent_page_types = ["home.HomePage"]
     subpage_types = ["ReleasePage"]
+    max_count_per_parent = 1  # Set max count per parent
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
@@ -55,8 +56,7 @@ class ReleasePage(BasePage):
     parent_page_types = ["ReleaseIndex"]
     subpage_types = []
 
-    status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.UPCOMING, max_length=32)
-
+    status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.PROVISIONAL, max_length=32)
     summary = RichTextField(features=settings.RICH_TEXT_BASIC)
 
     # Note: When linked to a bundle containing bundled pages/datasets,
@@ -80,7 +80,11 @@ class ReleasePage(BasePage):
         related_name="+",
     )
 
-    is_accredited = models.BooleanField("Accredited Official Statistics", default=False)
+    is_accredited = models.BooleanField(
+        "Accredited Official Statistics",
+        default=False,
+        help_text="If ticked, will display an information block about the data being accredited official statistics and include the accredited logo",
+    )
 
     content_panels = Page.content_panels + [
         MultiFieldPanel(
