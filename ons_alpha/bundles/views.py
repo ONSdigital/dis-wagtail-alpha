@@ -8,16 +8,17 @@ from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from wagtail.admin import messages
 from wagtail.models import Page
+from wagtail.permission_policies import ModelPermissionPolicy
 
 from .admin_forms import AddToBundleForm
-from .models import BundledPageMixin, BundlePage
+from .models import Bundle, BundledPageMixin, BundlePage
 
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
 
 
-def add_to_bundle(request: "HttpRequest", page_to_add_id: "Page"):
+def add_to_bundle(request: "HttpRequest", page_to_add_id: "Page"):  # noqa C901
     page_to_add = get_object_or_404(Page.objects.specific(), id=page_to_add_id)
 
     if not isinstance(page_to_add, BundledPageMixin):
@@ -26,6 +27,10 @@ def add_to_bundle(request: "HttpRequest", page_to_add_id: "Page"):
     page_perms = page_to_add.permissions_for_user(request.user)
     # note: add the relevant permission checks
     if not (page_perms.can_edit() or page_perms.can_publish()):
+        raise PermissionDenied
+
+    permission_policy = ModelPermissionPolicy(Bundle)
+    if not permission_policy.user_has_permission(request.user, "change"):
         raise PermissionDenied
 
     goto_next = None
