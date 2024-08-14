@@ -70,7 +70,9 @@ class ReleasePage(BasePage):
     notice = RichTextField(
         features=settings.RICH_TEXT_BASIC,
         blank=True,
-        help_text="Used for data change or cancellation notices. The notice is required when the release is cancelled",
+        help_text=(
+            "Used for data change or cancellation notices. The notice is required " "when the release is cancelled"
+        ),
     )
     contact_details = models.ForeignKey(
         "core.ContactDetails",
@@ -83,7 +85,10 @@ class ReleasePage(BasePage):
     is_accredited = models.BooleanField(
         "Accredited Official Statistics",
         default=False,
-        help_text="If ticked, will display an information block about the data being accredited official statistics and include the accredited logo",
+        help_text=(
+            "If ticked, will display an information block about the data being "
+            "accredited official statistics and include the accredited logo"
+        ),
     )
 
     content_panels = Page.content_panels + [
@@ -101,7 +106,11 @@ class ReleasePage(BasePage):
         ),
         FieldPanel("summary"),
         FieldPanel("content"),
-        FieldPanel("datasets", help_text="Select the datasets that this release relates to.", icon="doc-full"),
+        FieldPanel(
+            "datasets",
+            help_text="Select the datasets that this release relates to.",
+            icon="doc-full",
+        ),
         FieldPanel("contact_details"),
         InlinePanel("related_links", heading="Related links"),
     ]
