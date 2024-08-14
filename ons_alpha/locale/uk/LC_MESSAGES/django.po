@@ -1,0 +1,215 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-14 15:38+0100\n"
+"PO-Revision-Date: 2024-08-14 15:48+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: ons_alpha/articles/models.py:100
+msgid "Article"
+msgstr "Артикль"
+
+#: ons_alpha/bundles/admin_forms.py:17
+msgid "Bundle"
+msgstr ""
+
+#: ons_alpha/bundles/admin_forms.py:18
+msgid "Select a bundle for this page."
+msgstr ""
+
+#: ons_alpha/bundles/templates/bundles/wagtailadmin/add_to_bundle.html:3
+#, python-format
+msgid "Add %(title)s to a bundle"
+msgstr ""
+
+#: ons_alpha/bundles/templates/bundles/wagtailadmin/add_to_bundle.html:5
+msgid "Add"
+msgstr ""
+
+#: ons_alpha/bundles/templates/bundles/wagtailadmin/add_to_bundle.html:16
+msgid "Confirm"
+msgstr ""
+
+#: ons_alpha/bundles/wagtail_hooks.py:19
+msgid "Add to Bundle"
+msgstr ""
+
+#: ons_alpha/bundles/wagtail_hooks.py:21
+#, python-format
+msgid "Add '%(title)s' to a bundle"
+msgstr ""
+
+#: ons_alpha/core/blocks/related.py:80
+msgid "Related links"
+msgstr "Пов'язані посилання"
+
+#: ons_alpha/jinja2/templates/components/navigation/breadcrumbs.html:9
+msgid "Home"
+msgstr "додому"
+
+#: ons_alpha/jinja2/templates/components/streamfield/corrections_block.html:5
+msgid "View superseded version"
+msgstr "Переглянути замінену версію"
+
+#: ons_alpha/jinja2/templates/components/streamfield/corrections_notices_block.html:7
+msgid "Corrections and notices"
+msgstr "Виправлення та зауваження"
+
+#: ons_alpha/jinja2/templates/components/streamfield/corrections_notices_block.html:9
+msgid "Corrections"
+msgstr "Виправлення"
+
+#: ons_alpha/jinja2/templates/components/streamfield/corrections_notices_block.html:18
+msgid "Notices"
+msgstr "Повідомлення"
+
+#: ons_alpha/jinja2/templates/components/streamfield/datasets_block.html:2
+#: ons_alpha/release_calendar/models.py:150
+msgid "Data"
+msgstr "Дані"
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:20
+#: ons_alpha/jinja2/templates/pages/release_index.html:15
+#: ons_alpha/jinja2/templates/pages/release_page--cancelled.html:6
+#: ons_alpha/jinja2/templates/pages/release_page--upcoming.html:5
+#: ons_alpha/jinja2/templates/pages/release_page.html:19
+msgid "Release date"
+msgstr "Дата випуску"
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:25
+#: ons_alpha/jinja2/templates/pages/release_page.html:24
+msgid "Next release"
+msgstr "Наступний випуск"
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:34
+msgid "This has been superseded."
+msgstr "Це було замінено."
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:34
+msgid "View corrected version"
+msgstr "Переглянути виправлену версію"
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:71
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:36
+#: ons_alpha/release_calendar/models.py:143
+msgid "Summary"
+msgstr "Резюме"
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:83
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:85
+#: ons_alpha/jinja2/templates/pages/release_page.html:58
+#: ons_alpha/release_calendar/models.py:153
+msgid "Contact details"
+msgstr "Контактні дані"
+
+#: ons_alpha/jinja2/templates/pages/login_page.html:10
+#: ons_alpha/jinja2/templates/pages/login_page.html:15
+msgid "Log in"
+msgstr ""
+
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:15
+msgid "Last revised"
+msgstr "Востаннє переглянуто"
+
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:44
+msgid "Methodology background"
+msgstr "Методологія фону"
+
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:53
+msgid "Accreditation"
+msgstr "Акредитація"
+
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:56
+msgid "How it was compiled"
+msgstr "Як це було складено"
+
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:59
+msgid "Geographic coverage"
+msgstr "Географічне охоплення"
+
+#: ons_alpha/jinja2/templates/pages/previous_releases.html:9
+msgid "There are currently no releases"
+msgstr ""
+
+#: ons_alpha/jinja2/templates/pages/release_index.html:4
+msgid "Release calendar"
+msgstr "Календар випусків"
+
+#: ons_alpha/jinja2/templates/pages/release_page--cancelled.html:7
+msgid "Cancelled"
+msgstr "Скасовано"
+
+#: ons_alpha/jinja2/templates/pages/release_page.html:76
+#: ons_alpha/release_calendar/models.py:156
+msgid "About the data"
+msgstr "Про дані"
+
+#: ons_alpha/jinja2/templates/pages/search/search.html:13
+msgid "Search"
+msgstr ""
+
+#: ons_alpha/release_calendar/models.py:109
+msgid "The notice field is required when the release is cancelled"
+msgstr ""
+
+#: ons_alpha/release_calendar/models.py:159
+msgid "You might also be interested in"
+msgstr "Вас також може зацікавити"
+
+#: ons_alpha/settings/base.py:274
+msgid "English"
+msgstr ""
+
+#: ons_alpha/settings/base.py:275
+msgid "Welsh"
+msgstr ""
+
+#: ons_alpha/settings/base.py:276
+msgid "Ukrainian"
+msgstr ""
+
+#: ons_alpha/utils/forms.py:15
+msgid "There is a problem with your submission"
+msgstr ""
+
+#: ons_alpha/utils/forms.py:32
+msgid "Submit"
+msgstr ""
+
+#: ons_alpha/workflows/models.py:14
+msgid ""
+"Members of the chosen Wagtail Groups can approve this task, but they cannot "
+"change any content"
+msgstr ""
+
+#: ons_alpha/workflows/models.py:17
+msgid "Read-only Group approval task"
+msgstr ""
+
+#: ons_alpha/workflows/models.py:18
+msgid "Read-only Group approval tasks"
+msgstr ""
+
+#: ons_alpha/workflows/wagtail_hooks.py:14
+msgid "Submit review"
+msgstr ""
+
+#: ons_alpha/workflows/wagtail_hooks.py:46
+#, python-format
+msgid "%(label)s and Publish"
+msgstr ""

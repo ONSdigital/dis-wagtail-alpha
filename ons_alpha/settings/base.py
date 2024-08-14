@@ -271,6 +271,7 @@ WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ("uk", _("Ukrainian")),
 ]
 
+LOCALE_PATHS = [PROJECT_DIR / "locale"]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/stable/howto/static-files/
