@@ -1,5 +1,6 @@
 from django.apps import apps
 from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import include, path
 from django.views.decorators.cache import never_cache
@@ -30,18 +31,16 @@ private_urlpatterns += [
     path("documents/", include(wagtaildocs_urls)),
 ]
 
-# Public URLs that are meant to be cached.
-urlpatterns = [path("sitemap.xml", sitemap)]
-
+debug_urlpatterns = []
 if settings.DEBUG:
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
     # Serve static and media files from development server
-    urlpatterns += staticfiles_urlpatterns()
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    debug_urlpatterns += staticfiles_urlpatterns()
+    debug_urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-    urlpatterns += [
+    debug_urlpatterns += [
         # Add views for testing 404 and 500 templates
         path(
             "test404/",
@@ -61,8 +60,10 @@ if settings.DEBUG:
     if apps.is_installed("debug_toolbar"):
         import debug_toolbar
 
-        urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+        debug_urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + debug_urlpatterns
 
+# Public URLs that are meant to be cached.
+urlpatterns = [path("sitemap.xml", sitemap)]
 # Set public URLs to use the "default" cache settings.
 urlpatterns = decorate_urlpatterns(urlpatterns, get_default_cache_control_decorator())
 
@@ -80,14 +81,16 @@ urlpatterns = decorate_urlpatterns(
 # Join private and public URLs.
 urlpatterns = (
     private_urlpatterns
-    + urlpatterns
-    + [
+    + debug_urlpatterns
+    + i18n_patterns(
+        *urlpatterns,
         # Add Wagtail URLs at the end.
-        # Wagtail cache-control is set on the page models's serve methods
+        # Wagtail cache-control is set on the page models' serve methods
         # and is handled conditionally on the search view
         path("search/", search_views.search, name="search"),
         path("", include(wagtail_urls)),
-    ]
+        prefix_default_language=False,
+    )
 )
 
 # Error handlers
