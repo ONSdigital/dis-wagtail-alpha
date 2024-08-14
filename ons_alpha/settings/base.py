@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail.locales",
+    "wagtail.contrib.simple_translation",
     "wagtail",
     "modelcluster",
     "taggit",
