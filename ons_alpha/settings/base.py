@@ -222,14 +222,9 @@ if REDIS_URL:
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": REDIS_URL + "/0",
+            "LOCATION": REDIS_URL,
             "OPTIONS": redis_options,
-        },
-        "renditions": {
-            "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": REDIS_URL + "/1",
-            "OPTIONS": redis_options,
-        },
+        }
     }
     DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 else:
