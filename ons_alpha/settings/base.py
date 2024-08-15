@@ -36,6 +36,8 @@ DEBUG = False
 if "SECRET_KEY" in env:
     SECRET_KEY = env["SECRET_KEY"]
 
+READ_ONLY_ENV = os.environ.get("READ_ONLY_ENV", "false").lower() == "true"
+
 
 # Define what hosts an app can be accessed by.
 # It will return HTTP 400 Bad Request error if your host is not set using this
