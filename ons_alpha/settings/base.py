@@ -86,7 +86,6 @@ INSTALLED_APPS = [
     "wagtail.documents",
     "wagtail.images",
     "wagtail.search",
-    "wagtail.admin",
     "wagtail.locales",
     "wagtail.contrib.simple_translation",
     "wagtail.contrib.settings",
@@ -99,11 +98,8 @@ INSTALLED_APPS = [
     "modelcluster",
     "taggit",
     "django_extensions",
-    "django.contrib.admin",
-    "django.contrib.auth",
+    "django.contrib.auth",  # Wagtail requires the auth app be installed, even if it's not used.
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
     "whitenoise.runserver_nostatic",  # Must be before `django.contrib.staticfiles`
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
@@ -112,6 +108,16 @@ INSTALLED_APPS = [
     "wagtailcharts",
     "wagtailfontawesomesvg",
 ]
+
+if not READ_ONLY_ENV:
+    INSTALLED_APPS.extend(
+        [
+            "wagtail.admin",
+            "django.contrib.admin",
+            "django.contrib.sessions",
+            "django.contrib.messages",
+        ]
+    )
 
 
 # Middleware classes
@@ -124,17 +130,36 @@ MIDDLEWARE = [
     # SecurityMiddleware.
     # http://whitenoise.evans.io/en/stable/#quickstart-for-django-apps
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
+# Some middleware isn't needed for a read-only environment.
+# Disable them to improve performance
+if not READ_ONLY_ENV:
+    common_middleware_index = MIDDLEWARE.index("django.middleware.common.CommonMiddleware")
+    MIDDLEWARE.insert(common_middleware_index, "django.contrib.messages.middleware.MessageMiddleware")
+    MIDDLEWARE.insert(common_middleware_index, "django.contrib.auth.middleware.AuthenticationMiddleware")
+    MIDDLEWARE.insert(common_middleware_index, "django.contrib.sessions.middleware.SessionMiddleware")
+
 ROOT_URLCONF = "ons_alpha.urls"
+
+context_processors = [
+    "django.template.context_processors.debug",
+    "django.template.context_processors.request",
+    "wagtail.contrib.settings.context_processors.settings",
+    # This is a custom context processor that lets us add custom
+    # global variables to all the templates.
+    "ons_alpha.core.context_processors.global_vars",
+]
+
+if not READ_ONLY_ENV:
+    context_processors.extend(
+        ["django.contrib.messages.context_processors.messages", "django.contrib.auth.context_processors.auth"]
+    )
 
 TEMPLATES = [
     {
@@ -147,16 +172,7 @@ TEMPLATES = [
             "match_extension": ".html",
             "app_dirname": "jinja2",
             "undefined": "jinja2.ChainableUndefined",
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-                "wagtail.contrib.settings.context_processors.settings",
-                # This is a custom context processor that lets us add custom
-                # global variables to all the templates.
-                "ons_alpha.core.context_processors.global_vars",
-            ],
+            "context_processors": context_processors,
             "extensions": DEFAULT_EXTENSIONS
             + [
                 "wagtail.jinja2tags.core",
@@ -171,16 +187,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
         "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-                "wagtail.contrib.settings.context_processors.settings",
-                # This is a custom context processor that lets us add custom
-                # global variables to all the templates.
-                "ons_alpha.core.context_processors.global_vars",
-            ],
+            "context_processors": context_processors,
         },
     },
 ]
@@ -255,6 +262,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+
+if READ_ONLY_ENV:
+    AUTHENTICATION_BACKENDS = []
 
 
 # Internationalization

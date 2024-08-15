@@ -59,5 +59,7 @@
 {# fmt:on #}
 
 {% block preMain %}
-    {{ wagtailuserbar() }}
+    {% if not READ_ONLY_ENV %}
+        {{ wagtailuserbar() }}
+    {% endif %}
 {% endblock %}
