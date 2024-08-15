@@ -60,12 +60,6 @@ class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
 class Bundle(index.Indexed, ClusterableModel):
     base_form_class = BundleAdminForm
     name = models.CharField(max_length=255)
-    # topic = models.ForeignKey(
-    #     "topics.TopicPage",
-    #     null=True,
-    #     on_delete=models.SET_NULL,
-    #     related_name="bundles",
-    # )
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         "users.User",
