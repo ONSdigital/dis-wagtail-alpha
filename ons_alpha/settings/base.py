@@ -4,6 +4,7 @@ Django settings for ons_alpha project.
 
 import os
 import sys
+import warnings
 
 from pathlib import Path
 
@@ -118,6 +119,9 @@ if not READ_ONLY_ENV:
             "django.contrib.messages",
         ]
     )
+else:
+    # Mute warnings about missing draftail features
+    warnings.filterwarnings("ignore", category=RuntimeWarning, module="wagtail.admin.rich_text.editors.draftail")
 
 
 # Middleware classes
