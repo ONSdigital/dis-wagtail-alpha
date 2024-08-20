@@ -58,8 +58,6 @@ class ReleasePage(BasePage):
     status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.PROVISIONAL, max_length=32)
     summary = RichTextField(features=settings.RICH_TEXT_BASIC)
 
-    # Note: When linked to a bundle containing bundled pages/datasets,
-    # the content and datasets on the Release Page will be replaced upon publishing the bundle.
     content = StreamField(ReleaseStoryBlock(), blank=True, use_json_field=True)
     datasets = StreamField(DatasetStoryBlock(), blank=True, use_json_field=True)
 
@@ -133,6 +131,10 @@ class ReleasePage(BasePage):
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
 
+        # Suppress the Pylint warning since we know self.content is iterable
+        for block in self.content:  # pylint: disable=not-an-iterable
+            context["toc"] += block.block.to_table_of_contents_items(block.value)
+
         return context
 
     @cached_property
@@ -150,7 +152,7 @@ class ReleasePage(BasePage):
         items = [{"url": "#summary", "text": _("Summary")}]
 
         if self.status == ReleaseStatus.PUBLISHED:
-            for block in self.content:
+            for block in self.content:  # pylint: disable=not-an-iterable
                 items += block.block.to_table_of_contents_items(block.value)
 
             if self.datasets:
