@@ -16,27 +16,20 @@ from ons_alpha.core.blocks import (
     RelatedLinksBlock,
 )
 from ons_alpha.core.blocks import (
-    TableBlock as OldTableBlock,  # OldTableBlock is retained for backward compatibility
+    TableBlock as OldTableBlock,  # Use the TableBlock from ons_alpha.core.blocks
 )
 
 
 class ONSTableBlock(StructBlock):
     heading = CharBlock(required=True, help_text="Add a heading for the table.")
-    table = OldTableBlock(
-        required=True, help_text="Add the table data here."
-    )  # Use the TableBlock from ons_alpha.core.blocks
+    table = OldTableBlock(required=True, help_text="Add the table data here.")
     source = CharBlock(required=False, help_text="Add the source of the table data if applicable.")
     footnotes = RichTextBlock(
         features=settings.RICH_TEXT_BASIC, required=False, help_text="Add any footnotes for the table."
     )
 
-    def get_context(self, value, parent_context=None):
-        context = super().get_context(value, parent_context=parent_context)
-        context["table"] = self.child_blocks["table"].render(value["table"], context=parent_context)
-        return context
-
     class Meta:
-        template = "templates/components/streamfield/ons_table_block.html"  # Correct template path
+        template = "templates/components/streamfield/ons_table_block.html"
         icon = "table"
         label = "ONS Table"
 

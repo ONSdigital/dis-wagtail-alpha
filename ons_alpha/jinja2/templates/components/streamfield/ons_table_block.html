@@ -2,7 +2,7 @@
     {% if value.heading %}
         <h3>{{ value.heading }}</h3>
     {% endif %}
-    {{ table|safe }}
+    {% include_block value.table %}
     {% if value.source %}
         <p><strong>Source:</strong> {{ value.source }}</p>
     {% endif %}

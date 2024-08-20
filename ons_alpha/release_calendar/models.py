@@ -16,9 +16,9 @@ from ons_alpha.utils.models import LinkFields
 
 
 class ReleaseStatus(models.TextChoices):
-    PROVISIONAL = "provisional", "Provisional"
-    CONFIRMED = "confirmed", "Confirmed"
-    CANCELLED = "cancelled", "Cancelled"
+    PROVISIONAL = _("provisional"), _("Provisional")
+    CONFIRMED = _("confirmed"), _("Confirmed")
+    CANCELLED = _("cancelled"), _("Cancelled")
 
 
 class ReleaseIndex(BasePage):
@@ -69,9 +69,7 @@ class ReleasePage(BasePage):
     notice = RichTextField(
         features=settings.RICH_TEXT_BASIC,
         blank=True,
-        help_text=(
-            "Used for data change or cancellation notices. The notice is required when the release is cancelled"
-        ),
+        help_text="Used for data change or cancellation notices. The notice is required when the release is cancelled",
     )
     contact_details = models.ForeignKey(
         "core.ContactDetails",
@@ -84,10 +82,7 @@ class ReleasePage(BasePage):
     is_accredited = models.BooleanField(
         "Accredited Official Statistics",
         default=False,
-        help_text=(
-            "If ticked, will display an information block about the data being "
-            "accredited official statistics and include the accredited logo"
-        ),
+        help_text="Has this been accredited 'Official Statistics'?",
     )
 
     content_panels = Page.content_panels + [
@@ -138,11 +133,6 @@ class ReleasePage(BasePage):
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
 
-        # Explicitly convert self.content to a list to ensure it's iterable
-        if self.content:
-            for block in list(self.content):
-                context["toc"] += block.block.to_table_of_contents_items(block.value)
-
         return context
 
     @cached_property
@@ -160,9 +150,8 @@ class ReleasePage(BasePage):
         items = [{"url": "#summary", "text": _("Summary")}]
 
         if self.status == ReleaseStatus.PUBLISHED:
-            if self.content:
-                for block in list(self.content):
-                    items += block.block.to_table_of_contents_items(block.value)
+            for block in self.content:
+                items += block.block.to_table_of_contents_items(block.value)
 
             if self.datasets:
                 items += [{"url": "#datasets", "text": _("Data")}]

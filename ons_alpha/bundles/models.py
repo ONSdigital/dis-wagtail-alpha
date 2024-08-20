@@ -86,7 +86,6 @@ class Bundle(index.Indexed, ClusterableModel):
 
     panels = [
         FieldPanel("name"),
-        # Remove the commented-out code
         FieldRowPanel(
             [
                 FieldPanel("release_calendar_page", heading="Release Calendar page"),  # Swap order
