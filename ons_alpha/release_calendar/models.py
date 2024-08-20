@@ -1,9 +1,8 @@
-from functools import cached_property
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
@@ -71,7 +70,7 @@ class ReleasePage(BasePage):
         features=settings.RICH_TEXT_BASIC,
         blank=True,
         help_text=(
-            "Used for data change or cancellation notices. The notice is required " "when the release is cancelled"
+            "Used for data change or cancellation notices. The notice is required when the release is cancelled"
         ),
     )
     contact_details = models.ForeignKey(
@@ -126,8 +125,8 @@ class ReleasePage(BasePage):
         return ReleaseStatus[self.status].label
 
     def get_template(self, request, *args, **kwargs):
-        if self.status == ReleaseStatus.UPCOMING:
-            return "templates/pages/release_page--upcoming.html"
+        if self.status == ReleaseStatus.PROVISIONAL:
+            return "templates/pages/release_page--provisional.html"
         if self.status == ReleaseStatus.CANCELLED:
             return "templates/pages/release_page--cancelled.html"
 
@@ -156,7 +155,7 @@ class ReleasePage(BasePage):
         items = [{"url": "#summary", "text": _("Summary")}]
 
         if self.status == ReleaseStatus.PUBLISHED:
-            for block in self.content:  # pylint: disable=not-an-iterable
+            for block in self.content:
                 items += block.block.to_table_of_contents_items(block.value)
 
             if self.datasets:

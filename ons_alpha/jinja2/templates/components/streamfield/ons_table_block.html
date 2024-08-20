@@ -1,12 +1,12 @@
 <div class="ons-table-block">
-    {% if self.heading %}
-        <h3>{{ self.heading }}</h3>
+    {% if value.heading %}
+        <h3>{{ value.heading }}</h3>
     {% endif %}
-    {{ self.table|safe }}
-    {% if self.source %}
-        <p><strong>Source:</strong> {{ self.source }}</p>
+    {{ table|safe }}
+    {% if value.source %}
+        <p><strong>Source:</strong> {{ value.source }}</p>
     {% endif %}
-    {% if self.footnotes %}
-        <div class="footnotes">{{ self.footnotes|richtext }}</div>
+    {% if value.footnotes %}
+        <div class="footnotes">{{ value.footnotes|richtext }}</div>
     {% endif %}
 </div>

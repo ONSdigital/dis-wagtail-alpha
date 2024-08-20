@@ -31,7 +31,6 @@ class BundlePage(Orderable):
     parent = ParentalKey("Bundle", related_name="bundled_pages", on_delete=models.CASCADE)
     page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
 
-    # note: update so we get this based on the mixin
     panels = [
         PageChooserPanel("page", ["articles.ArticlePage", "bulletins.BulletinPage", "methodologies.MethodologyPage"]),
     ]
@@ -87,8 +86,7 @@ class Bundle(index.Indexed, ClusterableModel):
 
     panels = [
         FieldPanel("name"),
-        # FieldPanel("topic", icon="tag"),  # Topic field removed
-        # FieldPanel("collection_reference"),  # Collection reference field removed
+        # Remove the commented-out code
         FieldRowPanel(
             [
                 FieldPanel("release_calendar_page", heading="Release Calendar page"),  # Swap order
@@ -124,12 +122,10 @@ class Bundle(index.Indexed, ClusterableModel):
             return
 
         if self.scheduled_publication_date and self.scheduled_publication_date >= now():
-            # Schedule publishing for related pages
             for bundled_page in self.get_bundled_pages().specific(defer=True):
                 if bundled_page.go_live_at == self.scheduled_publication_date:
                     continue
 
-                # note: this could use a custom log action for history
                 bundled_page.go_live_at = self.scheduled_publication_date
                 revision = bundled_page.save_revision()
                 revision.publish()

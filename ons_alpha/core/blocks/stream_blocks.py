@@ -1,5 +1,5 @@
+from django.conf import settings  # Import settings to be used in RichTextBlock
 from wagtail.blocks import CharBlock, RichTextBlock, StreamBlock, StructBlock
-from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmath.blocks import MathBlock
@@ -16,18 +16,27 @@ from ons_alpha.core.blocks import (
     RelatedLinksBlock,
 )
 from ons_alpha.core.blocks import (
-    TableBlock as OldTableBlock,
+    TableBlock as OldTableBlock,  # OldTableBlock is retained for backward compatibility
 )
 
 
 class ONSTableBlock(StructBlock):
     heading = CharBlock(required=True, help_text="Add a heading for the table.")
-    table = TableBlock(required=True, help_text="Add the table data here.")
+    table = OldTableBlock(
+        required=True, help_text="Add the table data here."
+    )  # Use the TableBlock from ons_alpha.core.blocks
     source = CharBlock(required=False, help_text="Add the source of the table data if applicable.")
-    footnotes = RichTextBlock(features=["bold", "italic"], required=False, help_text="Add any footnotes for the table.")
+    footnotes = RichTextBlock(
+        features=settings.RICH_TEXT_BASIC, required=False, help_text="Add any footnotes for the table."
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context["table"] = self.child_blocks["table"].render(value["table"], context=parent_context)
+        return context
 
     class Meta:
-        template = "components/streamfield/ons_table_block.html"
+        template = "templates/components/streamfield/ons_table_block.html"  # Correct template path
         icon = "table"
         label = "ONS Table"
 
@@ -40,7 +49,7 @@ class CoreStoryBlock(StreamBlock):
     image = ImageChooserBlock()
     documents = DocumentsBlock()
     related_links = RelatedLinksBlock(RelatedContentBlock())
-    table = OldTableBlock(group="DataVis")
+    table = OldTableBlock(group="DataVis")  # Retain the old table block for existing data
     ons_table = ONSTableBlock(group="DataVis")  # New block added
     equation = MathBlock(icon="decimal", group="DataVis")
     ons_embed = ONSEmbedBlock(group="DataVis", label="ONS Embed")
