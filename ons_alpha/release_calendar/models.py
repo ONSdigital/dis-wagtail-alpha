@@ -138,6 +138,11 @@ class ReleasePage(BasePage):
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
 
+        # Ensure self.content is iterable before iterating over it
+        if hasattr(self.content, "__iter__"):
+            for block in self.content:
+                context["toc"] += block.block.to_table_of_contents_items(block.value)
+
         return context
 
     @cached_property
