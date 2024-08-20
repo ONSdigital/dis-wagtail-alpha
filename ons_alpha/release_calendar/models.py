@@ -138,9 +138,9 @@ class ReleasePage(BasePage):
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
 
-        # Ensure self.content is iterable before iterating over it
-        if self.content and hasattr(self.content, "__iter__"):
-            for block in self.content:
+        # Explicitly convert self.content to a list to ensure it's iterable
+        if self.content:
+            for block in list(self.content):
                 context["toc"] += block.block.to_table_of_contents_items(block.value)
 
         return context
@@ -160,8 +160,8 @@ class ReleasePage(BasePage):
         items = [{"url": "#summary", "text": _("Summary")}]
 
         if self.status == ReleaseStatus.PUBLISHED:
-            if self.content and hasattr(self.content, "__iter__"):
-                for block in self.content:
+            if self.content:
+                for block in list(self.content):
                     items += block.block.to_table_of_contents_items(block.value)
 
             if self.datasets:
