@@ -34,7 +34,7 @@ build-docker:
 	docker build -t ons_alpha .
 
 messages:
-    python -m manage makemessages --all
+	python -m manage makemessages --all
 
 compile-messages:
-    python -m manage compilemessages --use-fuzzy
+	python -m manage compilemessages --use-fuzzy
