@@ -1,7 +1,7 @@
 from django.apps import apps
 from django.conf import settings
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.decorators.cache import never_cache
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import TemplateView
@@ -11,6 +11,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.utils.urlpatterns import decorate_urlpatterns
 
+from ons_alpha.images.views import ONSImageServeView
 from ons_alpha.search import views as search_views
 from ons_alpha.utils.cache import get_default_cache_control_decorator
 
@@ -31,7 +32,10 @@ private_urlpatterns += [
 ]
 
 # Public URLs that are meant to be cached.
-urlpatterns = [path("sitemap.xml", sitemap)]
+urlpatterns = [
+    path("sitemap.xml", sitemap),
+    re_path(r"^images/([^/]*)/(\d*)/([^/]*)/[^/]*$", ONSImageServeView.as_view(), name="wagtailimages_serve"),
+]
 
 if settings.DEBUG:
     from django.conf.urls.static import static
