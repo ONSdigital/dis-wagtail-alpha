@@ -19,7 +19,7 @@
         <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
             <section id="topic_page_nav">
                 {% for key in subpage_dict.keys() %}
-                    <a href="#{{ key.specific_class.__name__ }}">{{ key }}</a>
+                    <a href="#{{ key }}">{{ key }}</a>
                 {% endfor %}
             </section>
         </div>
@@ -32,16 +32,12 @@
                 {% if subpages %}
                     <h2>{{"Index"}}</h2>
                     {% for subpage_key in subpage_dict.keys() %}
-                        <h3 id="{{ subpage_key.specific_class.__name__ }}">{{ subpage_key }}</h3>
+                        <h3 id="{{ subpage_key }}">{{ subpage_key }}</h3>
                         {% for subpage_value in subpage_dict[subpage_key]  %}
-                            <a href="{{ value.url }}">
+                            <a href="{{ subpage_value.url }}">
                                 {{ subpage_value.title }}
                             </a>
-                            {% if subpage_key in ["Methodology page"] %}
-                                <p>{{ subpage_value.summary }} </p>
-                            {% else %}
-                                <p>{{ subpage_value.summary }} </p>
-                            {% endif %}
+                            <p>{{ subpage_value.summary }} </p>
                         {% endfor %}
                     {% endfor %}
                 {% endif %}

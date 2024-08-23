@@ -7,7 +7,6 @@ from wagtail.admin.panels import (
 
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.core.models.mixins import SubpageMixin
-from ons_alpha.standardpages import blocks
 from ons_alpha.taxonomy.models import Topic
 
 
@@ -46,11 +45,11 @@ class TopicPage(BaseTopicPage):
     subpage_types = ["articles.ArticleSeriesPage", "bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
     summary = models.CharField(blank=True, max_length=255)
-    # topic_page_nav = models.CharField(blank=True, max_length=255)
+    topic_page_nav = models.CharField(blank=True, max_length=255)
 
     content_panels = BasePage.content_panels + [
         FieldPanel("summary"),
-        # FieldPanel("topic_page_nav")
+        FieldPanel("topic_page_nav"),
     ]
 
     edit_handler = TabbedInterface(
@@ -70,9 +69,30 @@ class TopicPage(BaseTopicPage):
         if TopicSectionPage.objects.filter(topic=self.topic).exists():
             raise ValidationError({"topic": "Topic Section Page with this topic already exists."})
 
-    def get_children(self):
-        return
+    def topic_list(self):
+        menu_items = self.get_children().live().public().specific()
+        display_names = []
+        for m in menu_items:
+            display_names.append(m.specific.page_type_display_name )
+        return sorted(set(display_names))
 
+    def subpage_list(self):
+        menu_items = self.topic_list()
+        display_names = {}
+        for m in menu_items:
+            display_names[m] = []
+            subpage_list = []
+            for subpage in self.get_children().live().public().specific():
+                if subpage.specific.page_type_display_name == m:
+                    subpage_list.append(subpage)
+            display_names[m] = subpage_list
+        return display_names
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["topic_list"] = self.topic_list()
+        context["subpage_dict"] = self.subpage_list()
+        return context
 
 
 class TopicSectionPage(BaseTopicPage):
