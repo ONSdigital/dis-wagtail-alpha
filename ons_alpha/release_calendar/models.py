@@ -67,9 +67,7 @@ class ReleasePage(BasePage):
     notice = RichTextField(
         features=settings.RICH_TEXT_BASIC,
         blank=True,
-        help_text=_(
-            "Used for data change or cancellation notices. The notice is required when the release is cancelled."
-        ),
+        help_text="Used for data change or cancellation notices. The notice is required when the release is cancelled",
     )
     contact_details = models.ForeignKey(
         "core.ContactDetails",
@@ -80,9 +78,9 @@ class ReleasePage(BasePage):
     )
 
     is_accredited = models.BooleanField(
-        _("Accredited Official Statistics"),
+        "Accredited Official Statistics",
         default=False,
-        help_text=_("Has this been accredited 'Official Statistics'?"),
+        help_text="Has this been accredited 'Official Statistics'?",
     )
 
     content_panels = Page.content_panels + [
@@ -90,30 +88,30 @@ class ReleasePage(BasePage):
             [
                 FieldRowPanel(
                     [FieldPanel("release_date"), FieldPanel("next_release")],
-                    heading=_("Dates"),
+                    heading="Dates",
                 ),
                 FieldPanel("status"),
                 FieldPanel("notice"),
                 FieldPanel("is_accredited"),
             ],
-            heading=_("Metadata"),
+            heading="Metadata",
         ),
         FieldPanel("summary"),
         FieldPanel("content"),
         FieldPanel(
             "datasets",
-            help_text=_("Select the datasets that this release relates to."),
+            help_text="Select the datasets that this release relates to.",
             icon="doc-full",
         ),
         FieldPanel("contact_details"),
-        InlinePanel("related_links", heading=_("Related links")),
+        InlinePanel("related_links", heading="Related links"),
     ]
 
     def clean(self):
         super().clean()
 
         if self.status == ReleaseStatus.CANCELLED and not self.notice:
-            raise ValidationError({"notice": _("The notice field is required when the release is cancelled.")})
+            raise ValidationError({"notice": _("The notice field is required when the release is cancelled")})
 
     @property
     def status_label(self) -> str:
@@ -133,10 +131,9 @@ class ReleasePage(BasePage):
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
 
-        # Ensure self.content is iterable before processing
-        if isinstance(self.content, list):  # Assuming self.content should be iterable
-            for block in self.content:
-                context["toc"] += block.block.to_table_of_contents_items(block.value)
+        # Suppress the Pylint warning since we know self.content is iterable
+        for block in self.content:  # pylint: disable=not-an-iterable
+            context["toc"] += block.block.to_table_of_contents_items(block.value)
 
         return context
 
@@ -154,8 +151,8 @@ class ReleasePage(BasePage):
     def toc(self):
         items = [{"url": "#summary", "text": _("Summary")}]
 
-        if self.status == ReleaseStatus.CONFIRMED:
-            for block in self.content:  # Ensure the content is iterable
+        if self.status == ReleaseStatus.PUBLISHED:
+            for block in self.content:  # pylint: disable=not-an-iterable
                 items += block.block.to_table_of_contents_items(block.value)
 
             if self.datasets:
@@ -167,7 +164,7 @@ class ReleasePage(BasePage):
         if self.is_accredited:
             items += [{"url": "#about-the-data", "text": _("About the data")}]
 
-        if self.status == ReleaseStatus.CONFIRMED and self.related_links_for_context:
+        if self.status == ReleaseStatus.PUBLISHED and self.related_links_for_context:
             items += [{"url": "#links", "text": _("You might also be interested in")}]
 
         return items
