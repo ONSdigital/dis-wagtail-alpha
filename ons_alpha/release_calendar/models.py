@@ -15,40 +15,37 @@ from ons_alpha.release_calendar.blocks import ReleaseStoryBlock
 from ons_alpha.utils.models import LinkFields
 
 
+# Enum for release statuses
 class ReleaseStatus(models.TextChoices):
     PROVISIONAL = _("provisional"), _("Provisional")
     CONFIRMED = _("confirmed"), _("Confirmed")
     CANCELLED = _("cancelled"), _("Cancelled")
 
 
+# Model for release index page
 class ReleaseIndex(BasePage):
     template = "templates/pages/release_index.html"
 
     parent_page_types = ["home.HomePage"]
     subpage_types = ["ReleasePage"]
-    max_count_per_parent = 1  # Set max count per parent
+    max_count_per_parent = 1  # Only one ReleaseIndex per parent
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
         page = request.GET.get("page", 1)
-
         context["releases"] = Paginator(
             ReleasePage.objects.child_of(self).public().live(),
             settings.DEFAULT_PER_PAGE,
         ).get_page(page)
-
         return context
 
 
+# Related link model for release page
 class ReleasePageRelatedLink(Orderable, LinkFields):
-    """
-    Related links. e.g. https://www.ons.gov.uk/releases/welshlanguagecensus2021inwales
-    """
-
     parent = ParentalKey("ReleasePage", related_name="related_links", on_delete=models.CASCADE)
 
 
+# Model for individual release pages
 class ReleasePage(BasePage):
     template = "templates/pages/release_page.html"
 
@@ -57,13 +54,10 @@ class ReleasePage(BasePage):
 
     status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.PROVISIONAL, max_length=32)
     summary = RichTextField(features=settings.RICH_TEXT_BASIC)
-
     content = StreamField(ReleaseStoryBlock(), blank=True, use_json_field=True)
     datasets = StreamField(DatasetStoryBlock(), blank=True, use_json_field=True)
-
     release_date = models.DateTimeField()
     next_release = models.CharField(max_length=255, blank=True)
-
     notice = RichTextField(
         features=settings.RICH_TEXT_BASIC,
         blank=True,
@@ -76,7 +70,6 @@ class ReleasePage(BasePage):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-
     is_accredited = models.BooleanField(
         "Accredited Official Statistics",
         default=False,
@@ -109,7 +102,6 @@ class ReleasePage(BasePage):
 
     def clean(self):
         super().clean()
-
         if self.status == ReleaseStatus.CANCELLED and not self.notice:
             raise ValidationError({"notice": _("The notice field is required when the release is cancelled")})
 
@@ -122,19 +114,12 @@ class ReleasePage(BasePage):
             return "templates/pages/release_page--provisional.html"
         if self.status == ReleaseStatus.CANCELLED:
             return "templates/pages/release_page--cancelled.html"
-
         return super().get_template(request, *args, **kwargs)
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
-
-        # Suppress the Pylint warning since we know self.content is iterable
-        for block in self.content:  # pylint: disable=not-an-iterable
-            context["toc"] += block.block.to_table_of_contents_items(block.value)
-
         return context
 
     @cached_property
@@ -150,21 +135,14 @@ class ReleasePage(BasePage):
     @cached_property
     def toc(self):
         items = [{"url": "#summary", "text": _("Summary")}]
-
         if self.status == ReleaseStatus.PUBLISHED:
-            for block in self.content:  # pylint: disable=not-an-iterable
-                items += block.block.to_table_of_contents_items(block.value)
-
+            items += [block.block.to_table_of_contents_items(block.value) for block in self.content]
             if self.datasets:
                 items += [{"url": "#datasets", "text": _("Data")}]
-
             if self.contact_details_id:
                 items += [{"url": "#contact-details", "text": _("Contact details")}]
-
         if self.is_accredited:
             items += [{"url": "#about-the-data", "text": _("About the data")}]
-
         if self.status == ReleaseStatus.PUBLISHED and self.related_links_for_context:
             items += [{"url": "#links", "text": _("You might also be interested in")}]
-
         return items

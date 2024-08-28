@@ -27,6 +27,7 @@ ACTIVE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW, BundleSt
 EDITABLE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW]
 
 
+# Model for BundlePage
 class BundlePage(Orderable):
     parent = ParentalKey("Bundle", related_name="bundled_pages", on_delete=models.CASCADE)
     page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
@@ -56,6 +57,7 @@ class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
         return queryset
 
 
+# Model for Bundle
 class Bundle(index.Indexed, ClusterableModel):
     base_form_class = BundleAdminForm
     name = models.CharField(max_length=255)
@@ -79,7 +81,6 @@ class Bundle(index.Indexed, ClusterableModel):
         related_name="bundles",
     )
     status = models.CharField(choices=BundleStatus.choices, default=BundleStatus.PENDING, max_length=32)
-
     datasets = StreamField(DatasetStoryBlock(), blank=True, use_json_field=True)
 
     objects = BundleManager()
@@ -116,15 +117,12 @@ class Bundle(index.Indexed, ClusterableModel):
 
     def save(self, **kwargs):
         super().save(**kwargs)
-
         if self.status == BundleStatus.RELEASED:
             return
-
         if self.scheduled_publication_date and self.scheduled_publication_date >= now():
             for bundled_page in self.get_bundled_pages().specific(defer=True):
                 if bundled_page.go_live_at == self.scheduled_publication_date:
                     continue
-
                 bundled_page.go_live_at = self.scheduled_publication_date
                 revision = bundled_page.save_revision()
                 revision.publish()

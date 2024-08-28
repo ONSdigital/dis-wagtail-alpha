@@ -1,4 +1,4 @@
-from django.conf import settings  # Import settings to be used in RichTextBlock
+from django.conf import settings
 from wagtail.blocks import CharBlock, RichTextBlock, StreamBlock, StructBlock
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
@@ -16,10 +16,11 @@ from ons_alpha.core.blocks import (
     RelatedLinksBlock,
 )
 from ons_alpha.core.blocks import (
-    TableBlock as OldTableBlock,  # Use the TableBlock from ons_alpha.core.blocks
+    TableBlock as OldTableBlock,  # Custom TableBlock for existing data
 )
 
 
+# StructBlock for ONS Table
 class ONSTableBlock(StructBlock):
     heading = CharBlock(required=True, help_text="Add a heading for the table.")
     table = OldTableBlock(required=True, help_text="Add the table data here.")
@@ -34,6 +35,7 @@ class ONSTableBlock(StructBlock):
         label = "ONS Table"
 
 
+# Core story block with added ONSTableBlock
 class CoreStoryBlock(StreamBlock):
     heading = HeadingBlock()
     rich_text = RichTextBlock()
@@ -42,8 +44,8 @@ class CoreStoryBlock(StreamBlock):
     image = ImageChooserBlock()
     documents = DocumentsBlock()
     related_links = RelatedLinksBlock(RelatedContentBlock())
-    table = OldTableBlock(group="DataVis")  # Retain the old table block for existing data
-    ons_table = ONSTableBlock(group="DataVis")  # New block added
+    table = OldTableBlock(group="DataVis")
+    ons_table = ONSTableBlock(group="DataVis")
     equation = MathBlock(icon="decimal", group="DataVis")
     ons_embed = ONSEmbedBlock(group="DataVis", label="ONS Embed")
     chart = ChartChooserBlock(group="DataVis")
@@ -52,6 +54,7 @@ class CoreStoryBlock(StreamBlock):
         block_counts = {"related_links": {"max_num": 1}}
 
 
+# Block for corrections and notices
 class CorrectionsNoticesStoryBlock(StreamBlock):
     correction = CorrectionBlock()
     notice = NoticeBlock()
