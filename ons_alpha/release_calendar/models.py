@@ -15,12 +15,14 @@ from ons_alpha.release_calendar.blocks import ReleaseStoryBlock
 from ons_alpha.utils.models import LinkFields
 
 
+# Status choices for ReleasePage
 class ReleaseStatus(models.TextChoices):
     PROVISIONAL = _("provisional"), _("Provisional")
     CONFIRMED = _("confirmed"), _("Confirmed")
     CANCELLED = _("cancelled"), _("Cancelled")
 
 
+# Model for ReleaseIndex
 class ReleaseIndex(BasePage):
     template = "templates/pages/release_index.html"
 
@@ -41,6 +43,7 @@ class ReleaseIndex(BasePage):
         return context
 
 
+# Model for related links in ReleasePage
 class ReleasePageRelatedLink(Orderable, LinkFields):
     """
     Related links. e.g. https://www.ons.gov.uk/releases/welshlanguagecensus2021inwales
@@ -49,6 +52,7 @@ class ReleasePageRelatedLink(Orderable, LinkFields):
     parent = ParentalKey("ReleasePage", related_name="related_links", on_delete=models.CASCADE)
 
 
+# Model for ReleasePage
 class ReleasePage(BasePage):
     template = "templates/pages/release_page.html"
 

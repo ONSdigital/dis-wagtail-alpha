@@ -16,6 +16,7 @@ from .forms import BundleAdminForm
 from .panels import BundleNotePanel
 
 
+# Status choices for Bundle
 class BundleStatus(models.TextChoices):
     PENDING = "PENDING", "Pending"
     IN_REVIEW = "IN_REVIEW", "In Review"
@@ -23,8 +24,30 @@ class BundleStatus(models.TextChoices):
     RELEASED = "RELEASED", "Released"
 
 
+# Define active bundle statuses
 ACTIVE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW, BundleStatus.APPROVED]
+
+# Define editable bundle statuses
 EDITABLE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW]
+
+
+# QuerySet for Bundles
+class BundlesQuerySet(QuerySet):
+    def active(self):
+        return self.filter(status__in=ACTIVE_BUNDLE_STATUSES)
+
+    def editable(self):
+        return self.filter(status__in=EDITABLE_BUNDLE_STATUSES)
+
+
+# Manager for Bundle with custom queryset
+class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.annotate(
+            release_date=Coalesce("publication_date", "release_calendar_page__release_date")
+        ).order_by(F("release_date").desc(nulls_last=True), "name", "-pk")
+        return queryset
 
 
 # Model for BundlePage
@@ -38,23 +61,6 @@ class BundlePage(Orderable):
 
     def __str__(self):
         return f"BundlePage: page {self.page_id} in bundle {self.parent_id}"
-
-
-class BundlesQuerySet(QuerySet):
-    def active(self):
-        return self.filter(status__in=ACTIVE_BUNDLE_STATUSES)
-
-    def editable(self):
-        return self.filter(status__in=EDITABLE_BUNDLE_STATUSES)
-
-
-class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.annotate(
-            release_date=Coalesce("publication_date", "release_calendar_page__release_date")
-        ).order_by(F("release_date").desc(nulls_last=True), "name", "-pk")
-        return queryset
 
 
 # Model for Bundle
@@ -81,6 +87,7 @@ class Bundle(index.Indexed, ClusterableModel):
         related_name="bundles",
     )
     status = models.CharField(choices=BundleStatus.choices, default=BundleStatus.PENDING, max_length=32)
+
     datasets = StreamField(DatasetStoryBlock(), blank=True, use_json_field=True)
 
     objects = BundleManager()
@@ -117,17 +124,21 @@ class Bundle(index.Indexed, ClusterableModel):
 
     def save(self, **kwargs):
         super().save(**kwargs)
+
         if self.status == BundleStatus.RELEASED:
             return
+
         if self.scheduled_publication_date and self.scheduled_publication_date >= now():
             for bundled_page in self.get_bundled_pages().specific(defer=True):
                 if bundled_page.go_live_at == self.scheduled_publication_date:
                     continue
+
                 bundled_page.go_live_at = self.scheduled_publication_date
                 revision = bundled_page.save_revision()
                 revision.publish()
 
 
+# Mixin for BundledPage
 class BundledPageMixin:
     """
     A helper page mixin for bundled content

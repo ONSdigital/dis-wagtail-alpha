@@ -44,8 +44,8 @@ class CoreStoryBlock(StreamBlock):
     image = ImageChooserBlock()
     documents = DocumentsBlock()
     related_links = RelatedLinksBlock(RelatedContentBlock())
-    table = OldTableBlock(group="DataVis")
-    ons_table = ONSTableBlock(group="DataVis")
+    table = OldTableBlock(group="DataVis")  # Retain the old table block for existing data
+    ons_table = ONSTableBlock(group="DataVis")  # New block added
     equation = MathBlock(icon="decimal", group="DataVis")
     ons_embed = ONSEmbedBlock(group="DataVis", label="ONS Embed")
     chart = ChartChooserBlock(group="DataVis")
