@@ -149,7 +149,7 @@ class ReleasePage(BasePage):
 
     @cached_property
     def toc(self):
-        items = [{"url": "#summary", "text": _("Summary")}]
+        items = [{"url": "#summary", "text": _("Summary")}] 
 
         if self.status == ReleaseStatus.PUBLISHED:
             for block in self.content:
@@ -168,3 +168,4 @@ class ReleasePage(BasePage):
             items += [{"url": "#links", "text": _("You might also be interested in")}]
 
         return items
+ 
