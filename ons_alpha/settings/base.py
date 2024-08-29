@@ -4,7 +4,6 @@ Django settings for ons_alpha project.
 
 import os
 import sys
-import warnings
 
 from pathlib import Path
 
@@ -87,6 +86,7 @@ INSTALLED_APPS = [
     "wagtail.documents",
     "wagtail.images",
     "wagtail.search",
+    "wagtail.admin",
     "wagtail.locales",
     "wagtail.contrib.simple_translation",
     "wagtail.contrib.settings",
@@ -113,15 +113,11 @@ INSTALLED_APPS = [
 if not READ_ONLY_ENV:
     INSTALLED_APPS.extend(
         [
-            "wagtail.admin",
             "django.contrib.admin",
             "django.contrib.sessions",
             "django.contrib.messages",
         ]
     )
-else:
-    # Mute warnings about missing draftail features
-    warnings.filterwarnings("ignore", category=RuntimeWarning, module="wagtail.admin.rich_text.editors.draftail")
 
 
 # Middleware classes
