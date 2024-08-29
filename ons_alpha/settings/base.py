@@ -604,9 +604,9 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = int(env.get("DATA_UPLOAD_MAX_NUMBER_FIELDS", 100
 # Custom view to handle CSRF failures.
 CSRF_FAILURE_VIEW = "ons_alpha.utils.views.csrf_failure"
 
-# Force HTTPS redirect (enabled by default!)
+# Force HTTPS redirect
 # https://docs.djangoproject.com/en/stable/ref/settings/#secure-ssl-redirect
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = env.get("SECURE_SSL_REDIRECT", "true").lower().strip() == "true"
 
 
 # This will allow the cache to swallow the fact that the website is behind TLS
