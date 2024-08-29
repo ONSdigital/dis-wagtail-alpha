@@ -196,11 +196,31 @@ WSGI_APPLICATION = "ons_alpha.wsgi.application"
 
 
 # Database
-# This setting will use DATABASE_URL environment variable.
 # https://docs.djangoproject.com/en/stable/ref/settings/#databases
-# https://github.com/kennethreitz/dj-database-url
 
-DATABASES = {"default": dj_database_url.config(conn_max_age=600, default="postgres:///ons_alpha")}
+db_conn_max_age = 600
+
+if "PG_DB_ADDR" in env:
+    # Use IAM authentication to connect to the Database
+    DATABASES = {
+        "default": {
+            "ENGINE": "django_iam_dbauth.aws.postgresql",
+            "NAME": env["PG_DB_DATABASE"],
+            "USER": env["PG_DB_USER"],
+            "HOST": env["PG_DB_ADDR"],
+            "PORT": env["PG_DB_PORT"],
+            "CONN_MAX_AGE": db_conn_max_age,
+            "CONN_HEALTH_CHECKS": True,
+            "OPTIONS": {"use_iam_auth": True, "sslmode": "require"},
+        }
+    }
+else:
+    # This setting will use DATABASE_URL environment variable.
+    DATABASES = {
+        "default": dj_database_url.config(
+            conn_max_age=db_conn_max_age, conn_health_checks=True, default="postgres:///ons_alpha"
+        )
+    }
 
 
 # Server-side cache settings. Do not confuse with front-end cache.

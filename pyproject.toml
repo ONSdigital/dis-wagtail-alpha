@@ -30,6 +30,7 @@ wagtail-font-awesome-svg = "^1.0.1"
 apscheduler = "^3.10.4"
 slack-sdk = "^3.31.0"
 queryish = "^0.2"
+django-iam-dbauth = "^0.2.0"
 
 [tool.poetry.group.dev.dependencies]
 Werkzeug = "~3.0.3"
