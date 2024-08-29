@@ -1,28 +1,10 @@
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 from wagtail import blocks
-from wagtail.blocks import CharBlock, RichTextBlock, StructBlock
 from wagtail.contrib.table_block.blocks import DEFAULT_TABLE_OPTIONS
 from wagtail.contrib.table_block.blocks import TableBlock as WagtailTableBlock
 from wagtail.contrib.typed_table_block.blocks import TypedTableBlock as WagtailTypedTableBlock
-
-from ons_alpha.core.blocks import TableBlock  # Custom TableBlock
-
-
-class ONSTableBlock(StructBlock):
-    heading = CharBlock(required=True, help_text="Add a heading for the table.")
-    table = TableBlock(required=True, help_text="Add the table data here.")
-    source = CharBlock(required=False, help_text="Add the source of the table data if applicable.")
-    footnotes = RichTextBlock(
-        features=settings.RICH_TEXT_BASIC, required=False, help_text="Add any footnotes for the table."
-    )
-
-    class Meta:
-        template = "templates/components/streamfield/ons_table_block.html"
-        icon = "table"
-        label = "ONS Table"
 
 
 class HeadingBlock(blocks.CharBlock):
