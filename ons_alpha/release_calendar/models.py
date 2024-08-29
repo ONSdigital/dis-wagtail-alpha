@@ -165,7 +165,7 @@ class ReleasePage(BasePage):
         if self.is_accredited:
             items += [{"url": "#about-the-data", "text": _("About the data")}]
 
-        if self.status == ReleaseStatus.PUBLISHED and self.related_links_for_context:  # Corrected here
+        if self.status == ReleaseStatus.PUBLISHED and self.related_links_for_context:
             items += [{"url": "#links", "text": _("You might also be interested in")}]
 
         return items
