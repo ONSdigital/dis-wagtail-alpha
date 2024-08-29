@@ -135,10 +135,6 @@ class ReleasePage(BasePage):
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
 
-        # Suppress the Pylint warning since we know self.content is iterable
-        for block in self.content:  # pylint: disable=not-an-iterable
-            context["toc"] += block.block.to_table_of_contents_items(block.value)
-
         return context
 
     @cached_property
@@ -156,7 +152,7 @@ class ReleasePage(BasePage):
         items = [{"url": "#summary", "text": _("Summary")}]
 
         if self.status == ReleaseStatus.PUBLISHED:
-            for block in self.content:  # pylint: disable=not-an-iterable
+            for block in self.content:
                 items += block.block.to_table_of_contents_items(block.value)
 
             if self.datasets:
