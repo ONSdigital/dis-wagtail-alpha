@@ -108,6 +108,9 @@ INSTALLED_APPS = [
     "wagtailmath",
     "wagtailcharts",
     "wagtailfontawesomesvg",
+    "health_check",
+    "health_check.db",
+    "health_check.cache",
 ]
 
 if not IS_EXTERNAL_ENV:

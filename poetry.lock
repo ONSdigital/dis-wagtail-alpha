@@ -610,6 +610,24 @@ files = [
 Django = ">=4.2"
 
 [[package]]
+name = "django-health-check"
+version = "3.18.3"
+description = "Run checks on services like databases, queue servers, celery processes, etc."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "django_health_check-3.18.3-py2.py3-none-any.whl", hash = "sha256:f5f58762b80bdf7b12fad724761993d6e83540f97e2c95c42978f187e452fa07"},
+    {file = "django_health_check-3.18.3.tar.gz", hash = "sha256:18b75daca4551c69a43f804f9e41e23f5f5fb9efd06cf6a313b3d5031bb87bd0"},
+]
+
+[package.dependencies]
+django = ">=2.2"
+
+[package.extras]
+docs = ["sphinx"]
+test = ["boto3", "celery", "django-storages", "pytest", "pytest-cov", "pytest-django", "redis"]
+
+[[package]]
 name = "django-iam-dbauth"
 version = "0.2.0"
 description = "Django database backends to use AWS Database IAM Authentication"
@@ -2424,4 +2442,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "7baa924932a195231d72c977671ca7a633715111e46faf777e6a8da055c694e1"
+content-hash = "e730f0431e6cbc7a5091b14cabd003669749a48d14c89f3669e1757e5dd041ac"
