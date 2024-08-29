@@ -32,7 +32,6 @@ class ReleaseIndex(BasePage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
         page = request.GET.get("page", 1)
 
         context["releases"] = Paginator(
@@ -84,7 +83,7 @@ class ReleasePage(BasePage):
     is_accredited = models.BooleanField(
         "Accredited Official Statistics",
         default=False,
-        help_text="Has this been accredited 'Official Statistics'?",
+        help_text="If ticked, will display an information block about the data being accredited official statistics and include the accredited logo.",
     )
 
     content_panels = Page.content_panels + [
@@ -113,7 +112,6 @@ class ReleasePage(BasePage):
 
     def clean(self):
         super().clean()
-
         if self.status == ReleaseStatus.CANCELLED and not self.notice:
             raise ValidationError({"notice": _("The notice field is required when the release is cancelled")})
 
@@ -131,7 +129,6 @@ class ReleasePage(BasePage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
 
@@ -168,7 +165,7 @@ class ReleasePage(BasePage):
         if self.is_accredited:
             items += [{"url": "#about-the-data", "text": _("About the data")}]
 
-        if self.status == ReleaseStatus.PUBLISHED and self.related_links_for_context:
+        if self.status == ReleaseStatus.PUBLISHED and self.related_links_for_context:  # Corrected here
             items += [{"url": "#links", "text": _("You might also be interested in")}]
 
         return items
