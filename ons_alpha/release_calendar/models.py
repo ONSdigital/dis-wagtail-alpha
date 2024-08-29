@@ -15,20 +15,18 @@ from ons_alpha.release_calendar.blocks import ReleaseStoryBlock
 from ons_alpha.utils.models import LinkFields
 
 
-# Status choices for ReleasePage
 class ReleaseStatus(models.TextChoices):
     PROVISIONAL = _("provisional"), _("Provisional")
     CONFIRMED = _("confirmed"), _("Confirmed")
     CANCELLED = _("cancelled"), _("Cancelled")
 
 
-# Model for ReleaseIndex
 class ReleaseIndex(BasePage):
     template = "templates/pages/release_index.html"
 
     parent_page_types = ["home.HomePage"]
     subpage_types = ["ReleasePage"]
-    max_count_per_parent = 1  # Set max count per parent
+    max_count_per_parent = 1
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
@@ -43,16 +41,10 @@ class ReleaseIndex(BasePage):
         return context
 
 
-# Model for related links in ReleasePage
 class ReleasePageRelatedLink(Orderable, LinkFields):
-    """
-    Related links. e.g. https://www.ons.gov.uk/releases/welshlanguagecensus2021inwales
-    """
-
     parent = ParentalKey("ReleasePage", related_name="related_links", on_delete=models.CASCADE)
 
 
-# Model for ReleasePage
 class ReleasePage(BasePage):
     template = "templates/pages/release_page.html"
 
@@ -91,7 +83,7 @@ class ReleasePage(BasePage):
         MultiFieldPanel(
             [
                 FieldRowPanel(
-                    [FieldPanel("release_date"), FieldPanel("next_release")],
+                    [FieldPanel("release_calendar_page"), FieldPanel("publication_date")],
                     heading="Dates",
                 ),
                 FieldPanel("status"),
@@ -135,8 +127,7 @@ class ReleasePage(BasePage):
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
 
-        # Suppress the Pylint warning since we know self.content is iterable
-        for block in self.content:  # pylint: disable=not-an-iterable
+        for block in self.content:
             context["toc"] += block.block.to_table_of_contents_items(block.value)
 
         return context
@@ -156,7 +147,7 @@ class ReleasePage(BasePage):
         items = [{"url": "#summary", "text": _("Summary")}]
 
         if self.status == ReleaseStatus.PUBLISHED:
-            for block in self.content:  # pylint: disable=not-an-iterable
+            for block in self.content:
                 items += block.block.to_table_of_contents_items(block.value)
 
             if self.datasets:

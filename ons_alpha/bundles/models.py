@@ -16,7 +16,6 @@ from .forms import BundleAdminForm
 from .panels import BundleNotePanel
 
 
-# Status choices for Bundle
 class BundleStatus(models.TextChoices):
     PENDING = "PENDING", "Pending"
     IN_REVIEW = "IN_REVIEW", "In Review"
@@ -24,14 +23,10 @@ class BundleStatus(models.TextChoices):
     RELEASED = "RELEASED", "Released"
 
 
-# Define active bundle statuses
 ACTIVE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW, BundleStatus.APPROVED]
-
-# Define editable bundle statuses
 EDITABLE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW]
 
 
-# QuerySet for Bundles
 class BundlesQuerySet(QuerySet):
     def active(self):
         return self.filter(status__in=ACTIVE_BUNDLE_STATUSES)
@@ -40,7 +35,6 @@ class BundlesQuerySet(QuerySet):
         return self.filter(status__in=EDITABLE_BUNDLE_STATUSES)
 
 
-# Manager for Bundle with custom queryset
 class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -50,7 +44,6 @@ class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
         return queryset
 
 
-# Model for BundlePage
 class BundlePage(Orderable):
     parent = ParentalKey("Bundle", related_name="bundled_pages", on_delete=models.CASCADE)
     page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
@@ -63,7 +56,6 @@ class BundlePage(Orderable):
         return f"BundlePage: page {self.page_id} in bundle {self.parent_id}"
 
 
-# Model for Bundle
 class Bundle(index.Indexed, ClusterableModel):
     base_form_class = BundleAdminForm
     name = models.CharField(max_length=255)
@@ -96,7 +88,7 @@ class Bundle(index.Indexed, ClusterableModel):
         FieldPanel("name"),
         FieldRowPanel(
             [
-                FieldPanel("release_calendar_page", heading="Release Calendar page"),  # Swap order
+                FieldPanel("release_calendar_page", heading="Release Calendar page"),
                 FieldPanel("publication_date", heading="or Publication date"),
             ],
             heading="Scheduling",
@@ -138,12 +130,7 @@ class Bundle(index.Indexed, ClusterableModel):
                 revision.publish()
 
 
-# Mixin for BundledPage
 class BundledPageMixin:
-    """
-    A helper page mixin for bundled content
-    """
-
     panels = [BundleNotePanel(heading="Bundle", icon="boxes-stacked")]
 
     @cached_property
