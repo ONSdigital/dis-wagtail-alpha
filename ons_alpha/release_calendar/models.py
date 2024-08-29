@@ -83,7 +83,10 @@ class ReleasePage(BasePage):
     is_accredited = models.BooleanField(
         "Accredited Official Statistics",
         default=False,
-        help_text="If ticked, will display an information block about the data being accredited official statistics and include the accredited logo.",
+        help_text=(
+            "If ticked, will display an information block about the data being accredited official statistics "
+            "and include the accredited logo."
+        ),
     )
 
     content_panels = Page.content_panels + [
