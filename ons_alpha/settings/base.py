@@ -129,7 +129,7 @@ MIDDLEWARE = [
     # According to the official documentation it should be listed underneath
     # SecurityMiddleware.
     # http://whitenoise.evans.io/en/stable/#quickstart-for-django-apps
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "ons_alpha.utils.whitenoise.ONSWhiteNoiseMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
