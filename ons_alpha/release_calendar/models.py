@@ -134,7 +134,6 @@ class ReleasePage(BasePage):
         context = super().get_context(request, *args, **kwargs)
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
-
         return context
 
     @cached_property
@@ -152,7 +151,7 @@ class ReleasePage(BasePage):
         items = [{"url": "#summary", "text": _("Summary")}]
 
         if self.status == ReleaseStatus.PUBLISHED:
-            for block in self.content:
+            for block in self.content or []:
                 items += block.block.to_table_of_contents_items(block.value)
 
             if self.datasets:
