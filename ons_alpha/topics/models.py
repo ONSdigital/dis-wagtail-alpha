@@ -72,20 +72,24 @@ class TopicPage(BaseTopicPage):
     def topic_list(self):
         menu_items = self.get_children().live().public().specific()
         display_names = []
-        for m in menu_items:
-            display_names.append(m.specific.page_type_display_name )
+        for menu_item in menu_items:
+            display_names.append(menu_item.specific.page_type_display_name )
         return sorted(set(display_names))
 
     def subpage_list(self):
         menu_items = self.topic_list()
         display_names = {}
-        for m in menu_items:
-            display_names[m] = []
+        for menu_item in menu_items:
+            display_names[menu_item] = []
             subpage_list = []
             for subpage in self.get_children().live().public().specific():
-                if subpage.specific.page_type_display_name == m:
-                    subpage_list.append(subpage)
-            display_names[m] = subpage_list
+                if subpage.specific.page_type_display_name == menu_item:
+                    if len(subpage.get_children().live().public().specific()) > 0:
+                        for childpage in subpage.get_children().live().public().specific():
+                            subpage_list.append(childpage)
+                    else:
+                        subpage_list.append(subpage)
+            display_names[menu_item] = subpage_list
         return display_names
 
     def get_context(self, request, *args, **kwargs):

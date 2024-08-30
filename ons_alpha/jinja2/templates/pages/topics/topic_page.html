@@ -1,47 +1,51 @@
 {% extends "templates/pages/index_page.html" %}
 
 {% from "components/panel/_macro.njk" import onsPanel %}
+{% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
 
 {% block main %}
     {% block summary %}
         <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
+            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
+                {# fmt:off #}
+                <h2>{{ _("Summary")}}</h2>
+                {# fmt:on #}
+            </div>
+
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
-                <section id="summary">
-                    <h2>{{ ("Summary")}}</h2>
                     <p>{{ page.summary }}</p>
-                </section>
             </div>
         </div>
     {% endblock %}
 
     {% block topic_page_nav %}
-    <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
-        <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
-            <section id="topic_page_nav">
+        <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
+            <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+                {# fmt:off #}
                 {% for key in subpage_dict.keys() %}
-                    <a href="#{{ key }}">{{ key }}</a>
+                    <a href="#{{ _(key) }}">{{ key }}</a>
                 {% endfor %}
-            </section>
+                {# fmt:on #}
+            </div>
         </div>
-    </div>
     {% endblock %}
 
     {% block index %}
         <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
-            <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
                 {% if subpages %}
-                    <h2>{{"Index"}}</h2>
-                    {% for subpage_key in subpage_dict.keys() %}
-                        <h3 id="{{ subpage_key }}">{{ subpage_key }}</h3>
-                        {% for subpage_value in subpage_dict[subpage_key]  %}
-                            <a href="{{ subpage_value.url }}">
-                                {{ subpage_value.title }}
-                            </a>
-                            <p>{{ subpage_value.summary }} </p>
+                    <h2>{{'Table of contents'}}</h2>
+                        {% for subpage_key in subpage_dict.keys() %}
+                            <h3 id="{{ subpage_key }}">{{ subpage_key }}</h3>
+                            {% for subpage_value in subpage_dict[subpage_key]  %}
+                                <a href="{{ subpage_value.url }}">
+                                    {{ subpage_value.title }}
+                                </a>
+                                <p>{{ subpage_value.summary }}</p>
+                                <p>{{ "taxonomy:- " }}</p> <p>{{subpage_value.taxonomy }}</p>
+                            {% endfor %}
                         {% endfor %}
-                    {% endfor %}
                 {% endif %}
-            </div>
-        </div>
+        </div></div>
     {% endblock %}
 {% endblock %}
