@@ -201,8 +201,6 @@ WSGI_APPLICATION = "ons_alpha.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/stable/ref/settings/#databases
 
-db_conn_max_age = 600
-
 if "PG_DB_ADDR" in env:
     # Use IAM authentication to connect to the Database
     DATABASES = {
@@ -212,7 +210,7 @@ if "PG_DB_ADDR" in env:
             "USER": env["PG_DB_USER"],
             "HOST": env["PG_DB_ADDR"],
             "PORT": env["PG_DB_PORT"],
-            "CONN_MAX_AGE": db_conn_max_age,
+            "CONN_MAX_AGE": 900,  # Must be 15 minutes, to match password expiry
             "CONN_HEALTH_CHECKS": True,
             "OPTIONS": {"use_iam_auth": True, "sslmode": "require"},
         }
@@ -220,9 +218,7 @@ if "PG_DB_ADDR" in env:
 else:
     # This setting will use DATABASE_URL environment variable.
     DATABASES = {
-        "default": dj_database_url.config(
-            conn_max_age=db_conn_max_age, conn_health_checks=True, default="postgres:///ons_alpha"
-        )
+        "default": dj_database_url.config(conn_max_age=900, conn_health_checks=True, default="postgres:///ons_alpha")
     }
 
 
