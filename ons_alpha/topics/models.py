@@ -45,10 +45,9 @@ class TopicPage(BaseTopicPage):
     subpage_types = ["articles.ArticleSeriesPage", "bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
     summary = models.CharField(blank=True, max_length=255)
-    # The topics page has a list of all child and tagged pages this is a list of all the types of page that
-    # links to the position for that page type in the list
     topic_page_nav = models.CharField(blank=True, max_length=255)
-
+        # a list of distinct page types for descendants and associated documents
+   
     content_panels = BasePage.content_panels + [
         FieldPanel("summary"),
         FieldPanel("topic_page_nav"),
