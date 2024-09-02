@@ -96,7 +96,7 @@ class Bundle(index.Indexed, ClusterableModel):
         FieldPanel("name"),
         FieldRowPanel(
             [
-                FieldPanel("release_calendar_page", heading="Release Calendar page"),  # Swap order
+                FieldPanel("release_calendar_page", heading="Release Calendar page"),  # Field order swapped
                 FieldPanel("publication_date", heading="or Publication date"),
             ],
             heading="Scheduling",

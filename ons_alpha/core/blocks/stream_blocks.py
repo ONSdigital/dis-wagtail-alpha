@@ -16,27 +16,15 @@ from ons_alpha.core.blocks import (
     RelatedContentBlock,
     RelatedLinksBlock,
 )
-
-
-# Define the custom TableBlock directly in this file
-class TableBlock(StructBlock):
-    heading = CharBlock(required=True, help_text="Add a heading for the table.")
-    table = RichTextBlock(required=True, help_text="Add the table data here.")  # Adjust as needed
-    source = CharBlock(required=False, help_text="Add the source of the table data if applicable.")
-    footnotes = RichTextBlock(
-        features=settings.RICH_TEXT_BASIC, required=False, help_text="Add any footnotes for the table."
-    )
-
-    class Meta:
-        template = "templates/components/streamfield/table_block.html"
-        icon = "table"
-        label = "Table"
+from ons_alpha.core.blocks import (
+    TableBlock as CustomTableBlock,  # Ensure we're using the custom TableBlock from core.blocks
+)
 
 
 # StructBlock for ONS Table
 class ONSTableBlock(StructBlock):
     heading = CharBlock(required=True, help_text="Add a heading for the table.")
-    table = TableBlock(required=True, help_text="Add the table data here.")
+    table = CustomTableBlock(required=True, help_text="Add the table data here.")  # Use the correct TableBlock
     source = CharBlock(required=False, help_text="Add the source of the table data if applicable.")
     footnotes = RichTextBlock(
         features=settings.RICH_TEXT_BASIC, required=False, help_text="Add any footnotes for the table."
@@ -57,7 +45,7 @@ class CoreStoryBlock(StreamBlock):
     image = ImageChooserBlock()
     documents = DocumentsBlock()
     related_links = RelatedLinksBlock(RelatedContentBlock())
-    table = TableBlock(group="DataVis")  # Use the custom table block defined above
+    table = CustomTableBlock(group="DataVis")  # Use the custom TableBlock from core.blocks
     ons_table = ONSTableBlock(group="DataVis")  # New block added
     equation = MathBlock(icon="decimal", group="DataVis")
     ons_embed = ONSEmbedBlock(group="DataVis", label="ONS Embed")

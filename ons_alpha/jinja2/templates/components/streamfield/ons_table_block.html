@@ -2,10 +2,13 @@
     {% if value.heading %}
         <h3>{{ value.heading }}</h3>
     {% endif %}
+
     {% include_block value.table %}
+
     {% if value.source %}
         <p><strong>Source:</strong> {{ value.source }}</p>
     {% endif %}
+
     {% if value.footnotes %}
         <div class="footnotes">{{ value.footnotes|richtext }}</div>
     {% endif %}

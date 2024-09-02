@@ -28,17 +28,15 @@ class ReleaseIndex(BasePage):
 
     parent_page_types = ["home.HomePage"]
     subpage_types = ["ReleasePage"]
-    max_count_per_parent = 1  # Set max count per parent
+    max_count_per_parent = 1  # Enforce only one ReleaseIndex per parent
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         page = request.GET.get("page", 1)
-
         context["releases"] = Paginator(
             ReleasePage.objects.child_of(self).public().live(),
             settings.DEFAULT_PER_PAGE,
         ).get_page(page)
-
         return context
 
 
@@ -127,7 +125,6 @@ class ReleasePage(BasePage):
             return "templates/pages/release_page--provisional.html"
         if self.status == ReleaseStatus.CANCELLED:
             return "templates/pages/release_page--cancelled.html"
-
         return super().get_template(request, *args, **kwargs)
 
     def get_context(self, request, *args, **kwargs):
