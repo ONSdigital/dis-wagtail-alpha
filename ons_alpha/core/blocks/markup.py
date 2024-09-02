@@ -72,25 +72,12 @@ class TableBlock(WagtailTableBlock):
         has_header = value.get("data", "") and len(value["data"]) > 0 and value.get("first_row_is_table_header", False)
         data = value["data"][1:] if has_header else value.get("data", [])
 
+        processor = TableRowProcessor(classnames, hidden, spans)
         for row_idx, row in enumerate(data, 1 if has_header else 0):
-            tds = self._process_row(row, row_idx, classnames, hidden, spans)
+            tds = processor.process_row(row, row_idx)
             trs.append({"tds": tds})
 
         return trs
-
-    def _process_row(self, row, row_idx, classnames, hidden, spans):
-        tds = []
-        for cell_idx, cell in enumerate(row):
-            cell_key = (row_idx, cell_idx)
-            if hidden.get(cell_key):
-                continue
-            td = {"value": cell}
-            if classname := classnames.get(cell_key):
-                td["tdClasses"] = classname
-            if span := spans.get(cell_key):
-                td["span"] = span
-            tds.append(td)
-        return tds
 
     def clean(self, value):
         if not value or not value.get("table_header_choice"):
@@ -132,6 +119,27 @@ class TableBlock(WagtailTableBlock):
 
     def render(self, value, context=None):
         return super(blocks.FieldBlock, self).render(value, context)
+
+
+class TableRowProcessor:
+    def __init__(self, classnames, hidden, spans):
+        self.classnames = classnames
+        self.hidden = hidden
+        self.spans = spans
+
+    def process_row(self, row, row_idx):
+        tds = []
+        for cell_idx, cell in enumerate(row):
+            cell_key = (row_idx, cell_idx)
+            if self.hidden.get(cell_key):
+                continue
+            td = {"value": cell}
+            if classname := self.classnames.get(cell_key):
+                td["tdClasses"] = classname
+            if span := self.spans.get(cell_key):
+                td["span"] = span
+            tds.append(td)
+        return tds
 
 
 class TypedTableBlock(blocks.StructBlock):
