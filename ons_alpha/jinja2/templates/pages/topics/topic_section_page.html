@@ -17,9 +17,7 @@
                 <h2>{{"Index"}}</h2>
                 {% if subpages.object_list %}
                     {% for subpage in subpages %}
-                        <a href="{{ subpage.url }}">
-                            {{ subpage }}
-                        </a>
+                        <a href="{{ subpage.url }}"> {{ subpage.title }} </a>
                         <p>{{ subpage.summary }}</p>
                     {% endfor %}
                 {% endif %}
