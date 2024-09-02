@@ -7,7 +7,8 @@ from wagtail.admin.panels import (
 
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.core.models.mixins import SubpageMixin
-from ons_alpha.taxonomy.models import Topic
+from ons_alpha.methodologies.models import MethodologyPage
+from ons_alpha.taxonomy.models import Topic, PageTopicRelationship
 
 
 class BaseTopicPage(SubpageMixin, BasePage):
@@ -90,7 +91,17 @@ class TopicPage(BaseTopicPage):
                     else:
                         subpage_list.append(subpage)
             display_names[menu_item] = subpage_list
+        associated_pages = self.tmplist()
+        for a in associated_pages:
+            print(a)
+
+
         return display_names
+
+
+    def tmplist(self):
+        descendants = self.get_descendants()
+        return PageTopicRelationship.objects.filter(topic=self.topic).exclude(page__in = descendants)
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
