@@ -47,7 +47,7 @@ class TopicPage(BaseTopicPage):
     summary = models.CharField(blank=True, max_length=255)
     topic_page_nav = models.CharField(blank=True, max_length=255)
         # a list of distinct page types for descendants and associated documents
-   
+
     content_panels = BasePage.content_panels + [
         FieldPanel("summary"),
         FieldPanel("topic_page_nav"),
