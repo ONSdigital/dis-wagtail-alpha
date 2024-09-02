@@ -7,7 +7,7 @@
         <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
             <section id="summary">
                 <h2>{{ _("Summary")}}</h2>
-                <p>{{ summary }}</p>
+                <p>{{ page.summary}}</p>
             </section>
         </div>
     </div>
@@ -21,7 +21,7 @@
                 {% endfor %}
             </section>
         </div>
-    </div>
+    </div>x`
     {% endblock %}
 
     {% block index %}
@@ -32,13 +32,14 @@
                     {% for subpage_key in subpage_dict.keys() %}
                         <h3 id="{{ subpage_key }}">{{ subpage_key }}</h3>
                         {% for subpage_value in subpage_dict[subpage_key]  %}
-                            <a href="{{ subpage_value.url }}">
+                            <a href="{{ subpage_value.pageurl }}">
                                 {{ subpage_value.title }}
                             </a>
                             <p>{{ subpage_value.summary }} </p>
                         {% endfor %}
                     {% endfor %}
                 {% endif %}
+
             </div>
         </div>
     {% endblock %}

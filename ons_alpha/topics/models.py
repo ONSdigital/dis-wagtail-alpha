@@ -88,6 +88,7 @@ class TopicPage(BaseTopicPage):
         for child_page_type in child_page_types:
             display_names[child_page_type] = []
             subpage_list = []
+
             for subpage in self.get_children().live().public().specific():
                 if subpage.specific.page_type_display_name == child_page_type:
                     if len(subpage.get_children().live().public().specific()) > 0:
