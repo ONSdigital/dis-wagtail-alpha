@@ -3,16 +3,14 @@
 {% from "components/panel/_macro.njk" import onsPanel %}
 
 {% block main %}
-    {% block summary %}
-        <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
-            <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
-                <section id="summary">
-                    <h2>{{ _("Summary")}}</h2>
-                    <p>{{ page.summary }}</p>
-                </section>
-            </div>
+    <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
+        <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+            <section id="summary">
+                <h2>{{ _("Summary")}}</h2>
+                <p>{{ page.summary }}</p>
+            </section>
         </div>
-    {% endblock %}
+    </div>
 
     {% block preSubpages %}
     <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">

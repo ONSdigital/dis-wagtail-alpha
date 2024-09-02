@@ -44,11 +44,13 @@ class TopicPage(BaseTopicPage):
     parent_page_types = ["topics.TopicSectionPage"]
     subpage_types = ["articles.ArticleSeriesPage", "bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
-    summary = models.CharField(blank=True, max_length=255)
+    page_summary = models.CharField(blank=True, max_length=255)
+    # The topics page has a list of all child and tagged pages this is a list of all the types of page that
+    # links to the position for that page type in the list
     topic_page_nav = models.CharField(blank=True, max_length=255)
 
     content_panels = BasePage.content_panels + [
-        FieldPanel("summary"),
+        FieldPanel("page_summary"),
         FieldPanel("topic_page_nav"),
     ]
 
@@ -79,14 +81,17 @@ class TopicPage(BaseTopicPage):
     def subpage_list(self):
         menu_items = self.topic_list()
         display_names = {}
-        for m in menu_items:
-            display_names[m] = []
+        for menu_item in menu_items:
+            display_names[menu_item] = []
             subpage_list = []
             for subpage in self.get_children().live().public().specific():
-                if subpage.specific.page_type_display_name == m:
-                    if subpage.get_children().live().public().specific()
-                    subpage_list.append(subpage)
-            display_names[m] = subpage_list
+                if subpage.specific.page_type_display_name == menu_item:
+                    if len(subpage.get_children().live().public().specific()) > 0:
+                        for childpage in subpage.get_children().live().public().specific():
+                            subpage_list.append(childpage)
+                    else:
+                        subpage_list.append(subpage)
+                display_names[menu_item] = subpage_list
         return display_names
 
     def get_context(self, request, *args, **kwargs):
