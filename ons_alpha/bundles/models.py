@@ -31,7 +31,6 @@ class BundlePage(Orderable):
     parent = ParentalKey("Bundle", related_name="bundled_pages", on_delete=models.CASCADE)
     page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
 
-    # note: update so we get this based on the mixin
     panels = [
         PageChooserPanel("page", ["articles.ArticlePage", "bulletins.BulletinPage", "methodologies.MethodologyPage"]),
     ]
@@ -136,18 +135,21 @@ class Bundle(index.Indexed, ClusterableModel):
                 if bundled_page.go_live_at == self.scheduled_publication_date:
                     continue
 
-                # note: this could use a custom log action for history
+                # This could use a custom log action for history
                 bundled_page.go_live_at = self.scheduled_publication_date
                 revision = bundled_page.save_revision()
                 revision.publish()
 
 
-class BundledPageMixin:
+class BundledPageMixin(models.Model):
     """
     A helper page mixin for bundled content
     """
 
     panels = [BundleNotePanel(heading="Bundle", icon="boxes-stacked")]
+
+    class Meta:
+        abstract = True
 
     @cached_property
     def bundles(self) -> QuerySet[Bundle]:
