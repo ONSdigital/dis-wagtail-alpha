@@ -44,13 +44,13 @@ class TopicPage(BaseTopicPage):
     parent_page_types = ["topics.TopicSectionPage"]
     subpage_types = ["articles.ArticleSeriesPage", "bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
-    page_summary = models.CharField(blank=True, max_length=255)
+    summary = models.CharField(blank=True, max_length=255)
     # The topics page has a list of all child and tagged pages this is a list of all the types of page that
     # links to the position for that page type in the list
     topic_page_nav = models.CharField(blank=True, max_length=255)
 
     content_panels = BasePage.content_panels + [
-        FieldPanel("page_summary"),
+        FieldPanel("summary"),
         FieldPanel("topic_page_nav"),
     ]
 
@@ -71,32 +71,36 @@ class TopicPage(BaseTopicPage):
         if TopicSectionPage.objects.filter(topic=self.topic).exists():
             raise ValidationError({"topic": "Topic Section Page with this topic already exists."})
 
-    def topic_list(self):
-        menu_items = self.get_children().live().public().specific()
+
+    def topic_list_child_page_types(self):
+        """
+        For a topic page will return a distinct list of child page types
+        """
+        list_items = self.get_children().live().public().specific()
         display_names = []
-        for m in menu_items:
-            display_names.append(m.specific.page_type_display_name )
+        for menu_item in list_items:
+            display_names.append(menu_item.specific.page_type_display_name )
         return sorted(set(display_names))
 
     def subpage_list(self):
-        menu_items = self.topic_list()
+        child_page_types = self.topic_list_child_page_types()
         display_names = {}
-        for menu_item in menu_items:
-            display_names[menu_item] = []
+        for child_page_type in child_page_types:
+            display_names[child_page_type] = []
             subpage_list = []
             for subpage in self.get_children().live().public().specific():
-                if subpage.specific.page_type_display_name == menu_item:
+                if subpage.specific.page_type_display_name == child_page_type:
                     if len(subpage.get_children().live().public().specific()) > 0:
-                        for childpage in subpage.get_children().live().public().specific():
-                            subpage_list.append(childpage)
+                        for child_page in subpage.get_children().live().public().specific():
+                            subpage_list.append(child_page)
                     else:
                         subpage_list.append(subpage)
-                display_names[menu_item] = subpage_list
+                display_names[child_page_type] = subpage_list
         return display_names
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["topic_list"] = self.topic_list()
+        context["topic_list"] = self.topic_list_child_page_types()
         context["subpage_dict"] = self.subpage_list()
         return context
 

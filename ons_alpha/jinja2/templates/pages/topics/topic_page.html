@@ -7,7 +7,7 @@
         <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
             <section id="summary">
                 <h2>{{ _("Summary")}}</h2>
-                <p>{{ page.summary }}</p>
+                <p>{{ summary }}</p>
             </section>
         </div>
     </div>
@@ -29,7 +29,7 @@
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
                 {% if subpages %}
                     <h2>{{"Index"}}</h2>
-                    {% for subpage_key,  in subpage_dict.keys() %}
+                    {% for subpage_key in subpage_dict.keys() %}
                         <h3 id="{{ subpage_key }}">{{ subpage_key }}</h3>
                         {% for subpage_value in subpage_dict[subpage_key]  %}
                             <a href="{{ subpage_value.url }}">

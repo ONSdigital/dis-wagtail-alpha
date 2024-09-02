@@ -17,7 +17,6 @@
         <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
             {% if subpages %}
                 <h2>{{"Index"}}</h2>
-
                 {% if subpages.object_list %}
                     {% for subpage in subpages %}
                         <a href="{{ subpage.url }}">
