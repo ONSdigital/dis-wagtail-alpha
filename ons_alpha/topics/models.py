@@ -1,9 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from wagtail.admin.panels import (
-    FieldPanel,
-    ObjectList,
-    TabbedInterface)
+from wagtail.admin.panels import FieldPanel, ObjectList, TabbedInterface
 
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.core.models.mixins import SubpageMixin
@@ -46,7 +43,7 @@ class TopicPage(BaseTopicPage):
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
     summary = models.CharField(blank=True, max_length=255)
     topic_page_nav = models.CharField(blank=True, max_length=255)
-        # a list of distinct page types for descendants and associated documents
+    # a list of distinct page types for descendants and associated documents
 
     content_panels = BasePage.content_panels + [
         FieldPanel("summary"),
@@ -70,7 +67,6 @@ class TopicPage(BaseTopicPage):
         if TopicSectionPage.objects.filter(topic=self.topic).exists():
             raise ValidationError({"topic": "Topic Section Page with this topic already exists."})
 
-
     def topic_list_child_page_types(self):
         """
         For a topic page will return a distinct list of child page types
@@ -78,7 +74,7 @@ class TopicPage(BaseTopicPage):
         list_items = self.get_children().live().public().specific()
         display_names = []
         for menu_item in list_items:
-            display_names.append(menu_item.specific.page_type_display_name )
+            display_names.append(menu_item.specific.page_type_display_name)
         return sorted(set(display_names))
 
     def subpage_list(self):
@@ -90,7 +86,7 @@ class TopicPage(BaseTopicPage):
 
             for subpage in self.get_children().live().public().specific():
                 if subpage.specific.page_type_display_name == child_page_type:
-                    if len(subpage.get_children().live().public().specific()) > 0:
+                    if subpage.get_children().live().public().specific().exists():
                         for child_page in subpage.get_children().live().public().specific():
                             subpage_list.append(child_page)
                     else:
@@ -112,8 +108,8 @@ class TopicSectionPage(BaseTopicPage):
     summary = models.CharField(blank=True, max_length=255)
 
     content_panels = BasePage.content_panels + [
-            FieldPanel("summary"),
-        ]
+        FieldPanel("summary"),
+    ]
 
     edit_handler = TabbedInterface(
         [
@@ -131,4 +127,3 @@ class TopicSectionPage(BaseTopicPage):
         super().clean()
         if TopicPage.objects.filter(topic=self.topic).exists():
             raise ValidationError({"topic": "Topic Page with this topic already exists."})
-

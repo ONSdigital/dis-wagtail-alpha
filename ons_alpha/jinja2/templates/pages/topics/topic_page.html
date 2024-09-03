@@ -29,10 +29,11 @@
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
                 {% if subpages %}
                     <h2>{{"Index"}}</h2>
-                    {% for subpage_key in subpage_dict.keys() %}
+                    {% for subpage_key, subpage_values in subpage_dict.items() %}
                         <h3 id="{{ subpage_key }}">{{ subpage_key }}</h3>
                         {% for subpage_value in subpage_dict[subpage_key]  %}
-                            <a href="{{ subpage_value.pageurl }}">
+
+                            <a href="{{  pageurl(subpage_value)  }}">
                                 {{ subpage_value.title }}
                             </a>
                             <p>{{ subpage_value.summary }} </p>
