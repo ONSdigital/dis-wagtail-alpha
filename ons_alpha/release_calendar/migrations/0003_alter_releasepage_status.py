@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("release_calendar", "0002_releasepage_datasets"),
     ]
@@ -13,6 +12,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="releasepage",
             name="status",
-            field=models.CharField(default="provisional", max_length=32),
+            field=models.CharField(default="PROVISIONAL", max_length=32),
         ),
     ]

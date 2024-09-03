@@ -3,13 +3,16 @@
         <h3>{{ value.heading }}</h3>
     {% endif %}
 
-    {% include_block value.table %}
+    {{ table }}
 
     {% if value.source %}
         <p><strong>Source:</strong> {{ value.source }}</p>
     {% endif %}
 
     {% if value.footnotes %}
-        <div class="footnotes">{{ value.footnotes|richtext }}</div>
+        {% from "components/details/_macro.njk" import onsDetails %}
+        {% call onsDetails({"id": block_id, "title": _("Footnotes")}) %}
+            {{ value.footnotes|richtext }}
+        {% endcall %}
     {% endif %}
 </div>

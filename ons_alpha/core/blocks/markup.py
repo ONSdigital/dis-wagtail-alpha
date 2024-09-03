@@ -1,6 +1,9 @@
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 from wagtail import blocks
+from wagtail.blocks import CharBlock, RichTextBlock, StructBlock
 from wagtail.contrib.table_block.blocks import DEFAULT_TABLE_OPTIONS
 from wagtail.contrib.table_block.blocks import TableBlock as WagtailTableBlock
 from wagtail.contrib.typed_table_block.blocks import TypedTableBlock as WagtailTypedTableBlock
@@ -22,16 +25,39 @@ class HeadingBlock(blocks.CharBlock):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         context["show_back_to_toc"] = self.show_back_to_toc
+
         return context
 
     def to_table_of_contents_items(self, value):
         return [{"url": "#" + slugify(value), "text": value}]
 
 
+class TableRowProcessor:
+    def __init__(self, classnames, hidden, spans):
+        self.classnames = classnames
+        self.hidden = hidden
+        self.spans = spans
+
+    def process_row(self, row, row_idx) -> list[dict[str, str]]:
+        tds = []
+        for cell_idx, cell in enumerate(row):
+            cell_key = (row_idx, cell_idx)
+            if self.hidden.get(cell_key):
+                continue
+            td = {"value": cell}
+            if classname := self.classnames.get(cell_key):
+                td["tdClasses"] = classname
+            if span := self.spans.get(cell_key):
+                td["span"] = span
+            tds.append(td)
+        return tds
+
+
 class TableBlock(WagtailTableBlock):
     class Meta:
         icon = "info-circle"
         template = "templates/components/streamfield/table_block.html"
+        label = "Basic table"
 
     def __init__(self, required=True, help_text=None, table_options=None, **kwargs):
         if table_options is None:
@@ -39,9 +65,13 @@ class TableBlock(WagtailTableBlock):
                 "mergeCells": True,
                 "contextMenu": DEFAULT_TABLE_OPTIONS["contextMenu"] + ["---------", "mergeCells", "alignment"],
             }
+
         super().__init__(required=required, help_text=help_text, table_options=table_options, **kwargs)
 
     def _to_ons_classname(self, classname: str) -> str:
+        """
+        Reference: https://handsontable.com/docs/javascript-data-grid/text-alignment/#horizontal-and-vertical-alignment
+        """
         match classname:
             case "htRight":
                 return "ons-u-ta-right"
@@ -82,10 +112,12 @@ class TableBlock(WagtailTableBlock):
     def clean(self, value):
         if not value or not value.get("table_header_choice"):
             raise ValidationError("Select an option for Table headers")
+
         data = value.get("data", [])
         all_cells_empty = all(not cell for row in data for cell in row)
         if all_cells_empty:
             raise ValidationError("The table cannot be empty")
+
         return super().clean(value)
 
     def get_context(self, value, parent_context=None):
@@ -107,7 +139,8 @@ class TableBlock(WagtailTableBlock):
                 if merge["colspan"] > 1:
                     span += f'colspan="{merge["colspan"]}" '
                 if span:
-                    spans[(merge["row"], merge["col"])] = span
+                    # mark_safe is needed to preserve the quotes when rendered in the template
+                    spans[(merge["row"], merge["col"])] = mark_safe(span)  # noqa: S308
         return {
             "options": {
                 "caption": value.get("table_caption"),
@@ -118,28 +151,29 @@ class TableBlock(WagtailTableBlock):
         }
 
     def render(self, value, context=None):
+        # The Wagtail core TableBlock has a very custom `render` method. We don't want that
         return super(blocks.FieldBlock, self).render(value, context)
 
 
-class TableRowProcessor:
-    def __init__(self, classnames, hidden, spans):
-        self.classnames = classnames
-        self.hidden = hidden
-        self.spans = spans
+class ONSTableBlock(StructBlock):
+    heading = CharBlock(required=True, help_text="Add a heading for the table.")
+    table = TableBlock(required=True, help_text="Add the table data here.")
+    source = CharBlock(required=False, help_text="Add the source of the table data if applicable.")
+    footnotes = RichTextBlock(
+        features=settings.RICH_TEXT_BASIC, required=False, help_text="Add any footnotes for the table."
+    )
 
-    def process_row(self, row, row_idx):
-        tds = []
-        for cell_idx, cell in enumerate(row):
-            cell_key = (row_idx, cell_idx)
-            if self.hidden.get(cell_key):
-                continue
-            td = {"value": cell}
-            if classname := self.classnames.get(cell_key):
-                td["tdClasses"] = classname
-            if span := self.spans.get(cell_key):
-                td["span"] = span
-            tds.append(td)
-        return tds
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        # Pass the rendered block as its own variable.
+        # {% include_block value.table %} outputs the raw data
+        context["table"] = self.child_blocks["table"].render(value["table"], context=parent_context)
+        return context
+
+    class Meta:
+        template = "templates/components/streamfield/ons_table_block.html"
+        icon = "table"
+        label = "ONS Table"
 
 
 class TypedTableBlock(blocks.StructBlock):

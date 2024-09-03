@@ -15,20 +15,19 @@ from ons_alpha.release_calendar.blocks import ReleaseStoryBlock
 from ons_alpha.utils.models import LinkFields
 
 
-# Status choices for ReleasePage
 class ReleaseStatus(models.TextChoices):
-    PROVISIONAL = _("provisional"), _("Provisional")
-    CONFIRMED = _("confirmed"), _("Confirmed")
-    CANCELLED = _("cancelled"), _("Cancelled")
+    PROVISIONAL = "PROVISIONAL", _("Provisional")
+    CONFIRMED = "CONFIRMED", _("Confirmed")
+    CANCELLED = "CANCELLED", _("Cancelled")
+    PUBLISHED = "PUBLISHED", _("Published")
 
 
-# Model for ReleaseIndex
 class ReleaseIndex(BasePage):
     template = "templates/pages/release_index.html"
 
     parent_page_types = ["home.HomePage"]
     subpage_types = ["ReleasePage"]
-    max_count_per_parent = 1  # Enforce only one ReleaseIndex per parent
+    max_count_per_parent = 1
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
@@ -40,7 +39,6 @@ class ReleaseIndex(BasePage):
         return context
 
 
-# Model for related links in ReleasePage
 class ReleasePageRelatedLink(Orderable, LinkFields):
     """
     Related links. e.g. https://www.ons.gov.uk/releases/welshlanguagecensus2021inwales
@@ -49,7 +47,6 @@ class ReleasePageRelatedLink(Orderable, LinkFields):
     parent = ParentalKey("ReleasePage", related_name="related_links", on_delete=models.CASCADE)
 
 
-# Model for ReleasePage
 class ReleasePage(BasePage):
     template = "templates/pages/release_page.html"
 
@@ -59,6 +56,8 @@ class ReleasePage(BasePage):
     status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.PROVISIONAL, max_length=32)
     summary = RichTextField(features=settings.RICH_TEXT_BASIC)
 
+    # Note: When linked to a bundle containing bundled pages/datasets,
+    # the content and datasets on the Release Page will be replaced upon publishing the bundle.
     content = StreamField(ReleaseStoryBlock(), blank=True, use_json_field=True)
     datasets = StreamField(DatasetStoryBlock(), blank=True, use_json_field=True)
 
@@ -123,6 +122,8 @@ class ReleasePage(BasePage):
     def get_template(self, request, *args, **kwargs):
         if self.status == ReleaseStatus.PROVISIONAL:
             return "templates/pages/release_page--provisional.html"
+        if self.status == ReleaseStatus.CONFIRMED:
+            return "templates/pages/release_page--confirmed.html"
         if self.status == ReleaseStatus.CANCELLED:
             return "templates/pages/release_page--cancelled.html"
         return super().get_template(request, *args, **kwargs)
@@ -148,7 +149,7 @@ class ReleasePage(BasePage):
         items = [{"url": "#summary", "text": _("Summary")}]
 
         if self.status == ReleaseStatus.PUBLISHED:
-            for block in self.content or []:
+            for block in self.content:  # pylint: disable=not-an-iterable
                 items += block.block.to_table_of_contents_items(block.value)
 
             if self.datasets:

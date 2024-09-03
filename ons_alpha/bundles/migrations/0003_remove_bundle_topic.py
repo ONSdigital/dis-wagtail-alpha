@@ -4,16 +4,11 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("bundles", "0002_bundle_datasets_delete_bundlelink"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name="bundle",
-            name="collection_reference",
-        ),
         migrations.RemoveField(
             model_name="bundle",
             name="topic",
