@@ -10,11 +10,12 @@ from ons_alpha.core.blocks import (
     HeadingBlock,
     NoticeBlock,
     ONSEmbedBlock,
+    ONSTableBlock,
     PanelBlock,
     RelatedContentBlock,
     RelatedLinksBlock,
-    TableBlock,
 )
+from ons_alpha.core.blocks import TableBlock as OldTableBlock
 
 
 class CoreStoryBlock(StreamBlock):
@@ -25,10 +26,15 @@ class CoreStoryBlock(StreamBlock):
     image = ImageChooserBlock()
     documents = DocumentsBlock()
     related_links = RelatedLinksBlock(RelatedContentBlock())
-    table = TableBlock(group="DataVis")
-    equation = MathBlock(icon="decimal", group="DataVis")
+    ons_table = ONSTableBlock(group="DataVis")
     ons_embed = ONSEmbedBlock(group="DataVis", label="ONS Embed")
     chart = ChartChooserBlock(group="DataVis")
+    equation = MathBlock(icon="decimal", group="DataVis")
+    table = OldTableBlock(
+        group="DataVis",
+        help_text="This is a basic table-only block provided by Wagtail. "
+        "Use the 'ONS Table' block for the full ONS needs.",
+    )
 
     class Meta:
         block_counts = {"related_links": {"max_num": 1}}
