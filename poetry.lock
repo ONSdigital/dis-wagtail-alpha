@@ -629,19 +629,22 @@ test = ["boto3", "celery", "django-storages", "pytest", "pytest-cov", "pytest-dj
 
 [[package]]
 name = "django-iam-dbauth"
-version = "0.2.0"
+version = "0.1.4"
 description = "Django database backends to use AWS Database IAM Authentication"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django_iam_dbauth-0.2.0-py2.py3-none-any.whl", hash = "sha256:1b23acce93abd5f3a60006d92b8ee3557555eb8b0c09cd87c95426701dfd5624"},
-    {file = "django_iam_dbauth-0.2.0.tar.gz", hash = "sha256:3456e4960f0214555e61371cf407a80d276127c1e0e2525798a3cdd4cd1c489e"},
+    {file = "django-iam-dbauth-0.1.4.tar.gz", hash = "sha256:318d880fe2dff1c2f788191e6c2b6d703335ef226deee36c32891d8b9aacbd59"},
+    {file = "django_iam_dbauth-0.1.4-py3-none-any.whl", hash = "sha256:287dec3798774423360d63f5681a43c3297ec65e8a084ee3a2ec90e325bbd2bd"},
 ]
 
 [package.dependencies]
 boto3 = "*"
-django = ">=4.2"
+Django = ">=1.11"
 dnspython = "*"
+
+[package.extras]
+test = ["coverage[toml] (==5.3)", "mysqlclient (==1.4.6)", "pretend (==1.0.9)", "psycopg2 (==2.8.5)", "pytest (==5.3.5)", "pytest-cov (==2.7.1)", "pytest-django (==3.8.0)", "pytest-mock (==1.10.4)"]
 
 [[package]]
 name = "django-jinja"
@@ -2442,4 +2445,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "e730f0431e6cbc7a5091b14cabd003669749a48d14c89f3669e1757e5dd041ac"
+content-hash = "eea66ceaf6c7525f222fe16af2db3255987976836b3d442585d9cd14dd927982"
