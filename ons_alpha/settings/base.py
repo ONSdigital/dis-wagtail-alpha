@@ -232,32 +232,41 @@ else:
 #
 # Do not use the same Redis instance for other things like Celery!
 
-# Prefer the TLS connection URL over non
-REDIS_URL = env.get("REDIS_TLS_URL", env.get("REDIS_URL"))
+redis_options = {
+    "IGNORE_EXCEPTIONS": True,
+    "SOCKET_CONNECT_TIMEOUT": 2,  # seconds
+    "SOCKET_TIMEOUT": 2,  # seconds
+}
+DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 
-if REDIS_URL:
+# Prefer the TLS connection URL over non for Heroku
+if redis_url := env.get("REDIS_TLS_URL", env.get("REDIS_URL")):
     connection_pool_kwargs = {}
 
-    if REDIS_URL.startswith("rediss"):
+    if redis_url.startswith("rediss"):
         # Heroku Redis uses self-signed certificates for secure redis conections. https://stackoverflow.com/a/66286068
         # When using TLS, we need to disable certificate validation checks.
         connection_pool_kwargs["ssl_cert_reqs"] = None
 
-    redis_options = {
-        "IGNORE_EXCEPTIONS": True,
-        "SOCKET_CONNECT_TIMEOUT": 2,  # seconds
-        "SOCKET_TIMEOUT": 2,  # seconds
-        "CONNECTION_POOL_KWARGS": connection_pool_kwargs,
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": redis_url,
+            "OPTIONS": {**redis_options, "CONNECTION_POOL_KWARGS": connection_pool_kwargs},
+        }
     }
+elif elasticache_addr := env.get("ELASTICACHE_ADDR"):
+    user_name = env["ELASTICACHE_USER_NAME"]
+    password = env["ELASTICACHE_USER_PASSWORD"]
+    port = env["ELASTICACHE_PORT"]
 
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": REDIS_URL,
+            "LOCATION": f"rediss://{user_name}:{password}@{elasticache_addr}:{port}",
             "OPTIONS": redis_options,
         }
     }
-    DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 else:
     CACHES = {
         "default": {
@@ -715,7 +724,10 @@ AUTH_USER_MODEL = "users.User"
 # django-defender
 # Records failed login attempts and blocks access by username and IP
 # https://django-defender.readthedocs.io/en/latest/
-ENABLE_DJANGO_DEFENDER = REDIS_URL and env.get("ENABLE_DJANGO_DEFENDER", "True").lower().strip() == "true"
+ENABLE_DJANGO_DEFENDER = (
+    "redis" in CACHES["default"]["BACKEND"].lower()
+    and env.get("ENABLE_DJANGO_DEFENDER", "True").lower().strip() == "true"
+)
 
 if ENABLE_DJANGO_DEFENDER:
     INSTALLED_APPS += ["defender"]
