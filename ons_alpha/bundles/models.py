@@ -49,6 +49,7 @@ class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
 
 class Bundle(index.Indexed, ClusterableModel):
     base_form_class = BundleAdminForm
+
     name = models.CharField(max_length=255)
     # note: currently not surfaced, but left here for the time being
     collection_reference = models.CharField(max_length=255, blank=True, help_text="Florence Collection reference")

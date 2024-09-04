@@ -1,8 +1,15 @@
 from django.core.exceptions import ValidationError
 from wagtail.admin.forms import WagtailAdminModelForm
 
+from ons_alpha.bundles.enums import ACTIVE_BUNDLE_STATUS_CHOICES
+
 
 class BundleAdminForm(WagtailAdminModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # hides the "Released" status choice
+        self.fields["status"].choices = ACTIVE_BUNDLE_STATUS_CHOICES
+
     def clean(self):
         cleaned_data = super().clean()
 
