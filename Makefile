@@ -34,7 +34,7 @@ build-docker:
 	docker build -t ons_alpha .
 
 messages:  ## 🌍   - Make strings available for translation
-	python -m manage makemessages --all
+	poetry run python -m manage makemessages --all
 
 compile-messages:  ## 🌏   - Compile translated messages
-	python -m manage compilemessages --use-fuzzy
+	poetry run python -m manage compilemessages --use-fuzzy
