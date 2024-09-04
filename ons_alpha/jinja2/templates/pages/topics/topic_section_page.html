@@ -5,7 +5,7 @@
         <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
                 <section>
-                    <h2>{{"Summary"}}</h2>
+                    <h2>{{ _("Summary")}}</h2>
                     <p>{{ page.summary }}</p>
                 </section>
             </div>
@@ -14,7 +14,7 @@
     {% block index %}
         <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
             {% if subpages %}
-                <h2>{{"Index"}}</h2>
+                <h2>{{ _("Index")}}</h2>
                 {% if subpages.object_list %}
                     {% for subpage in subpages %}
                         <a href="{{ subpage.url }}"> {{ subpage.title }} </a>
