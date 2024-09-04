@@ -77,7 +77,7 @@ class TopicPage(BaseTopicPage):
             display_names.append(menu_item.specific.page_type_display_name)
         return sorted(set(display_names))
 
-    def subpage_list(self):
+    def topic_descendents_by_page_type  (self):
         child_page_types = self.topic_list_child_page_types()
         display_names = {}
         for child_page_type in child_page_types:
@@ -97,7 +97,7 @@ class TopicPage(BaseTopicPage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["topic_list"] = self.topic_list_child_page_types()
-        context["subpage_dict"] = self.subpage_list()
+        context["subpage_dict"] = self.topic_descendents_by_page_type()
         return context
 
 
