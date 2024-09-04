@@ -33,8 +33,8 @@ format-html:  ## 🎨️   - Format the HTML code
 build-docker:
 	docker build -t ons_alpha .
 
-messages:
+messages:  ## 🌍   - Make strings available for translation
 	python -m manage makemessages --all
 
-compile-messages:
+compile-messages:  ## 🌏   - Compile translated messages
 	python -m manage compilemessages --use-fuzzy
