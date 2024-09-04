@@ -11,20 +11,11 @@ from wagtail.fields import StreamField
 from wagtail.models import Orderable, Page
 from wagtail.search import index
 
-from ..datasets.blocks import DatasetStoryBlock
+from ons_alpha.datasets.blocks import DatasetStoryBlock
+
+from .enums import ACTIVE_BUNDLE_STATUSES, EDITABLE_BUNDLE_STATUSES, BundleStatus
 from .forms import BundleAdminForm
 from .panels import BundleNotePanel
-
-
-class BundleStatus(models.TextChoices):
-    PENDING = "PENDING", "Pending"
-    IN_REVIEW = "IN_REVIEW", "In Review"
-    APPROVED = "APPROVED", "Approved"
-    RELEASED = "RELEASED", "Released"
-
-
-ACTIVE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW, BundleStatus.APPROVED]
-EDITABLE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW]
 
 
 class BundlePage(Orderable):

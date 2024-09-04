@@ -8,7 +8,8 @@ from wagtail.admin.views.generic.chooser import ChooseView
 from wagtail.admin.viewsets.chooser import ChooserViewSet
 from wagtail.admin.viewsets.model import ModelViewSet
 
-from .models import Bundle, BundleStatus
+from .enums import BundleStatus
+from .models import Bundle
 
 
 class BundleCreateView(CreateView):
