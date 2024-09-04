@@ -72,6 +72,16 @@ class Bundle(index.Indexed, ClusterableModel):
     )
     created_by.wagtail_reference_index_ignore = True
 
+    approved_at = models.DateTimeField(blank=True, null=True)
+    approved_by = models.ForeignKey(
+        "users.User",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="approved_bundles",
+    )
+    approved_by.wagtail_reference_index_ignore = True
+
     publication_date = models.DateTimeField(blank=True, null=True)
     release_calendar_page = models.ForeignKey(
         "release_calendar.ReleasePage",

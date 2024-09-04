@@ -1,7 +1,8 @@
 from functools import cached_property
 
 from django.shortcuts import redirect
-from wagtail.admin.ui.tables import Column, UpdatedAtColumn, UserColumn
+from django.utils.translation import gettext as _
+from wagtail.admin.ui.tables import Column, DateColumn, UpdatedAtColumn, UserColumn
 from wagtail.admin.views.generic import CreateView, EditView, IndexView
 from wagtail.admin.views.generic.chooser import ChooseView
 from wagtail.admin.viewsets.chooser import ChooserViewSet
@@ -48,9 +49,12 @@ class BundleIndexView(IndexView):
         return [
             self._get_title_column("__str__"),
             Column("scheduled_publication_date"),
-            Column("get_status_display", label="Status"),
+            Column("get_status_display", label=_("Status")),
             UpdatedAtColumn(),
-            UserColumn("created_by"),
+            DateColumn(name="created_at", label=_("Added"), sort_key="created_at"),
+            UserColumn("created_by", label=_("Added by")),
+            DateColumn(name="approved_at", label=_("Approved at"), sort_key="approved_at"),
+            UserColumn("approved_by"),
         ]
 
 
