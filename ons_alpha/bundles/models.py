@@ -101,6 +101,9 @@ class Bundle(index.Indexed, ClusterableModel):
         FieldPanel("status"),
         InlinePanel("bundled_pages", heading="Bundled pages", icon="doc-empty"),
         FieldPanel("datasets", help_text="Select the datasets in this bundle.", icon="doc-full"),
+        # these are handled by the form
+        FieldPanel("approved_by", classname="hidden w-hidden"),
+        FieldPanel("approved_at", classname="hidden w-hidden"),
     ]
 
     search_fields = [
