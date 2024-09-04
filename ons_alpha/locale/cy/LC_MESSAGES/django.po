@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-14 15:38+0100\n"
+"POT-Creation-Date: 2024-09-04 12:56+0100\n"
 "PO-Revision-Date: 2024-08-14 15:43+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -79,14 +79,18 @@ msgid "Notices"
 msgstr "Hysbysiadau"
 
 #: ons_alpha/jinja2/templates/components/streamfield/datasets_block.html:2
-#: ons_alpha/release_calendar/models.py:150
+#: ons_alpha/release_calendar/models.py:156
 msgid "Data"
+msgstr ""
+
+#: ons_alpha/jinja2/templates/components/streamfield/ons_table_block.html:14
+msgid "Footnotes"
 msgstr ""
 
 #: ons_alpha/jinja2/templates/pages/bulletin_page.html:20
 #: ons_alpha/jinja2/templates/pages/release_index.html:15
 #: ons_alpha/jinja2/templates/pages/release_page--cancelled.html:6
-#: ons_alpha/jinja2/templates/pages/release_page--upcoming.html:5
+#: ons_alpha/jinja2/templates/pages/release_page--confirmed.html:5
 #: ons_alpha/jinja2/templates/pages/release_page.html:19
 msgid "Release date"
 msgstr "Dyddiad y datganiad"
@@ -106,14 +110,14 @@ msgstr "Gweld fersiwn wedi'i chywiro"
 
 #: ons_alpha/jinja2/templates/pages/bulletin_page.html:71
 #: ons_alpha/jinja2/templates/pages/methodology_page.html:36
-#: ons_alpha/release_calendar/models.py:143
+#: ons_alpha/release_calendar/models.py:149
 msgid "Summary"
 msgstr "Cynnwys"
 
 #: ons_alpha/jinja2/templates/pages/bulletin_page.html:83
 #: ons_alpha/jinja2/templates/pages/methodology_page.html:85
 #: ons_alpha/jinja2/templates/pages/release_page.html:58
-#: ons_alpha/release_calendar/models.py:153
+#: ons_alpha/release_calendar/models.py:159
 msgid "Contact details"
 msgstr "Manylion cyswllt"
 
@@ -148,14 +152,21 @@ msgstr ""
 
 #: ons_alpha/jinja2/templates/pages/release_index.html:4
 msgid "Release calendar"
-msgstr ""
+msgstr "Calendr datganiadau"
 
 #: ons_alpha/jinja2/templates/pages/release_page--cancelled.html:7
+#: ons_alpha/release_calendar/models.py:21
 msgid "Cancelled"
 msgstr "Canslwyd"
 
+#: ons_alpha/jinja2/templates/pages/release_page--provisional.html:5
+#, fuzzy
+#| msgid "Release date"
+msgid "Provisional release date"
+msgstr "Dyddiad rhyddhau dros dro"
+
 #: ons_alpha/jinja2/templates/pages/release_page.html:76
-#: ons_alpha/release_calendar/models.py:156
+#: ons_alpha/release_calendar/models.py:162
 msgid "About the data"
 msgstr "Ynglŷn â'r data"
 
@@ -163,23 +174,35 @@ msgstr "Ynglŷn â'r data"
 msgid "Search"
 msgstr ""
 
-#: ons_alpha/release_calendar/models.py:109
+#: ons_alpha/release_calendar/models.py:19
+msgid "Provisional"
+msgstr "Dros Dro"
+
+#: ons_alpha/release_calendar/models.py:20
+msgid "Confirmed"
+msgstr "Cadarnhawyd"
+
+#: ons_alpha/release_calendar/models.py:22
+msgid "Published"
+msgstr "Cyhoeddwyd"
+
+#: ons_alpha/release_calendar/models.py:116
 msgid "The notice field is required when the release is cancelled"
 msgstr ""
 
-#: ons_alpha/release_calendar/models.py:159
+#: ons_alpha/release_calendar/models.py:165
 msgid "You might also be interested in"
-msgstr ""
+msgstr "Efallai y bydd gennych ddiddordeb hefyd"
 
-#: ons_alpha/settings/base.py:274
+#: ons_alpha/settings/base.py:269
 msgid "English"
 msgstr ""
 
-#: ons_alpha/settings/base.py:275
+#: ons_alpha/settings/base.py:270
 msgid "Welsh"
 msgstr ""
 
-#: ons_alpha/settings/base.py:276
+#: ons_alpha/settings/base.py:271
 msgid "Ukrainian"
 msgstr ""
 
