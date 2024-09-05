@@ -11,6 +11,7 @@ from wagtail.admin.panels import (
     MultipleChooserPanel,
     ObjectList,
     TabbedInterface,
+    TitleFieldPanel,
 )
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.models import Page
@@ -46,7 +47,7 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
 
     content_panels = (
         [
-            FieldPanel("title"),
+            TitleFieldPanel("title"),
             FieldPanel(
                 "headline",
                 help_text="Use this as a news headline. When set, replaces the title on the page. "
@@ -65,7 +66,9 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
                             FieldPanel("next_release_date"),
                         ]
                     ),
-                    FieldPanel("is_accredited"),
+                    FieldPanel(
+                        "is_accredited", help_text="If ticked, will show the official statistics accredited logo."
+                    ),
                     FieldPanel("contact_details"),
                 ],
                 heading="Metadata",

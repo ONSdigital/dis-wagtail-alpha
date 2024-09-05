@@ -47,7 +47,9 @@ class MethodologyPage(BundledPageMixin, BasePage):
             MultiFieldPanel(
                 [
                     FieldPanel("last_revised_date"),
-                    FieldPanel("is_accredited"),
+                    FieldPanel(
+                        "is_accredited", help_text="If ticked, will show the official statistics accredited logo."
+                    ),
                     FieldPanel("how_it_was_compiled"),
                     FieldPanel("geographic_coverage"),
                     FieldPanel("contact_details"),
