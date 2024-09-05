@@ -7,7 +7,7 @@ from whitenoise.middleware import WhiteNoiseMiddleware
 
 class ONSWhiteNoiseMiddleware(WhiteNoiseMiddleware):
     """
-    Restrict access to certain static files in a read-only environment.
+    Restrict access to certain static files in external environment.
 
     Whitenoise access files in 2 ways:
 
@@ -18,7 +18,7 @@ class ONSWhiteNoiseMiddleware(WhiteNoiseMiddleware):
 
     Only files which start with `static_prefix` are considered, to prevent breaking `WHITENOISE_ROOT`.
 
-    The manifest file is hidden in the read-only environment to prevent fingerprinting. It is not filtered.
+    The manifest file is hidden in the external environment to prevent fingerprinting. It is not filtered.
     """
 
     # NB: If the app isn't in `INSTALLED_APPS`, it doesn't need to be added here.
@@ -38,14 +38,14 @@ class ONSWhiteNoiseMiddleware(WhiteNoiseMiddleware):
         self.known_static_files = set()
 
         for finder in get_finders():
-            for path, _storage in finder.list(self.ignore_patterns if settings.READ_ONLY_ENV else None):
+            for path, _storage in finder.list(self.ignore_patterns if settings.IS_EXTERNAL_ENV else None):
                 self.known_static_files.add(self.static_prefix + path)
 
                 # Also add the cache-busted URL (if there is one)
                 if cachebusted_path := self.get_static_url(path):
                     self.known_static_files.add(cachebusted_path)
 
-        if not settings.READ_ONLY_ENV:
+        if not settings.IS_EXTERNAL_ENV:
             # Allow manifest in writable environment.
             self.known_static_files.add(staticfiles_storage.manifest_name)
 

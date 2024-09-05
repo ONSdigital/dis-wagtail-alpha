@@ -36,7 +36,7 @@ DEBUG = False
 if "SECRET_KEY" in env:
     SECRET_KEY = env["SECRET_KEY"]
 
-READ_ONLY_ENV = os.environ.get("READ_ONLY_ENV", "false").lower() == "true"
+IS_EXTERNAL_ENV = os.environ.get("IS_EXTERNAL_ENV", "false").lower() == "true"
 
 
 # Define what hosts an app can be accessed by.
@@ -110,7 +110,7 @@ INSTALLED_APPS = [
     "wagtailfontawesomesvg",
 ]
 
-if not READ_ONLY_ENV:
+if not IS_EXTERNAL_ENV:
     INSTALLED_APPS.extend(
         [
             "django.contrib.admin",
@@ -137,9 +137,9 @@ MIDDLEWARE = [
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
-# Some middleware isn't needed for a read-only environment.
+# Some middleware isn't needed for a external environment.
 # Disable them to improve performance
-if not READ_ONLY_ENV:
+if not IS_EXTERNAL_ENV:
     common_middleware_index = MIDDLEWARE.index("django.middleware.common.CommonMiddleware")
     MIDDLEWARE.insert(common_middleware_index, "django.contrib.messages.middleware.MessageMiddleware")
     MIDDLEWARE.insert(common_middleware_index, "django.contrib.auth.middleware.AuthenticationMiddleware")
@@ -156,7 +156,7 @@ context_processors = [
     "ons_alpha.core.context_processors.global_vars",
 ]
 
-if not READ_ONLY_ENV:
+if not IS_EXTERNAL_ENV:
     context_processors.extend(
         ["django.contrib.messages.context_processors.messages", "django.contrib.auth.context_processors.auth"]
     )
@@ -263,7 +263,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-if READ_ONLY_ENV:
+if IS_EXTERNAL_ENV:
     AUTHENTICATION_BACKENDS = []
 
 

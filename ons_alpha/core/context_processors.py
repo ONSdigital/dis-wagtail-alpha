@@ -9,5 +9,5 @@ def global_vars(request):
         "GOOGLE_TAG_MANAGER_ID": getattr(tracking, "google_tag_manager_id", None),
         "SEO_NOINDEX": settings.SEO_NOINDEX,
         "LANGUAGE_CODE": settings.LANGUAGE_CODE,
-        "READ_ONLY_ENV": settings.READ_ONLY_ENV,
+        "IS_EXTERNAL_ENV": settings.IS_EXTERNAL_ENV,
     }

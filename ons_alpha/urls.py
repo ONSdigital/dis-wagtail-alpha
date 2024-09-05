@@ -21,8 +21,8 @@ private_urlpatterns = [
 ]
 
 # `wagtail.admin` must always be installed,
-# so check `READ_ONLY_ENV` directly.
-if not settings.READ_ONLY_ENV:
+# so check `IS_EXTERNAL_ENV` directly.
+if not settings.IS_EXTERNAL_ENV:
     from wagtail.admin import urls as wagtailadmin_urls
 
     private_urlpatterns.append(path("admin/", include(wagtailadmin_urls)))

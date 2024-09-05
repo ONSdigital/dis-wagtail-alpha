@@ -10,7 +10,7 @@ class GlobalVarsContextProcessorTest(TestCase):
         request = RequestFactory().get("/")
         self.assertEqual(
             global_vars(request),
-            {"GOOGLE_TAG_MANAGER_ID": "", "SEO_NOINDEX": False, "LANGUAGE_CODE": "en-gb", "READ_ONLY_ENV": False},
+            {"GOOGLE_TAG_MANAGER_ID": "", "SEO_NOINDEX": False, "LANGUAGE_CODE": "en-gb", "IS_EXTERNAL_ENV": False},
         )
 
     def test_when_tracking_settings_defined(self):
@@ -25,6 +25,6 @@ class GlobalVarsContextProcessorTest(TestCase):
                 "GOOGLE_TAG_MANAGER_ID": "GTM-123456",
                 "SEO_NOINDEX": False,
                 "LANGUAGE_CODE": "en-gb",
-                "READ_ONLY_ENV": False,
+                "IS_EXTERNAL_ENV": False,
             },
         )
