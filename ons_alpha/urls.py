@@ -1,13 +1,11 @@
 from django.apps import apps
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
-from django.contrib import admin
 from django.urls import include, path
 from django.views.decorators.cache import never_cache
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import TemplateView
 from wagtail import urls as wagtail_urls
-from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.utils.urlpatterns import decorate_urlpatterns
@@ -16,7 +14,22 @@ from ons_alpha.search import views as search_views
 from ons_alpha.utils.cache import get_default_cache_control_decorator
 
 
-private_urlpatterns = []
+# Private URLs are not meant to be cached.
+private_urlpatterns = [
+    path("documents/", include(wagtaildocs_urls)),
+]
+
+# `wagtail.admin` must always be installed,
+# so check `IS_EXTERNAL_ENV` directly.
+if not settings.IS_EXTERNAL_ENV:
+    from wagtail.admin import urls as wagtailadmin_urls
+
+    private_urlpatterns.append(path("admin/", include(wagtailadmin_urls)))
+
+if apps.is_installed("django.contrib.admin"):
+    from django.contrib import admin
+
+    private_urlpatterns.append(path("django-admin/", admin.site.urls))
 
 # django-defender
 if getattr(settings, "ENABLE_DJANGO_DEFENDER", False):
@@ -24,14 +37,9 @@ if getattr(settings, "ENABLE_DJANGO_DEFENDER", False):
         path("django-admin/defender/", include("defender.urls")),
     ]
 
-# Private URLs are not meant to be cached.
-private_urlpatterns += [
-    path("django-admin/", admin.site.urls),
-    path("admin/", include(wagtailadmin_urls)),
-    path("documents/", include(wagtaildocs_urls)),
-]
 
 debug_urlpatterns = []
+
 if settings.DEBUG:
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns

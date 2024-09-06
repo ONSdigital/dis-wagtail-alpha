@@ -59,5 +59,7 @@
 {# fmt:on #}
 
 {% block preMain %}
-    {{ wagtailuserbar() }}
+    {% if not IS_EXTERNAL_ENV %}
+        {{ wagtailuserbar() }}
+    {% endif %}
 {% endblock %}
