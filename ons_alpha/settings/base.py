@@ -10,6 +10,7 @@ from pathlib import Path
 import dj_database_url
 
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import gettext_lazy as _
 from django_jinja.builtins import DEFAULT_EXTENSIONS
 
 
@@ -76,13 +77,6 @@ INSTALLED_APPS = [
     "ons_alpha.workflows",
     "crispy_forms",
     "tbxforms",
-    "wagtail.contrib.settings",
-    "wagtail.contrib.search_promotions",
-    "wagtail.contrib.forms",
-    "wagtail.contrib.redirects",
-    "wagtail.contrib.legacy.richtext",
-    "wagtail.contrib.table_block",
-    "wagtail.contrib.typed_table_block",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -91,6 +85,14 @@ INSTALLED_APPS = [
     "wagtail.images",
     "wagtail.search",
     "wagtail.admin",
+    "wagtail.locales",
+    "wagtail.contrib.simple_translation",
+    "wagtail.contrib.settings",
+    "wagtail.contrib.forms",
+    "wagtail.contrib.redirects",
+    "wagtail.contrib.legacy.richtext",
+    "wagtail.contrib.table_block",
+    "wagtail.contrib.typed_table_block",
     "wagtail",
     "modelcluster",
     "taggit",
@@ -121,6 +123,7 @@ MIDDLEWARE = [
     # http://whitenoise.evans.io/en/stable/#quickstart-for-django-apps
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -255,15 +258,20 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/stable/topics/i18n/
 
-LANGUAGE_CODE = "en-gb"
-
 TIME_ZONE = "Europe/London"
-
-USE_I18N = True
-
-
 USE_TZ = True
 
+USE_I18N = True
+WAGTAIL_I18N_ENABLED = True
+
+LANGUAGE_CODE = "en-gb"
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ("en-gb", _("English")),
+    ("cy", _("Welsh")),
+    ("uk", _("Ukrainian")),
+]
+
+LOCALE_PATHS = [PROJECT_DIR / "locale"]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/stable/howto/static-files/

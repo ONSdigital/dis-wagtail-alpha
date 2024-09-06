@@ -8,7 +8,7 @@ from ons_alpha.taxonomy.models import Topic
 
 
 class BaseTopicPage(SubpageMixin, BasePage):
-    topic = models.OneToOneField(
+    topic = models.ForeignKey(
         Topic,
         on_delete=models.SET_NULL,
         null=True,
@@ -35,6 +35,15 @@ class BaseTopicPage(SubpageMixin, BasePage):
     class Meta:
         abstract = True
 
+    def clean(self):
+        super().clean()
+
+        for sub_page_type in BaseTopicPage.__subclasses__():
+            # Find other pages (and translations) for this topic.
+            # Translations of the same page are allowed, but other pages aren't.
+            if sub_page_type.objects.filter(topic=self.topic).exclude(translation_key=self.translation_key).exists():
+                raise ValidationError({"topic": "Topic Page (or Section) with this topic already exists."})
+
 
 class TopicPage(BaseTopicPage):
     template = "templates/pages/topics/topic_page.html"
@@ -42,18 +51,8 @@ class TopicPage(BaseTopicPage):
     subpage_types = ["articles.ArticleSeriesPage", "bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
 
-    def clean(self):
-        super().clean()
-        if TopicSectionPage.objects.filter(topic=self.topic).exists():
-            raise ValidationError({"topic": "Topic Section Page with this topic already exists."})
-
 
 class TopicSectionPage(BaseTopicPage):
     template = "templates/pages/topics/topic_section_page.html"
     subpage_types = ["topics.TopicSectionPage", "topics.TopicPage"]
     page_description = "General topic page. e.g. Economy"
-
-    def clean(self):
-        super().clean()
-        if TopicPage.objects.filter(topic=self.topic).exists():
-            raise ValidationError({"topic": "Topic Page with this topic already exists."})
