@@ -20,7 +20,8 @@ class BundleAdminForm(WagtailAdminModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # hides the "Released" status choice
-        self.fields["status"].choices = ACTIVE_BUNDLE_STATUS_CHOICES
+        if self.instance.status != BundleStatus.APPROVED.value:
+            self.fields["status"].choices = ACTIVE_BUNDLE_STATUS_CHOICES
 
         # fully hide and disable the approved_at/by fields to prevent form tampering
         self.fields["approved_at"].disabled = True

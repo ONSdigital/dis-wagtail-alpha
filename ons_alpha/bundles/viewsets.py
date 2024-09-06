@@ -26,7 +26,7 @@ class BundleCreateView(CreateView):
 
 
 class BundleEditView(EditView):
-    actions = ["edit", "save-and-approve"]
+    actions = ["edit", "save-and-approve", "publish"]
     template_name = "bundles/wagtailadmin/edit.html"
 
     def dispatch(self, request: HttpRequest, *args, **kwargs):
@@ -37,13 +37,23 @@ class BundleEditView(EditView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        if self.request.method == "POST" and "action-save-and-approve" in self.request.POST:
+        if self.request.method == "POST":
             data = self.request.POST.copy()
-            data["status"] = BundleStatus.APPROVED.value
-            data["approved_by"] = self.request.user
-            data["approved_at"] = timezone.now()
-            kwargs["data"] = data
+            if "action-save-and-approve" in self.request.POST:
+                data["status"] = BundleStatus.APPROVED.value
+                data["approved_at"] = timezone.now()
+                data["approved_by"] = self.request.user
+                kwargs["data"] = data
+            elif "action-publish" in self.request.POST:
+                data["status"] = BundleStatus.RELEASED.value
+                kwargs["data"] = data
         return kwargs
+
+    def run_after_hook(self):
+        if self.action == "publish":
+            for page in self.object.get_bundled_pages():
+                if page.current_workflow_state:
+                    page.current_workflow_state.current_task_state.approve(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -52,6 +62,9 @@ class BundleEditView(EditView):
         # than the creator
         context["show_save_and_approve"] = (
             self.object.can_be_approved and self.form.for_user.pk != self.object.created_by_id
+        )
+        context["show_publish"] = (
+            self.object.status == BundleStatus.APPROVED and not self.object.scheduled_publication_date
         )
 
         return context
