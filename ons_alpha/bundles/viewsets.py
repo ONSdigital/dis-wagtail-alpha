@@ -2,10 +2,12 @@ from functools import cached_property
 
 from django.http import HttpRequest
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import format_html, format_html_join
 from django.utils.translation import gettext as _
 from wagtail.admin.ui.tables import Column, DateColumn, UpdatedAtColumn, UserColumn
-from wagtail.admin.views.generic import CreateView, EditView, IndexView
+from wagtail.admin.views.generic import CreateView, EditView, IndexView, InspectView
 from wagtail.admin.views.generic.chooser import ChooseView
 from wagtail.admin.viewsets.chooser import ChooserViewSet
 from wagtail.admin.viewsets.model import ModelViewSet
@@ -53,6 +55,64 @@ class BundleEditView(EditView):
         )
 
         return context
+
+
+class BundleInspectView(InspectView):
+    object: Bundle = None  # purely for typing purposes
+
+    def get_fields(self):
+        return ["name", "status", "created_at", "created_by", "approved", "scheduled_publication", "pages", "datasets"]
+
+    def get_field_label(self, field_name, field):
+        match field_name:
+            case "approved":
+                return _("Approval status")
+            case "scheduled_publication":
+                return _("Scheduled publication")
+            case "pages":
+                return _("Pages")
+            case _:
+                return super().get_field_label(field_name, field)
+
+    def get_field_display_value(self, field_name, field):
+        # allow customising field display in the inspect class
+        value_func = getattr(self, f"get_{field_name}_display_value", None)
+        if value_func is not None:
+            return value_func()
+
+        return super().get_field_display_value(field_name, field)
+
+    def get_approved_display_value(self):
+        if self.object.status in [BundleStatus.APPROVED, BundleStatus.RELEASED]:
+            if self.object.approved_by_id and self.object.approved_at:
+                return f"{self.object.approved_by} on {self.object.approved_at}"
+            else:
+                return "Unknow approval data"
+        return _("Pending approval")
+
+    def get_scheduled_publication_display_value(self):
+        return self.object.scheduled_publication_date or _("No scheduled publication")
+
+    def get_pages_display_value(self):
+        pages = self.object.get_bundled_pages().specific()
+        data = (
+            (
+                reverse("wagtailadmin_pages:edit", args=(page.pk,)),
+                page.get_admin_display_title(),
+                (
+                    page.current_workflow_state.current_task_state.task.name
+                    if page.current_workflow_state
+                    else "not in a workflow"
+                ),
+            )
+            for page in pages
+        )
+
+        return format_html_join("\n", '<li><strong><a href="{}">{}</a></strong> ({})</li>', data)
+
+    def get_datasets_display_value(self):
+        content = [str(block) for block in self.object.datasets]
+        return format_html("\n".join(content))
 
 
 class BundleIndexView(IndexView):
@@ -113,6 +173,7 @@ class BundleViewSet(ModelViewSet):
     icon = "boxes-stacked"
     add_view_class = BundleCreateView
     edit_view_class = BundleEditView
+    inspect_view_class = BundleInspectView
     index_view_class = BundleIndexView
     chooser_viewset_class = BundleChooserViewSet
     list_filter = ["status", "created_by"]
