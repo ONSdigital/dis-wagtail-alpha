@@ -80,7 +80,6 @@ class TopicPage(BaseTopicPage):
                 ]
             else:
                 display_names[menu_item.specific.page_type_display_name] = menu_item.specific.page_type_display_name
-            print("\n-----", display_names)
         return dict(sorted(display_names.items()))
 
     def topic_descendents_by_page_type(self):
@@ -88,15 +87,15 @@ class TopicPage(BaseTopicPage):
         display_names = {}
         for child_page_type in child_page_types:
             display_names[child_page_type] = []
-            subpage_list = []
-            for subpage in self.get_children().live().public().specific():
-                if subpage.specific.page_type_display_name == child_page_type:
-                    if subpage.get_children().live().public().specific().exists():
-                        for child_page in subpage.get_children().live().public().specific():
-                            subpage_list.append(child_page)
+            topic_child_page_list = []
+            for topic_child_page in self.get_children().live().public().specific():
+                if topic_child_page.specific.page_type_display_name == child_page_type:
+                    if topic_child_page.get_children().live().public().specific().exists():
+                        for child_page in topic_child_page.get_children().live().public().specific():
+                            topic_child_page_list.append(child_page)
                     else:
-                        subpage_list.append(subpage)
-                display_names[child_page_type] = subpage_list
+                        topic_child_page_list.append(topic_child_page)
+                display_names[child_page_type] = topic_child_page_list
         return display_names
 
     def get_context(self, request, *args, **kwargs):
