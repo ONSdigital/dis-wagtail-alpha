@@ -31,7 +31,6 @@ class BundlePage(Orderable):
     parent = ParentalKey("Bundle", related_name="bundled_pages", on_delete=models.CASCADE)
     page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
 
-    # note: update so we get this based on the mixin
     panels = [
         PageChooserPanel("page", ["articles.ArticlePage", "bulletins.BulletinPage", "methodologies.MethodologyPage"]),
     ]
@@ -60,13 +59,8 @@ class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
 class Bundle(index.Indexed, ClusterableModel):
     base_form_class = BundleAdminForm
     name = models.CharField(max_length=255)
+    # note: currently not surfaced, but left here for the time being
     collection_reference = models.CharField(max_length=255, blank=True, help_text="Florence Collection reference")
-    topic = models.ForeignKey(
-        "topics.TopicPage",
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name="bundles",
-    )
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         "users.User",
@@ -94,12 +88,10 @@ class Bundle(index.Indexed, ClusterableModel):
 
     panels = [
         FieldPanel("name"),
-        FieldPanel("topic", icon="tag"),
-        FieldPanel("collection_reference"),
         FieldRowPanel(
             [
-                FieldPanel("publication_date"),
-                FieldPanel("release_calendar_page", heading="or Release Calendar page"),
+                FieldPanel("release_calendar_page", heading="Release Calendar page"),
+                FieldPanel("publication_date", heading="or Publication date"),
             ],
             heading="Scheduling",
             icon="calendar",

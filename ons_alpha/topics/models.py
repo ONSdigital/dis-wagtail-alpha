@@ -10,7 +10,7 @@ page_type_descriptions = {"Article series page": "Articles", "Methodology page":
 
 
 class BaseTopicPage(SubpageMixin, BasePage):
-    topic = models.OneToOneField(
+    topic = models.ForeignKey(
         Topic,
         on_delete=models.SET_NULL,
         null=True,
@@ -36,6 +36,15 @@ class BaseTopicPage(SubpageMixin, BasePage):
 
     class Meta:
         abstract = True
+
+    def clean(self):
+        super().clean()
+
+        for sub_page_type in BaseTopicPage.__subclasses__():
+            # Find other pages (and translations) for this topic.
+            # Translations of the same page are allowed, but other pages aren't.
+            if sub_page_type.objects.filter(topic=self.topic).exclude(translation_key=self.translation_key).exists():
+                raise ValidationError({"topic": "Topic Page (or Section) with this topic already exists."})
 
 
 class TopicPage(BaseTopicPage):
@@ -126,8 +135,3 @@ class TopicSectionPage(BaseTopicPage):
             ObjectList(BasePage.promote_panels, heading="Promote"),
         ]
     )
-
-    def clean(self):
-        super().clean()
-        if TopicPage.objects.filter(topic=self.topic).exists():
-            raise ValidationError({"topic": "Topic Page with this topic already exists."})

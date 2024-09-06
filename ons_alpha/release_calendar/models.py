@@ -1,9 +1,8 @@
-from functools import cached_property
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
@@ -17,9 +16,10 @@ from ons_alpha.utils.models import LinkFields
 
 
 class ReleaseStatus(models.TextChoices):
-    UPCOMING = "UPCOMING", "Upcoming"
-    PUBLISHED = "PUBLISHED", "Published"
-    CANCELLED = "CANCELLED", "Cancelled"
+    PROVISIONAL = "PROVISIONAL", _("Provisional")
+    CONFIRMED = "CONFIRMED", _("Confirmed")
+    CANCELLED = "CANCELLED", _("Cancelled")
+    PUBLISHED = "PUBLISHED", _("Published")
 
 
 class ReleaseIndex(BasePage):
@@ -27,17 +27,15 @@ class ReleaseIndex(BasePage):
 
     parent_page_types = ["home.HomePage"]
     subpage_types = ["ReleasePage"]
+    max_count_per_parent = 1
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
         page = request.GET.get("page", 1)
-
         context["releases"] = Paginator(
             ReleasePage.objects.child_of(self).public().live(),
             settings.DEFAULT_PER_PAGE,
         ).get_page(page)
-
         return context
 
 
@@ -55,8 +53,7 @@ class ReleasePage(BasePage):
     parent_page_types = ["ReleaseIndex"]
     subpage_types = []
 
-    status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.UPCOMING, max_length=32)
-
+    status = models.CharField(choices=ReleaseStatus.choices, default=ReleaseStatus.PROVISIONAL, max_length=32)
     summary = RichTextField(features=settings.RICH_TEXT_BASIC)
 
     # Note: When linked to a bundle containing bundled pages/datasets,
@@ -80,7 +77,14 @@ class ReleasePage(BasePage):
         related_name="+",
     )
 
-    is_accredited = models.BooleanField("Accredited Official Statistics", default=False)
+    is_accredited = models.BooleanField(
+        "Accredited Official Statistics",
+        default=False,
+        help_text=(
+            "If ticked, will display an information block about the data being accredited official statistics "
+            "and include the accredited logo."
+        ),
+    )
 
     content_panels = Page.content_panels + [
         MultiFieldPanel(
@@ -97,14 +101,17 @@ class ReleasePage(BasePage):
         ),
         FieldPanel("summary"),
         FieldPanel("content"),
-        FieldPanel("datasets", help_text="Select the datasets that this release relates to.", icon="doc-full"),
+        FieldPanel(
+            "datasets",
+            help_text="Select the datasets that this release relates to.",
+            icon="doc-full",
+        ),
         FieldPanel("contact_details"),
         InlinePanel("related_links", heading="Related links"),
     ]
 
     def clean(self):
         super().clean()
-
         if self.status == ReleaseStatus.CANCELLED and not self.notice:
             raise ValidationError({"notice": _("The notice field is required when the release is cancelled")})
 
@@ -113,19 +120,18 @@ class ReleasePage(BasePage):
         return ReleaseStatus[self.status].label
 
     def get_template(self, request, *args, **kwargs):
-        if self.status == ReleaseStatus.UPCOMING:
-            return "templates/pages/release_page--upcoming.html"
+        if self.status == ReleaseStatus.PROVISIONAL:
+            return "templates/pages/release_page--provisional.html"
+        if self.status == ReleaseStatus.CONFIRMED:
+            return "templates/pages/release_page--confirmed.html"
         if self.status == ReleaseStatus.CANCELLED:
             return "templates/pages/release_page--cancelled.html"
-
         return super().get_template(request, *args, **kwargs)
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
         context["related_links"] = self.related_links_for_context
         context["toc"] = self.toc
-
         return context
 
     @cached_property

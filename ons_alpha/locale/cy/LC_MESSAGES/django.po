@@ -1,0 +1,238 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-09-04 12:56+0100\n"
+"PO-Revision-Date: 2024-08-14 15:43+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: cy\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n==3 ? "
+"3 : n==6 ? 4 : 5);\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: ons_alpha/articles/models.py:100
+msgid "Article"
+msgstr "Erthygl"
+
+#: ons_alpha/bundles/admin_forms.py:17
+msgid "Bundle"
+msgstr "Bwndel"
+
+#: ons_alpha/bundles/admin_forms.py:18
+msgid "Select a bundle for this page."
+msgstr ""
+
+#: ons_alpha/bundles/templates/bundles/wagtailadmin/add_to_bundle.html:3
+#, python-format
+msgid "Add %(title)s to a bundle"
+msgstr ""
+
+#: ons_alpha/bundles/templates/bundles/wagtailadmin/add_to_bundle.html:5
+msgid "Add"
+msgstr ""
+
+#: ons_alpha/bundles/templates/bundles/wagtailadmin/add_to_bundle.html:16
+msgid "Confirm"
+msgstr ""
+
+#: ons_alpha/bundles/wagtail_hooks.py:19
+msgid "Add to Bundle"
+msgstr ""
+
+#: ons_alpha/bundles/wagtail_hooks.py:21
+#, python-format
+msgid "Add '%(title)s' to a bundle"
+msgstr ""
+
+#: ons_alpha/core/blocks/related.py:80
+msgid "Related links"
+msgstr "Dolenni perthnasol"
+
+#: ons_alpha/jinja2/templates/components/navigation/breadcrumbs.html:9
+msgid "Home"
+msgstr "Hafan"
+
+#: ons_alpha/jinja2/templates/components/streamfield/corrections_block.html:5
+msgid "View superseded version"
+msgstr "Gweld fersiwn wedi'i ddisodli"
+
+#: ons_alpha/jinja2/templates/components/streamfield/corrections_notices_block.html:7
+msgid "Corrections and notices"
+msgstr "Cywiriadau a hysbysiadau"
+
+#: ons_alpha/jinja2/templates/components/streamfield/corrections_notices_block.html:9
+msgid "Corrections"
+msgstr "Cywiriadau"
+
+#: ons_alpha/jinja2/templates/components/streamfield/corrections_notices_block.html:18
+msgid "Notices"
+msgstr "Hysbysiadau"
+
+#: ons_alpha/jinja2/templates/components/streamfield/datasets_block.html:2
+#: ons_alpha/release_calendar/models.py:156
+msgid "Data"
+msgstr ""
+
+#: ons_alpha/jinja2/templates/components/streamfield/ons_table_block.html:14
+msgid "Footnotes"
+msgstr ""
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:20
+#: ons_alpha/jinja2/templates/pages/release_index.html:15
+#: ons_alpha/jinja2/templates/pages/release_page--cancelled.html:6
+#: ons_alpha/jinja2/templates/pages/release_page--confirmed.html:5
+#: ons_alpha/jinja2/templates/pages/release_page.html:19
+msgid "Release date"
+msgstr "Dyddiad y datganiad"
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:25
+#: ons_alpha/jinja2/templates/pages/release_page.html:24
+msgid "Next release"
+msgstr "Datganiad nesaf"
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:34
+msgid "This has been superseded."
+msgstr "Mae hwn wedi'i ddisodli."
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:34
+msgid "View corrected version"
+msgstr "Gweld fersiwn wedi'i chywiro"
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:71
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:36
+#: ons_alpha/release_calendar/models.py:149
+msgid "Summary"
+msgstr "Cynnwys"
+
+#: ons_alpha/jinja2/templates/pages/bulletin_page.html:83
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:85
+#: ons_alpha/jinja2/templates/pages/release_page.html:58
+#: ons_alpha/release_calendar/models.py:159
+msgid "Contact details"
+msgstr "Manylion cyswllt"
+
+#: ons_alpha/jinja2/templates/pages/login_page.html:10
+#: ons_alpha/jinja2/templates/pages/login_page.html:15
+msgid "Log in"
+msgstr ""
+
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:15
+msgid "Last revised"
+msgstr "Wedi'i ddiwygio ddiwethaf"
+
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:44
+msgid "Methodology background"
+msgstr "Cefndir methodoleg"
+
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:53
+msgid "Accreditation"
+msgstr "Ynglŷn â'r data"
+
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:56
+msgid "How it was compiled"
+msgstr ""
+
+#: ons_alpha/jinja2/templates/pages/methodology_page.html:59
+msgid "Geographic coverage"
+msgstr ""
+
+#: ons_alpha/jinja2/templates/pages/previous_releases.html:9
+msgid "There are currently no releases"
+msgstr ""
+
+#: ons_alpha/jinja2/templates/pages/release_index.html:4
+msgid "Release calendar"
+msgstr "Calendr datganiadau"
+
+#: ons_alpha/jinja2/templates/pages/release_page--cancelled.html:7
+#: ons_alpha/release_calendar/models.py:21
+msgid "Cancelled"
+msgstr "Canslwyd"
+
+#: ons_alpha/jinja2/templates/pages/release_page--provisional.html:5
+#, fuzzy
+#| msgid "Release date"
+msgid "Provisional release date"
+msgstr "Dyddiad rhyddhau dros dro"
+
+#: ons_alpha/jinja2/templates/pages/release_page.html:76
+#: ons_alpha/release_calendar/models.py:162
+msgid "About the data"
+msgstr "Ynglŷn â'r data"
+
+#: ons_alpha/jinja2/templates/pages/search/search.html:13
+msgid "Search"
+msgstr ""
+
+#: ons_alpha/release_calendar/models.py:19
+msgid "Provisional"
+msgstr "Dros Dro"
+
+#: ons_alpha/release_calendar/models.py:20
+msgid "Confirmed"
+msgstr "Cadarnhawyd"
+
+#: ons_alpha/release_calendar/models.py:22
+msgid "Published"
+msgstr "Cyhoeddwyd"
+
+#: ons_alpha/release_calendar/models.py:116
+msgid "The notice field is required when the release is cancelled"
+msgstr ""
+
+#: ons_alpha/release_calendar/models.py:165
+msgid "You might also be interested in"
+msgstr "Efallai y bydd gennych ddiddordeb hefyd"
+
+#: ons_alpha/settings/base.py:269
+msgid "English"
+msgstr ""
+
+#: ons_alpha/settings/base.py:270
+msgid "Welsh"
+msgstr ""
+
+#: ons_alpha/settings/base.py:271
+msgid "Ukrainian"
+msgstr ""
+
+#: ons_alpha/utils/forms.py:15
+msgid "There is a problem with your submission"
+msgstr ""
+
+#: ons_alpha/utils/forms.py:32
+msgid "Submit"
+msgstr ""
+
+#: ons_alpha/workflows/models.py:14
+msgid ""
+"Members of the chosen Wagtail Groups can approve this task, but they cannot "
+"change any content"
+msgstr ""
+
+#: ons_alpha/workflows/models.py:17
+msgid "Read-only Group approval task"
+msgstr ""
+
+#: ons_alpha/workflows/models.py:18
+msgid "Read-only Group approval tasks"
+msgstr ""
+
+#: ons_alpha/workflows/wagtail_hooks.py:14
+msgid "Submit review"
+msgstr ""
+
+#: ons_alpha/workflows/wagtail_hooks.py:46
+#, python-format
+msgid "%(label)s and Publish"
+msgstr ""

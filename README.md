@@ -113,6 +113,15 @@ If you run `fab build`, or the container is rebuilt for some other reason, these
 
 If a package is always needed (eg a Python package requires a system dependency), this should be added to the `Dockerfile`.
 
+## Localization
+
+Translations are stored in `ons_alpha/locale/`.
+
+When updating translated strings, run `make messages` to update the `*.po` files, which can then be handled to translators. These generated files should be committed to the repository.
+
+When new translations are added to the `*.po` files, run `make compile-messages`. These generated files should be committed to the repository.
+
+See [Django's documentation](https://docs.djangoproject.com/en/stable/topics/i18n/translation/#localization-how-to-create-language-files) for further details.
 
 ## Local Development Setup
 

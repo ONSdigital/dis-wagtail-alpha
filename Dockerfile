@@ -47,6 +47,7 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
     git \
     jq \
     unzip \
+    gettext \
     && apt-get autoremove && rm -rf /var/lib/apt/lists/*
 
 # Install poetry at the system level
