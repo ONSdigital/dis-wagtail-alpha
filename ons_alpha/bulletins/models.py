@@ -11,6 +11,7 @@ from wagtail.admin.panels import (
     MultipleChooserPanel,
     ObjectList,
     TabbedInterface,
+    TitleFieldPanel,
 )
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.models import Page
@@ -29,6 +30,7 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
     parent_page_types = ["BulletinSeriesPage"]
     subpage_types = []
 
+    headline = models.CharField(max_length=255, blank=True)
     summary = models.TextField()
     release_date = models.DateField()
     next_release_date = models.DateField()
@@ -44,7 +46,15 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
 
     content_panels = (
-        BasePage.content_panels
+        [
+            TitleFieldPanel("title"),
+            FieldPanel(
+                "headline",
+                help_text="Use this as a news headline. When set, replaces the title on the page. "
+                "Note that the page <code>slug</code> is driven by the title field.",
+                icon="bullhorn",
+            ),
+        ]
         + BundledPageMixin.panels
         + [
             FieldPanel("summary"),
@@ -56,7 +66,9 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
                             FieldPanel("next_release_date"),
                         ]
                     ),
-                    FieldPanel("is_accredited"),
+                    FieldPanel(
+                        "is_accredited", help_text="If ticked, will show the official statistics accredited logo."
+                    ),
                     FieldPanel("contact_details"),
                 ],
                 heading="Metadata",
@@ -92,7 +104,7 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
 
     @property
     def full_title(self):
-        return f"{self.get_parent().title}: {self.title}"
+        return self.headline.strip() or f"{self.get_parent().title}: {self.title}"
 
     @property
     def is_latest(self):
