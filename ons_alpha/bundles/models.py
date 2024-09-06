@@ -6,7 +6,7 @@ from django.db.models.functions import Coalesce
 from django.utils.timezone import now
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, PageChooserPanel
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel
 from wagtail.fields import StreamField
 from wagtail.models import Orderable, Page
 from wagtail.search import index
@@ -15,7 +15,7 @@ from ons_alpha.datasets.blocks import DatasetStoryBlock
 
 from .enums import ACTIVE_BUNDLE_STATUSES, EDITABLE_BUNDLE_STATUSES, BundleStatus
 from .forms import BundleAdminForm
-from .panels import BundleNotePanel
+from .panels import BundleNotePanel, PageChooserWithStatusPanel
 
 
 class BundlePage(Orderable):
@@ -23,7 +23,9 @@ class BundlePage(Orderable):
     page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
 
     panels = [
-        PageChooserPanel("page", ["articles.ArticlePage", "bulletins.BulletinPage", "methodologies.MethodologyPage"]),
+        PageChooserWithStatusPanel(
+            "page", ["articles.ArticlePage", "bulletins.BulletinPage", "methodologies.MethodologyPage"]
+        ),
     ]
 
     def __str__(self):
@@ -99,7 +101,7 @@ class Bundle(index.Indexed, ClusterableModel):
             icon="calendar",
         ),
         FieldPanel("status"),
-        InlinePanel("bundled_pages", heading="Bundled pages", icon="doc-empty"),
+        InlinePanel("bundled_pages", heading="Bundled pages", icon="doc-empty", label="Page"),
         FieldPanel("datasets", help_text="Select the datasets in this bundle.", icon="doc-full"),
         # these are handled by the form
         FieldPanel("approved_by", classname="hidden w-hidden"),
