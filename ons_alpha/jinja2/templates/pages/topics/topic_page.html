@@ -15,11 +15,13 @@
     {% block preSubpages %}
         <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+                {% if subpages %}
                 <section id="topic_page_nav">
-                    {% for key in subpage_dict.keys() %}
-                        <a href="#{{ key }}">{{ key }}</a>
+                    {% for page_type_key, page_type_value in topic_list_child_page_types.items() %}
+                        <a href="#{{ page_type_value }}">{{ page_type_value }}</a>
                     {% endfor %}
                 </section>
+                {% endif %}
             </div>
         </div>
     {% endblock %}
@@ -28,14 +30,17 @@
         <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
                 {% if subpages %}
-                    <h2>{{ _("Index")}}</h2>
-                    {% for subpage_key, subpage_values in subpage_dict.items() %}
-                        <h3 id="{{ subpage_key }}">{{ subpage_key }}</h3>
-                        {% for subpage_value in subpage_dict[subpage_key] %}
-                            <a href="{{  pageurl(subpage_value)  }}">
-                                {{ subpage_value.title }}
-                            </a>
-                            <p>{{ subpage_value.summary }} </p>
+                    {% for page_type_key, page_type_value in topic_list_child_page_types.items() %}
+                        <h3 id="{{ page_type_value }}">{{ page_type_value }}</h3>
+                        {% for subpage_key, subpage_values in subpage_dict.items() %}
+                            {% if subpage_key == page_type_key  %}
+                                {% for subpage_value in subpage_dict[subpage_key] %}
+                                    <a href="{{  pageurl(subpage_value)  }}">
+                                        {{ subpage_value.title }}
+                                    </a>
+                                    <p>{{ subpage_value.summary }} </p>
+                                {% endfor %}
+                            {% endif %}
                         {% endfor %}
                     {% endfor %}
                 {% endif %}

@@ -6,6 +6,7 @@ from ons_alpha.core.models.base import BasePage
 from ons_alpha.core.models.mixins import SubpageMixin
 from ons_alpha.taxonomy.models import Topic
 
+page_type_descriptions = {"Article series page":"Articles","Methodology page":"Methodologies"}
 
 class BaseTopicPage(SubpageMixin, BasePage):
     topic = models.OneToOneField(
@@ -42,12 +43,10 @@ class TopicPage(BaseTopicPage):
     subpage_types = ["articles.ArticleSeriesPage", "bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
     summary = models.CharField(blank=True, max_length=255)
-    topic_page_nav = models.CharField(blank=True, max_length=255)
     # a list of distinct page types for descendants and associated documents
 
     content_panels = BasePage.content_panels + [
         FieldPanel("summary"),
-        FieldPanel("topic_page_nav"),
     ]
 
     edit_handler = TabbedInterface(
@@ -62,6 +61,10 @@ class TopicPage(BaseTopicPage):
         ]
     )
 
+
+
+
+
     def clean(self):
         super().clean()
         if TopicSectionPage.objects.filter(topic=self.topic).exists():
@@ -72,10 +75,14 @@ class TopicPage(BaseTopicPage):
         For a topic page will return a distinct list of child page types
         """
         list_items = self.get_children().live().public().specific()
-        display_names = []
+        display_names = {}
         for menu_item in list_items:
-            display_names.append(menu_item.specific.page_type_display_name)
-        return sorted(set(display_names))
+            if menu_item.specific.page_type_display_name in  page_type_descriptions.keys():
+                display_names[menu_item.specific.page_type_display_name]=page_type_descriptions[menu_item.specific.page_type_display_name]
+            else:
+                display_names[menu_item.specific.page_type_display_name]=menu_item.specific.page_type_display_name
+            print("\n-----", display_names)
+        return dict(sorted(display_names.items()))
 
     def topic_descendents_by_page_type  (self):
         child_page_types = self.topic_list_child_page_types()
@@ -83,7 +90,6 @@ class TopicPage(BaseTopicPage):
         for child_page_type in child_page_types:
             display_names[child_page_type] = []
             subpage_list = []
-
             for subpage in self.get_children().live().public().specific():
                 if subpage.specific.page_type_display_name == child_page_type:
                     if subpage.get_children().live().public().specific().exists():
@@ -96,7 +102,7 @@ class TopicPage(BaseTopicPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["topic_list"] = self.topic_list_child_page_types()
+        context["topic_list_child_page_types"] = self.topic_list_child_page_types()
         context["subpage_dict"] = self.topic_descendents_by_page_type()
         return context
 

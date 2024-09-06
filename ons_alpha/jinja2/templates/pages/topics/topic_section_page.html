@@ -14,10 +14,10 @@
     {% block index %}
         <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
             {% if subpages %}
-                <h2>{{ _("Index")}}</h2>
                 {% if subpages.object_list %}
+                    <h2>{{ _("Contents")}}</h2>
                     {% for subpage in subpages %}
-                        <a href="{{ subpage.url }}"> {{ subpage.title }} </a>
+                        <a href="{{ pageurl(subpage) }}"> {{ subpage.title }} </a>
                         <p>{{ subpage.summary }}</p>
                     {% endfor %}
                 {% endif %}
