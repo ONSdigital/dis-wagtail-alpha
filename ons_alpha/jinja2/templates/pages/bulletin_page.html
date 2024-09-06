@@ -37,12 +37,12 @@
 
     {% if page.is_latest %}
         {% set notice %}
-            <p><a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">Previous Releases</a></p>
+            <p><a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">{{ _("Previous Releases") }}</a></p>
         {% endset %}
         {{ onsPanel({"body": notice}) }}
     {% else %}
         {% set notice %}
-            <p><a href="{{  routablepageurl(page.get_parent().specific, "latest_release") }}">View Latest Release</a></p>
+            <p><a href="{{  routablepageurl(page.get_parent().specific, "latest_release") }}">{{ _("View Latest Release") }}</a></p>
         {% endset %}
         {{ onsPanel({"body": notice}) }}
     {% endif %}
