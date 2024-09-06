@@ -6,7 +6,8 @@ from ons_alpha.core.models.base import BasePage
 from ons_alpha.core.models.mixins import SubpageMixin
 from ons_alpha.taxonomy.models import Topic
 
-page_type_descriptions = {"Article series page":"Articles","Methodology page":"Methodologies"}
+page_type_descriptions = {"Article series page": "Articles", "Methodology page": "Methodologies"}
+
 
 class BaseTopicPage(SubpageMixin, BasePage):
     topic = models.OneToOneField(
@@ -61,10 +62,6 @@ class TopicPage(BaseTopicPage):
         ]
     )
 
-
-
-
-
     def clean(self):
         super().clean()
         if TopicSectionPage.objects.filter(topic=self.topic).exists():
@@ -77,14 +74,16 @@ class TopicPage(BaseTopicPage):
         list_items = self.get_children().live().public().specific()
         display_names = {}
         for menu_item in list_items:
-            if menu_item.specific.page_type_display_name in  page_type_descriptions.keys():
-                display_names[menu_item.specific.page_type_display_name]=page_type_descriptions[menu_item.specific.page_type_display_name]
+            if menu_item.specific.page_type_display_name in page_type_descriptions.keys():
+                display_names[menu_item.specific.page_type_display_name] = page_type_descriptions[
+                    menu_item.specific.page_type_display_name
+                ]
             else:
-                display_names[menu_item.specific.page_type_display_name]=menu_item.specific.page_type_display_name
+                display_names[menu_item.specific.page_type_display_name] = menu_item.specific.page_type_display_name
             print("\n-----", display_names)
         return dict(sorted(display_names.items()))
 
-    def topic_descendents_by_page_type  (self):
+    def topic_descendents_by_page_type(self):
         child_page_types = self.topic_list_child_page_types()
         display_names = {}
         for child_page_type in child_page_types:
