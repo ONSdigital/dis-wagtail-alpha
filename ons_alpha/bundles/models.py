@@ -118,6 +118,11 @@ class Bundle(index.Indexed, ClusterableModel):
     def scheduled_publication_date(self):
         return self.publication_date or (self.release_calendar_page_id and self.release_calendar_page.release_date)
 
+    @property
+    def can_be_approved(self):
+        # note: strictly speaking, the bundle should in "in review" in order for it to be approved
+        return self.status in [BundleStatus.PENDING, BundleStatus.IN_REVIEW]
+
     def get_bundled_pages(self) -> QuerySet[Page]:
         return Page.objects.filter(pk__in=self.bundled_pages.values_list("page__pk", flat=True))
 

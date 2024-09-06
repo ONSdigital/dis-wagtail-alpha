@@ -1,6 +1,8 @@
 from functools import cached_property
 
+from django.http import HttpRequest
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from wagtail.admin.ui.tables import Column, DateColumn, UpdatedAtColumn, UserColumn
 from wagtail.admin.views.generic import CreateView, EditView, IndexView
@@ -22,11 +24,35 @@ class BundleCreateView(CreateView):
 
 
 class BundleEditView(EditView):
-    def dispatch(self, request, *args, **kwargs):
+    actions = ["edit", "save-and-approve"]
+    template_name = "bundles/wagtailadmin/edit.html"
+
+    def dispatch(self, request: HttpRequest, *args, **kwargs):
         if (instance := self.get_object()) and instance.status == BundleStatus.RELEASED:
             return redirect(self.index_url_name)
 
         return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.request.method == "POST" and "action-save-and-approve" in self.request.POST:
+            data = self.request.POST.copy()
+            data["status"] = BundleStatus.APPROVED.value
+            data["approved_by"] = self.request.user
+            data["approved_at"] = timezone.now()
+            kwargs["data"] = data
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # show the "save and approve" button if the bundle has the right status and we have a different user
+        # than the creator
+        context["show_save_and_approve"] = (
+            self.object.can_be_approved and self.form.for_user.pk != self.object.created_by_id
+        )
+
+        return context
 
 
 class BundleIndexView(IndexView):
