@@ -6,7 +6,7 @@ from django.db.models.functions import Coalesce
 from django.utils.timezone import now
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, HelpPanel, InlinePanel
 from wagtail.fields import StreamField
 from wagtail.models import Orderable, Page
 from wagtail.search import index
@@ -91,6 +91,10 @@ class Bundle(index.Indexed, ClusterableModel):
     objects = BundleManager()
 
     panels = [
+        HelpPanel(
+            "Note that all related pages must be in the <code>Ready to publish</code> "
+            "state for the bundle to be approved."
+        ),
         FieldPanel("name"),
         FieldRowPanel(
             [
