@@ -1,5 +1,7 @@
 {% extends "templates/base_page.html" %}
 
+{% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
+
 {% block main %}
     <h1>{{ page.title }}</h1>
 
@@ -7,14 +9,28 @@
         <p>{{ page.summary }}</p>
     {% endif %}
 
-    <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
-        {% if subpages %}
-            {% if subpages.object_list %}
-                {% for subpage in subpages %}
-                    <a href="{{ pageurl(subpage) }}"> {{ subpage.title }} </a>
-                    <p>{{ subpage.summary }}</p>
+    {% if page.toc %}
+        <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
+            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
+                {# fmt:off #}
+                {{-
+                    onsTableOfContents({
+                        "title": 'Table of contents',
+                        "ariaLabel": 'Sections in this page',
+                        "itemsList": page.toc
+                    })
+                }}
+                {# fmt:on #}
+            </div>
+
+            <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+                {% for section_title, section in page.sections.items() %}
+                    <section id="{{ section_title|slugify() }}">
+                        <h2>{{ section_title }}</h2>
+                        {{ section }}
+                    </section>
                 {% endfor %}
-            {% endif %}
-        {% endif %}
-    </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
