@@ -72,6 +72,7 @@ class BundleEditView(EditView):
 
 class BundleInspectView(InspectView):
     object: Bundle = None  # purely for typing purposes
+    template_name = "bundles/wagtailadmin/inspect.html"
 
     def get_fields(self):
         return ["name", "status", "created_at", "created_by", "approved", "scheduled_publication", "pages", "datasets"]
@@ -111,16 +112,29 @@ class BundleInspectView(InspectView):
             (
                 reverse("wagtailadmin_pages:edit", args=(page.pk,)),
                 page.get_admin_display_title(),
+                page.get_verbose_name(),
                 (
                     page.current_workflow_state.current_task_state.task.name
                     if page.current_workflow_state
                     else "not in a workflow"
                 ),
+                reverse("wagtailadmin_pages:view_draft", args=(page.pk,)),
             )
             for page in pages
         )
 
-        return format_html_join("\n", '<li><strong><a href="{}">{}</a></strong> ({})</li>', data)
+        page_data = format_html_join(
+            "\n",
+            '<tr><td class="title"><strong><a href="{}">{}</a></strong></td><td>{}</td><td>{}</td> '
+            '<td><a href="{}" class="button button-small button-secondary">Preview</a></td></tr>',
+            data,
+        )
+
+        return format_html(
+            "<table class='listing'><thead><tr><th>Title</th><th>Type</th>"
+            "<th>Status</th><th>Actions</th></tr></thead>{}</table>",
+            page_data,
+        )
 
     def get_datasets_display_value(self):
         content = [str(block) for block in self.object.datasets]
