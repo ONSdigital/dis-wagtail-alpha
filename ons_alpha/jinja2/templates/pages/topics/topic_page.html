@@ -31,7 +31,9 @@
                         <div class="ons-timeline">{# done as markup as onsTimeline() errors even with the example in the DS #}
                             {% for item in section_items %}
                                 <div class="ons-timeline__item">
-                                    <h2 class="ons-timeline__heading">{{ item.full_title or item.title }}</h2>
+                                    <h2 class="ons-timeline__heading">
+                                        <a href="{{ pageurl(item) }}">{{ item.full_title or item.title }}</a>
+                                    </h2>
                                     <div class="ons-timeline__content">
                                         <p>{{ item.summary }}</p>
                                     </div>
