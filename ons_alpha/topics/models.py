@@ -83,7 +83,7 @@ class TopicPage(BaseTopicPage):
         list_items = self.get_children().live().public().specific()
         display_names = {}
         for menu_item in list_items:
-            if menu_item.specific.page_type_display_name in page_type_descriptions.keys():
+            if menu_item.specific.page_type_display_name in page_type_descriptions:
                 display_names[menu_item.specific.page_type_display_name] = page_type_descriptions[
                     menu_item.specific.page_type_display_name
                 ]
