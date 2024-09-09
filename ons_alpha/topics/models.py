@@ -64,8 +64,11 @@ class TopicPage(BaseTopicPage):
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
 
     def latest_by_series(self, model: Type[Page], series_model: Type[Page]) -> QuerySet:
-        newest = model.objects.filter(path__startswith=OuterRef("path"), depth__gte=OuterRef("depth")).order_by(
-            "-release_date"
+        newest = (
+            model.objects.live()
+            .public()
+            .filter(path__startswith=OuterRef("path"), depth__gte=OuterRef("depth"))
+            .order_by("-release_date")
         )
 
         return model.objects.filter(
@@ -84,7 +87,7 @@ class TopicPage(BaseTopicPage):
 
     @cached_property
     def latest_methodologies(self) -> QuerySet[MethodologyPage]:
-        return MethodologyPage.objects.child_of(self).order_by("-last_revised_date")[:5]
+        return MethodologyPage.objects.live().public().child_of(self).order_by("-last_revised_date")[:5]
 
     @cached_property
     def sections(self) -> dict[str, QuerySet[BulletinPage | ArticlePage | MethodologyPage]]:
