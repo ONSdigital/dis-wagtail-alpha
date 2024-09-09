@@ -100,7 +100,7 @@ class BundleInspectView(InspectView):
             if self.object.approved_by_id and self.object.approved_at:
                 return f"{self.object.approved_by} on {self.object.approved_at}"
             else:
-                return "Unknow approval data"
+                return "Unknown approval data"
         return _("Pending approval")
 
     def get_scheduled_publication_display_value(self):

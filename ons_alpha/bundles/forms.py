@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from wagtail.admin.forms import WagtailAdminModelForm
 
-from ons_alpha.bundles.enums import ACTIVE_BUNDLE_STATUS_CHOICES, BundleStatus
+from ons_alpha.bundles.enums import ACTIVE_BUNDLE_STATUS_CHOICES, EDITABLE_BUNDLE_STATUSES, BundleStatus
 
 from ..workflows.models import ReadyToPublishGroupTask
 
@@ -20,8 +20,12 @@ class BundleAdminForm(WagtailAdminModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # hides the "Released" status choice
-        if self.instance.status != BundleStatus.APPROVED.value:
+        if self.instance.status in EDITABLE_BUNDLE_STATUSES:
             self.fields["status"].choices = ACTIVE_BUNDLE_STATUS_CHOICES
+        elif self.instance.status == BundleStatus.APPROVED.value:
+            for field_name in self.fields:
+                if field_name != "status":
+                    self.fields[field_name].disabled = True
 
         # fully hide and disable the approved_at/by fields to prevent form tampering
         self.fields["approved_at"].disabled = True
