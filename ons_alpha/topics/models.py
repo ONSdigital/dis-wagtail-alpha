@@ -63,18 +63,19 @@ class TopicPage(BaseTopicPage):
     subpage_types = ["articles.ArticleSeriesPage", "bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
 
-    def latest_by_series(self, model: Type[Page], series_model: Type[Page]) -> QuerySet:
-        newest = (
-            model.objects.live()
-            .public()
-            .filter(path__startswith=OuterRef("path"), depth__gte=OuterRef("depth"))
-            .order_by("-release_date")
+    def latest_by_series(self, model: Type[Page], series_model: Type[Page], topic: Topic = None) -> QuerySet:
+        newest_qs = (
+            model.objects.live().public().filter(path__startswith=OuterRef("path"), depth__gte=OuterRef("depth"))
         )
+        if topic:
+            newest_qs = newest_qs.filter(topics__topic=topic)
+        newest_qs = newest_qs.order_by("-release_date")
 
+        model_pk_qs = series_model.objects.not_child_of(self) if topic else series_model.objects.child_of(self)
         return model.objects.filter(
-            pk__in=series_model.objects.child_of(self)
-            .annotate(latest_child_page=Subquery(newest.values("pk")[:1]))
-            .values_list("latest_child_page", flat=True)
+            pk__in=model_pk_qs.annotate(latest_child_page=Subquery(newest_qs.values("pk")[:1])).values_list(
+                "latest_child_page", flat=True
+            )
         ).order_by("-release_date")
 
     @cached_property
@@ -88,6 +89,20 @@ class TopicPage(BaseTopicPage):
     @cached_property
     def latest_methodologies(self) -> QuerySet[MethodologyPage]:
         return MethodologyPage.objects.live().public().child_of(self).order_by("-last_revised_date")[:5]
+
+    @cached_property
+    def related_by_topic(self) -> dict[str, QuerySet]:
+        related = {}
+        if bulletins := self.latest_by_series(BulletinPage, BulletinSeriesPage, self.topic):
+            related[_("Bulletins")] = bulletins
+
+        if articles := self.latest_by_series(ArticlePage, ArticleSeriesPage, self.topic):
+            related[_("Articles")] = articles
+
+        if methodologies := MethodologyPage.objects.live().public().not_child_of(self).filter(topics__topic=self.topic):
+            related[_("Methodologies")] = methodologies
+
+        return related
 
     @cached_property
     def sections(self) -> dict[str, QuerySet[BulletinPage | ArticlePage | MethodologyPage]]:
@@ -108,6 +123,9 @@ class TopicPage(BaseTopicPage):
         items = []
         for title in self.sections:
             items.append({"url": f"#{slugify(title)}", "text": title})
+
+        if self.related_by_topic:
+            items.append({"url": "#related", "text": _("Related content")})
         return items
 
 
