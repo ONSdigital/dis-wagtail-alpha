@@ -1,1 +1,46 @@
-{% extends "templates/pages/index_page.html" %}
+{% extends "templates/base_page.html" %}
+
+{% from "components/card/_macro.njk" import onsCard %}
+
+{% block main %}
+    <h1>{{ page.title }}</h1>
+
+    {% if page.summary %}
+        <p>{{ page.summary }}</p>
+    {% endif %}
+
+    {% if subpages %}
+        {% if subpages.object_list %}
+            <div class="ons-grid ons-grid--column@xxs@s">
+                {% for subpage in subpages %}
+                    {%- set card_text -%}
+                        {% if subpage.listing_summary or subpage.introduction or subpage.summary %}
+                            {% if subpage.listing_summary %}{{ subpage.listing_summary }}{% elif subpage.introduction %}{{ subpage.introduction }}{% else %}{{ subpage.summary }}{% endif %}
+                        {% endif %}
+                    {%- endset %}
+                    {% set card_url=pageurl(subpage) %}
+                        {% set card_title %}
+                            {% if subpage.listing_title %}{{ subpage.listing_title }}{% else %}{{ subpage.title }}{% endif %}
+                        {% endset %}
+                        <div class="ons-grid__col ons-col-4@m">
+                        {# fmt:off #}
+                            {{
+                                onsCard({
+                                    "id": page.slug,
+                                    "textId": 'text1',
+                                    "title": card_title,
+                                    "url": card_url,
+                                    "text": card_text
+                                })
+                            }}
+                        {# fmt:on #}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+
+{#        {% include "components/pagination/pagination.html" with paginator_page=subpages %}#}
+        {% else %}
+                {# no items on any page #}
+        {% endif %}
+    {% endblock %}
