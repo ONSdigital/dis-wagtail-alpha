@@ -8,7 +8,8 @@
     {% if page.introduction %}
         <p>{{ page.introduction }}</p>
     {% endif %}
-
+    {% block summary %}{% endblock %}
+    {% block topic_page_nav %}{% endblock %}
     {% if subpages %}
         <div class="grid">
             {% if subpages.object_list %}
