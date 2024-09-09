@@ -8,6 +8,8 @@ from ons_alpha.taxonomy.models import Topic
 
 
 class BaseTopicPage(SubpageMixin, BasePage):
+    summary = models.TextField(blank=True)
+
     topic = models.ForeignKey(
         Topic,
         on_delete=models.SET_NULL,
@@ -18,7 +20,7 @@ class BaseTopicPage(SubpageMixin, BasePage):
         # https://docs.djangoproject.com/en/5.0/topics/db/models/#be-careful-with-related-name-and-related-query-name
     )
 
-    content_panels = BasePage.content_panels
+    content_panels = BasePage.content_panels + [FieldPanel("summary")]
 
     edit_handler = TabbedInterface(
         [

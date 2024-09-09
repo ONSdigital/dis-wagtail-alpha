@@ -1,1 +1,20 @@
-{% extends "templates/pages/index_page.html" %}
+{% extends "templates/base_page.html" %}
+
+{% block main %}
+    <h1>{{ page.title }}</h1>
+
+    {% if page.summary %}
+        <p>{{ page.summary }}</p>
+    {% endif %}
+
+    <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
+        {% if subpages %}
+            {% if subpages.object_list %}
+                {% for subpage in subpages %}
+                    <a href="{{ pageurl(subpage) }}"> {{ subpage.title }} </a>
+                    <p>{{ subpage.summary }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}
