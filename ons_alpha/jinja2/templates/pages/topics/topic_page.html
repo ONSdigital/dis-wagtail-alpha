@@ -24,10 +24,20 @@
             </div>
 
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
-                {% for section_title, section in page.sections.items() %}
+                {% for section_title, section_items in page.sections.items() %}
                     <section id="{{ section_title|slugify() }}">
                         <h2>{{ section_title }}</h2>
-                        {{ section }}
+
+                        <div class="ons-timeline">{# done as markup as onsTimeline() errors even with the example in the DS #}
+                            {% for item in section_items %}
+                                <div class="ons-timeline__item">
+                                    <h2 class="ons-timeline__heading">{{ item.full_title or item.title }}</h2>
+                                    <div class="ons-timeline__content">
+                                        <p>{{ item.summary }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </section>
                 {% endfor %}
             </div>
