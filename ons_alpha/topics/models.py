@@ -88,7 +88,7 @@ class TopicPage(BaseTopicPage):
 
     @cached_property
     def latest_methodologies(self) -> QuerySet[MethodologyPage]:
-        return MethodologyPage.objects.live().public().child_of(self).order_by("-last_revised_date")[:5]
+        return MethodologyPage.objects.live().public().child_of(self).order_by("-last_revised_date", "-pk")[:5]
 
     @cached_property
     def related_by_topic(self) -> dict[str, QuerySet]:
@@ -99,7 +99,14 @@ class TopicPage(BaseTopicPage):
         if articles := self.latest_by_series(ArticlePage, ArticleSeriesPage, self.topic):
             related[_("Articles")] = articles
 
-        if methodologies := MethodologyPage.objects.live().public().not_child_of(self).filter(topics__topic=self.topic):
+        methodologies_qs = (
+            MethodologyPage.objects.live()
+            .public()
+            .not_child_of(self)
+            .filter(topics__topic=self.topic)
+            .order_by("-last_revised_date", "-pk")
+        )
+        if methodologies := methodologies_qs:
             related[_("Methodologies")] = methodologies
 
         return related
