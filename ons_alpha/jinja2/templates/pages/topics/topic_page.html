@@ -1,1 +1,48 @@
-{% extends "templates/pages/index_page.html" %}
+{% extends "templates/base_page.html" %}
+
+{% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
+
+{% block main %}
+    <h1>{{ page.title }}</h1>
+
+    {% if page.summary %}
+        <p>{{ page.summary }}</p>
+    {% endif %}
+
+    {% if page.toc %}
+        <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
+            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
+                {# fmt:off #}
+                {{-
+                    onsTableOfContents({
+                        "title": 'Table of contents',
+                        "ariaLabel": 'Sections in this page',
+                        "itemsList": page.toc
+                    })
+                }}
+                {# fmt:on #}
+            </div>
+
+            <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+                {% for section_title, section_items in page.sections.items() %}
+                    <section id="{{ section_title|slugify() }}">
+                        <h2>{{ section_title }}</h2>
+
+                        <div class="ons-timeline">{# done as markup as onsTimeline() errors even with the example in the DS #}
+                            {% for item in section_items %}
+                                <div class="ons-timeline__item">
+                                    <h2 class="ons-timeline__heading">
+                                        <a href="{{ pageurl(item) }}">{{ item.full_title or item.title }}</a>
+                                    </h2>
+                                    <div class="ons-timeline__content">
+                                        <p>{{ item.summary }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

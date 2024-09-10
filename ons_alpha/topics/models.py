@@ -1,13 +1,25 @@
+from functools import cached_property
+from typing import Type
+
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import OuterRef, QuerySet, Subquery
+from django.utils.text import slugify
+from django.utils.translation import gettext as _
 from wagtail.admin.panels import FieldPanel, ObjectList, TabbedInterface
+from wagtail.models import Page
 
+from ons_alpha.articles.models import ArticlePage, ArticleSeriesPage
+from ons_alpha.bulletins.models import BulletinPage, BulletinSeriesPage
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.core.models.mixins import SubpageMixin
+from ons_alpha.methodologies.models import MethodologyPage
 from ons_alpha.taxonomy.models import Topic
 
 
 class BaseTopicPage(SubpageMixin, BasePage):
+    summary = models.TextField(blank=True)
+
     topic = models.ForeignKey(
         Topic,
         on_delete=models.SET_NULL,
@@ -18,7 +30,7 @@ class BaseTopicPage(SubpageMixin, BasePage):
         # https://docs.djangoproject.com/en/5.0/topics/db/models/#be-careful-with-related-name-and-related-query-name
     )
 
-    content_panels = BasePage.content_panels
+    content_panels = BasePage.content_panels + [FieldPanel("summary")]
 
     edit_handler = TabbedInterface(
         [
@@ -50,6 +62,53 @@ class TopicPage(BaseTopicPage):
     parent_page_types = ["topics.TopicSectionPage"]
     subpage_types = ["articles.ArticleSeriesPage", "bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
+
+    def latest_by_series(self, model: Type[Page], series_model: Type[Page]) -> QuerySet:
+        newest = (
+            model.objects.live()
+            .public()
+            .filter(path__startswith=OuterRef("path"), depth__gte=OuterRef("depth"))
+            .order_by("-release_date")
+        )
+
+        return model.objects.filter(
+            pk__in=series_model.objects.child_of(self)
+            .annotate(latest_child_page=Subquery(newest.values("pk")[:1]))
+            .values_list("latest_child_page", flat=True)
+        ).order_by("-release_date")
+
+    @cached_property
+    def latest_bulletins(self) -> QuerySet[BulletinPage]:
+        return self.latest_by_series(BulletinPage, BulletinSeriesPage)
+
+    @cached_property
+    def latest_articles(self) -> QuerySet[ArticlePage]:
+        return self.latest_by_series(ArticlePage, ArticleSeriesPage)
+
+    @cached_property
+    def latest_methodologies(self) -> QuerySet[MethodologyPage]:
+        return MethodologyPage.objects.live().public().child_of(self).order_by("-last_revised_date")[:5]
+
+    @cached_property
+    def sections(self) -> dict[str, QuerySet[BulletinPage | ArticlePage | MethodologyPage]]:
+        sections_dict = {}
+        if bulletins := self.latest_bulletins:
+            sections_dict[_("Statistical bulletins")] = bulletins
+
+        if articles := self.latest_articles:
+            sections_dict[_("Articles")] = articles
+
+        if methodologies := self.latest_methodologies:
+            sections_dict[_("Methodologies")] = methodologies
+
+        return sections_dict
+
+    @cached_property
+    def toc(self) -> list[dict[str, str]]:
+        items = []
+        for title in self.sections:
+            items.append({"url": f"#{slugify(title)}", "text": title})
+        return items
 
 
 class TopicSectionPage(BaseTopicPage):
