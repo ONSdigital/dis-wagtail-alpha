@@ -77,6 +77,12 @@ class TopicForm(WagtailAdminModelForm):
         if not parent and instance.get_parent() != parent:
             raise ValidationError("Cannot make a child topic a top-level topic.")
 
+        # depth starts with one. We cannot rely on instance.get_parent()
+        # until after the topic is created, and parent can be None
+        depth = parent.depth + 1 if parent else 1
+        if Topic.objects.filter(name=cleaned_data["name"], depth=depth).exists():
+            raise ValidationError("A topic with this name already exists.")
+
         return cleaned_data
 
     def save(self, commit=True):
