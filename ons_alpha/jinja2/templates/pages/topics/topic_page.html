@@ -2,6 +2,7 @@
 
 {% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
 {% from "components/related-content/_macro.njk" import onsRelatedContent %}
+{% from "components/panel/_macro.njk" import onsPanel %}
 
 {% block main %}
     <h1>{{ page.title }}</h1>
@@ -25,6 +26,16 @@
             </div>
 
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+                {% if page.sections %}
+                    {# fmt:off #}
+                    {{-
+                        onsPanel({
+                            "body": '<p>Currently we show the latest bulletin and articles per series, and the last five methodology pages ordered by the last review date</p>'
+                        })
+                    }}
+                    {# fmt:on #}
+                    <br />
+                {% endif %}
                 {% for section_title, section_items in page.sections.items() %}
                     <section id="{{ section_title|slugify() }}">
                         <h2>{{ section_title }}</h2>
