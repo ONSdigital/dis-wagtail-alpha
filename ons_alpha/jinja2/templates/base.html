@@ -5,6 +5,22 @@
 {% endset %}
 
 {# fmt:off #}
+{% set languages = languages | default([
+    {
+        "url": "#",
+        "ISOCode": "en",
+        "text": "English",
+        "current": true
+    },
+    {
+        "url": "#",
+        "ISOCode": "cy",
+        "text": "Cymraeg",
+        "current": false
+    }
+])
+%}
+
 {% set pageConfig = {
     "header": {
         "title": page_title,
@@ -13,20 +29,7 @@
             "html": 'This is an alpha instance intended for proofs of concept.'
         },
         "language": {
-            "languages": [
-                {
-                    "url": "#0",
-                    "ISOCode": "en",
-                    "text": "English",
-                    "current": true
-                },
-                {
-                    "url": "#0",
-                    "ISOCode": "cy",
-                    "text": "Cymraeg",
-                    "current": false
-                }
-            ]
+            "languages": languages
         }
     },
     "footer": {
@@ -56,5 +59,7 @@
 {# fmt:on #}
 
 {% block preMain %}
-    {{ wagtailuserbar() }}
+    {% if not IS_EXTERNAL_ENV %}
+        {{ wagtailuserbar() }}
+    {% endif %}
 {% endblock %}

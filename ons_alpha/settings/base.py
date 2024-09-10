@@ -10,6 +10,7 @@ from pathlib import Path
 import dj_database_url
 
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import gettext_lazy as _
 from django_jinja.builtins import DEFAULT_EXTENSIONS
 
 
@@ -35,6 +36,8 @@ DEBUG = False
 if "SECRET_KEY" in env:
     SECRET_KEY = env["SECRET_KEY"]
 
+IS_EXTERNAL_ENV = os.environ.get("IS_EXTERNAL_ENV", "false").lower() == "true"
+
 
 # Define what hosts an app can be accessed by.
 # It will return HTTP 400 Bad Request error if your host is not set using this
@@ -57,6 +60,7 @@ if "CSRF_TRUSTED_ORIGINS" in env:
 INSTALLED_APPS = [
     "ons_alpha.articles",
     "ons_alpha.core",
+    "ons_alpha.datasets",
     "ons_alpha.documents",
     "ons_alpha.forms",
     "ons_alpha.home",
@@ -72,15 +76,9 @@ INSTALLED_APPS = [
     "ons_alpha.topics",
     "ons_alpha.bulletins",
     "ons_alpha.bundles",
+    "ons_alpha.workflows",
     "crispy_forms",
     "tbxforms",
-    "wagtail.contrib.settings",
-    "wagtail.contrib.search_promotions",
-    "wagtail.contrib.forms",
-    "wagtail.contrib.redirects",
-    "wagtail.contrib.legacy.richtext",
-    "wagtail.contrib.table_block",
-    "wagtail.contrib.typed_table_block",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -89,15 +87,20 @@ INSTALLED_APPS = [
     "wagtail.images",
     "wagtail.search",
     "wagtail.admin",
+    "wagtail.locales",
+    "wagtail.contrib.simple_translation",
+    "wagtail.contrib.settings",
+    "wagtail.contrib.forms",
+    "wagtail.contrib.redirects",
+    "wagtail.contrib.legacy.richtext",
+    "wagtail.contrib.table_block",
+    "wagtail.contrib.typed_table_block",
     "wagtail",
     "modelcluster",
     "taggit",
     "django_extensions",
-    "django.contrib.admin",
-    "django.contrib.auth",
+    "django.contrib.auth",  # Wagtail requires the auth app be installed, even if it's not used.
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
     "whitenoise.runserver_nostatic",  # Must be before `django.contrib.staticfiles`
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
@@ -106,6 +109,15 @@ INSTALLED_APPS = [
     "wagtailcharts",
     "wagtailfontawesomesvg",
 ]
+
+if not IS_EXTERNAL_ENV:
+    INSTALLED_APPS.extend(
+        [
+            "django.contrib.admin",
+            "django.contrib.sessions",
+            "django.contrib.messages",
+        ]
+    )
 
 
 # Middleware classes
@@ -117,17 +129,37 @@ MIDDLEWARE = [
     # According to the official documentation it should be listed underneath
     # SecurityMiddleware.
     # http://whitenoise.evans.io/en/stable/#quickstart-for-django-apps
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
+    "ons_alpha.utils.whitenoise.ONSWhiteNoiseMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
+# Some middleware isn't needed for a external environment.
+# Disable them to improve performance
+if not IS_EXTERNAL_ENV:
+    common_middleware_index = MIDDLEWARE.index("django.middleware.common.CommonMiddleware")
+    MIDDLEWARE.insert(common_middleware_index, "django.contrib.messages.middleware.MessageMiddleware")
+    MIDDLEWARE.insert(common_middleware_index, "django.contrib.auth.middleware.AuthenticationMiddleware")
+    MIDDLEWARE.insert(common_middleware_index, "django.contrib.sessions.middleware.SessionMiddleware")
+
 ROOT_URLCONF = "ons_alpha.urls"
+
+context_processors = [
+    "django.template.context_processors.debug",
+    "django.template.context_processors.request",
+    "wagtail.contrib.settings.context_processors.settings",
+    # This is a custom context processor that lets us add custom
+    # global variables to all the templates.
+    "ons_alpha.core.context_processors.global_vars",
+]
+
+if not IS_EXTERNAL_ENV:
+    context_processors.extend(
+        ["django.contrib.messages.context_processors.messages", "django.contrib.auth.context_processors.auth"]
+    )
 
 TEMPLATES = [
     {
@@ -140,16 +172,7 @@ TEMPLATES = [
             "match_extension": ".html",
             "app_dirname": "jinja2",
             "undefined": "jinja2.ChainableUndefined",
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-                "wagtail.contrib.settings.context_processors.settings",
-                # This is a custom context processor that lets us add custom
-                # global variables to all the templates.
-                "ons_alpha.core.context_processors.global_vars",
-            ],
+            "context_processors": context_processors,
             "extensions": DEFAULT_EXTENSIONS
             + [
                 "wagtail.jinja2tags.core",
@@ -164,16 +187,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
         "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-                "wagtail.contrib.settings.context_processors.settings",
-                # This is a custom context processor that lets us add custom
-                # global variables to all the templates.
-                "ons_alpha.core.context_processors.global_vars",
-            ],
+            "context_processors": context_processors,
         },
     },
 ]
@@ -220,14 +234,9 @@ if REDIS_URL:
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": REDIS_URL + "/0",
+            "LOCATION": REDIS_URL,
             "OPTIONS": redis_options,
-        },
-        "renditions": {
-            "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": REDIS_URL + "/1",
-            "OPTIONS": redis_options,
-        },
+        }
     }
     DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 else:
@@ -254,19 +263,27 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+if IS_EXTERNAL_ENV:
+    AUTHENTICATION_BACKENDS = []
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/stable/topics/i18n/
 
-LANGUAGE_CODE = "en-gb"
-
 TIME_ZONE = "Europe/London"
-
-USE_I18N = True
-
-
 USE_TZ = True
 
+USE_I18N = True
+WAGTAIL_I18N_ENABLED = True
+
+LANGUAGE_CODE = "en-gb"
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ("en-gb", _("English")),
+    ("cy", _("Welsh")),
+    ("uk", _("Ukrainian")),
+]
+
+LOCALE_PATHS = [PROJECT_DIR / "locale"]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/stable/howto/static-files/
@@ -783,3 +800,6 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin"
 SLACK_PUBLISH_NOTIFICATION_WEBHOOK_URL = env.get("SLACK_PUBLISH_NOTIFICATION_WEBHOOK_URL")
 
 SHORT_DATETIME_FORMAT = "d/m/Y P"
+
+ONS_API_DATASET_BASE_URL = env.get("ONS_API_DATASET_BASE_URL", "https://api.beta.ons.gov.uk/v1/datasets")
+ONS_WEBSITE_DATASET_BASE_URL = env.get("ONS_WEBSITE_DATASET_BASE_URL", "https://www.ons.gov.uk/datasets")

@@ -31,7 +31,7 @@ class BundleIndexView(IndexView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        return queryset.select_related("topic", "created_by")
+        return queryset.select_related("created_by")
 
     def get_edit_url(self, instance):
         # disable the edit URL for released bundles
@@ -47,7 +47,6 @@ class BundleIndexView(IndexView):
     def columns(self):
         return [
             self._get_title_column("__str__"),
-            Column("topic"),
             Column("scheduled_publication_date"),
             Column("get_status_display", label="Status"),
             UpdatedAtColumn(),
@@ -61,21 +60,18 @@ class BundleChooseView(ChooseView):
     @property
     def columns(self):
         return super().columns + [
-            Column("topic", label="Topic", accessor="topic.title"),
             Column("scheduled_publication_date"),
             UserColumn("created_by"),
         ]
 
     def get_object_list(self):
-        return Bundle.objects.select_related("topic", "created_by").only("name", "created_by", "topic__title")
+        return Bundle.objects.select_related("created_by").only("name", "created_by")
 
 
 class BundleChooserViewSet(ChooserViewSet):
     model = Bundle
     icon = "boxes-stacked"
     choose_view_class = BundleChooseView
-    preserve_url_parameters = ["multiple", "topic"]
-    url_filter_parameters = ["topic"]
 
     def get_object_list(self):
         return self.model.objects.editable()

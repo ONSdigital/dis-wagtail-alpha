@@ -2,7 +2,7 @@ DESIGN_SYSTEM_VERSION=`cat .design-system-version`
 
 .DEFAULT_GOAL := help
 
-.PHONY: help load-design-system-templates lint format format-check test build-docker
+.PHONY: help load-design-system-templates lint format format-check test build-docker messages
 
 help:  ## ⁉️   - Display help comments for each make command
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_\-\.]+:.*?## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -32,3 +32,9 @@ format-html:  ## 🎨️   - Format the HTML code
 
 build-docker:
 	docker build -t ons_alpha .
+
+messages:  ## 🌍   - Make strings available for translation
+	poetry run python -m manage makemessages --all
+
+compile-messages:  ## 🌏   - Compile translated messages
+	poetry run python -m manage compilemessages --use-fuzzy

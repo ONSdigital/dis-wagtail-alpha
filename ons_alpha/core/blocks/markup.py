@@ -1,7 +1,9 @@
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 from wagtail import blocks
+from wagtail.blocks import CharBlock, RichTextBlock, StructBlock
 from wagtail.contrib.table_block.blocks import DEFAULT_TABLE_OPTIONS
 from wagtail.contrib.table_block.blocks import TableBlock as WagtailTableBlock
 from wagtail.contrib.typed_table_block.blocks import TypedTableBlock as WagtailTypedTableBlock
@@ -30,10 +32,32 @@ class HeadingBlock(blocks.CharBlock):
         return [{"url": "#" + slugify(value), "text": value}]
 
 
+class TableRowProcessor:
+    def __init__(self, classnames, hidden, spans):
+        self.classnames = classnames
+        self.hidden = hidden
+        self.spans = spans
+
+    def process_row(self, row, row_idx) -> list[dict[str, str]]:
+        tds = []
+        for cell_idx, cell in enumerate(row):
+            cell_key = (row_idx, cell_idx)
+            if self.hidden.get(cell_key):
+                continue
+            td = {"value": cell}
+            if classname := self.classnames.get(cell_key):
+                td["tdClasses"] = classname
+            if span := self.spans.get(cell_key):
+                td["span"] = span
+            tds.append(td)
+        return tds
+
+
 class TableBlock(WagtailTableBlock):
     class Meta:
         icon = "info-circle"
         template = "templates/components/streamfield/table_block.html"
+        label = "Basic table"
 
     def __init__(self, required=True, help_text=None, table_options=None, **kwargs):
         if table_options is None:
@@ -67,33 +91,22 @@ class TableBlock(WagtailTableBlock):
                 key = (0, th_idx)
                 if hidden.get(key):
                     continue
-
                 th = {"value": cell or ""}
                 if span := spans.get(key):
                     th["span"] = span
                 table_header.append(th)
         return table_header
 
-    def _get_rows(self, value, classnames, hidden, spans):  # pylint: disable=too-many-locals
+    def _get_rows(self, value, classnames, hidden, spans):
         trs = []
         has_header = value.get("data", "") and len(value["data"]) > 0 and value.get("first_row_is_table_header", False)
         data = value["data"][1:] if has_header else value.get("data", [])
+
+        processor = TableRowProcessor(classnames, hidden, spans)
         for row_idx, row in enumerate(data, 1 if has_header else 0):
-            tds = []
-            for cell_idx, cell in enumerate(row):
-                cell_key = (row_idx, cell_idx)
-                if hidden.get(cell_key):
-                    continue
-
-                td = {"value": cell}
-                if classname := classnames.get(cell_key):
-                    td["tdClasses"] = classname
-                if span := spans.get(cell_key):
-                    td["span"] = span
-
-                tds.append(td)
-
+            tds = processor.process_row(row, row_idx)
             trs.append({"tds": tds})
+
         return trs
 
     def clean(self, value):
@@ -109,7 +122,6 @@ class TableBlock(WagtailTableBlock):
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-
         classnames = {}
         hidden = {}
         spans = {}
@@ -119,7 +131,6 @@ class TableBlock(WagtailTableBlock):
                     classnames[(meta["row"], meta["col"])] = self._to_ons_classname(meta["className"])
                 if "hidden" in meta:
                     hidden[(meta["row"], meta["col"])] = meta["hidden"]
-
         if value.get("mergeCells"):
             for merge in value["mergeCells"]:
                 span = ""
@@ -127,10 +138,9 @@ class TableBlock(WagtailTableBlock):
                     span += f'rowspan="{merge["rowspan"]}" '
                 if merge["colspan"] > 1:
                     span += f'colspan="{merge["colspan"]}" '
-
                 if span:
+                    # mark_safe is needed to preserve the quotes when rendered in the template
                     spans[(merge["row"], merge["col"])] = mark_safe(span)  # noqa: S308
-
         return {
             "options": {
                 "caption": value.get("table_caption"),
@@ -141,8 +151,29 @@ class TableBlock(WagtailTableBlock):
         }
 
     def render(self, value, context=None):
-        # TableBlock has a very custom `render` method. We don't want that
+        # The Wagtail core TableBlock has a very custom `render` method. We don't want that
         return super(blocks.FieldBlock, self).render(value, context)
+
+
+class ONSTableBlock(StructBlock):
+    heading = CharBlock(required=True, help_text="Add a heading for the table.")
+    table = TableBlock(required=True, help_text="Add the table data here.")
+    source = CharBlock(required=False, help_text="Add the source of the table data if applicable.")
+    footnotes = RichTextBlock(
+        features=settings.RICH_TEXT_BASIC, required=False, help_text="Add any footnotes for the table."
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        # Pass the rendered block as its own variable.
+        # {% include_block value.table %} outputs the raw data
+        context["table"] = self.child_blocks["table"].render(value["table"], context=parent_context)
+        return context
+
+    class Meta:
+        template = "templates/components/streamfield/ons_table_block.html"
+        icon = "table"
+        label = "ONS Table"
 
 
 class TypedTableBlock(blocks.StructBlock):
@@ -163,7 +194,6 @@ class TypedTableBlock(blocks.StructBlock):
         config = {}
         if caption := value.get("caption"):
             config["caption"] = caption
-
         config["ths"] = [{"value": column["heading"]} for column in table.columns]
         config["trs"] = [{"tds": [{"value": column} for column in row]} for row in table.rows]
         context["table_config"] = config

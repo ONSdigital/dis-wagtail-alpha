@@ -1,6 +1,5 @@
 from functools import cached_property
 
-from django.conf import settings
 from django.db import models
 from django.db.models import F, QuerySet
 from django.db.models.functions import Coalesce
@@ -8,10 +7,11 @@ from django.utils.timezone import now
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, PageChooserPanel
-from wagtail.fields import RichTextField
+from wagtail.fields import StreamField
 from wagtail.models import Orderable, Page
 from wagtail.search import index
 
+from ..datasets.blocks import DatasetStoryBlock
 from .forms import BundleAdminForm
 from .panels import BundleNotePanel
 
@@ -31,26 +31,12 @@ class BundlePage(Orderable):
     parent = ParentalKey("Bundle", related_name="bundled_pages", on_delete=models.CASCADE)
     page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
 
-    # note: update so we get this based on the mixin
     panels = [
         PageChooserPanel("page", ["articles.ArticlePage", "bulletins.BulletinPage", "methodologies.MethodologyPage"]),
     ]
 
     def __str__(self):
         return f"BundlePage: page {self.page_id} in bundle {self.parent_id}"
-
-
-class BundleLink(Orderable):
-    parent = ParentalKey("Bundle", related_name="bundled_links", on_delete=models.CASCADE)
-    url = models.URLField(blank=True)
-    title = models.CharField(blank=True, max_length=255)
-    description = RichTextField(blank=True, features=settings.RICH_TEXT_BASIC)
-
-    panels = [
-        FieldPanel("url", heading="URL"),
-        FieldPanel("title"),
-        FieldPanel("description"),
-    ]
 
 
 class BundlesQuerySet(QuerySet):
@@ -73,13 +59,8 @@ class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
 class Bundle(index.Indexed, ClusterableModel):
     base_form_class = BundleAdminForm
     name = models.CharField(max_length=255)
+    # note: currently not surfaced, but left here for the time being
     collection_reference = models.CharField(max_length=255, blank=True, help_text="Florence Collection reference")
-    topic = models.ForeignKey(
-        "topics.TopicPage",
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name="bundles",
-    )
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         "users.User",
@@ -101,23 +82,23 @@ class Bundle(index.Indexed, ClusterableModel):
     )
     status = models.CharField(choices=BundleStatus.choices, default=BundleStatus.PENDING, max_length=32)
 
+    datasets = StreamField(DatasetStoryBlock(), blank=True, use_json_field=True)
+
     objects = BundleManager()
 
     panels = [
         FieldPanel("name"),
-        FieldPanel("topic", icon="tag"),
-        FieldPanel("collection_reference"),
         FieldRowPanel(
             [
-                FieldPanel("publication_date"),
-                FieldPanel("release_calendar_page", heading="or Release Calendar page"),
+                FieldPanel("release_calendar_page", heading="Release Calendar page"),
+                FieldPanel("publication_date", heading="or Publication date"),
             ],
             heading="Scheduling",
             icon="calendar",
         ),
         FieldPanel("status"),
         InlinePanel("bundled_pages", heading="Bundled pages", icon="doc-empty"),
-        InlinePanel("bundled_links", heading="Bundled links (datasets, time series)", icon="link"),
+        FieldPanel("datasets", help_text="Select the datasets in this bundle.", icon="doc-full"),
     ]
 
     search_fields = [

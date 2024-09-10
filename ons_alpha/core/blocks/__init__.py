@@ -1,5 +1,5 @@
-from .embeddable import DocumentBlock, ImageBlock, ONSEmbedBlock
-from .markup import HeadingBlock, QuoteBlock, TableBlock, TypedTableBlock
+from .embeddable import DocumentBlock, DocumentsBlock, ImageBlock, ONSEmbedBlock
+from .markup import HeadingBlock, ONSTableBlock, QuoteBlock, TableBlock, TypedTableBlock
 from .panels import CorrectionBlock, NoticeBlock, PanelBlock
 from .related import RelatedContentBlock, RelatedLinksBlock
 from .snippets import ChartChooserBlock
@@ -12,6 +12,7 @@ __all__ = [
     "ImageBlock",
     "NoticeBlock",
     "ONSEmbedBlock",
+    "ONSTableBlock",
     "PanelBlock",
     "QuoteBlock",
     "RelatedContentBlock",
@@ -19,4 +20,5 @@ __all__ = [
     "TableBlock",
     "TypedTableBlock",
     "ChartChooserBlock",
+    "DocumentsBlock",
 ]

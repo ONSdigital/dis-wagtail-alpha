@@ -4,9 +4,10 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.widgets import PageListingButton
+from wagtail.permission_policies import ModelPermissionPolicy
 
 from . import admin_urls
-from .models import BundledPageMixin
+from .models import Bundle, BundledPageMixin
 from .viewsets import bundle_chooser_viewset, bundle_viewset
 
 
@@ -22,6 +23,10 @@ class PageAddToBundleButton(PageListingButton):
     url_name = "bundles:add_to_bundle"
 
     @property
+    def permission_policy(self):
+        return ModelPermissionPolicy(Bundle)
+
+    @property
     def show(self) -> bool:
         if not isinstance(self.page, BundledPageMixin):
             return False
@@ -30,7 +35,9 @@ class PageAddToBundleButton(PageListingButton):
             return False
 
         # Note: limit to pages that are not in an active bundle
-        return self.page_perms.can_edit() or self.page_perms.can_publish()
+        return (
+            self.page_perms.can_edit() or self.page_perms.can_publish()
+        ) and self.permission_policy.user_has_any_permission(self.user, ["add", "change", "delete"])
 
 
 @hooks.register("register_page_header_buttons")
