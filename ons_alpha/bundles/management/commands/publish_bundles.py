@@ -3,6 +3,7 @@ import uuid
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
+from wagtail.log_actions import log
 
 from ons_alpha.bundles.enums import BundleStatus
 from ons_alpha.bundles.models import Bundle
@@ -57,6 +58,8 @@ class Command(BaseCommand):
 
         bundle.status = BundleStatus.RELEASED
         bundle.save()
+
+        log(action="wagtail.publish.scheduled", instance=bundle)
 
     def handle(self, *args, **options):
         dry_run = False

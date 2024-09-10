@@ -11,6 +11,7 @@ from wagtail.admin.views.generic import CreateView, EditView, IndexView, Inspect
 from wagtail.admin.views.generic.chooser import ChooseView
 from wagtail.admin.viewsets.chooser import ChooserViewSet
 from wagtail.admin.viewsets.model import ModelViewSet
+from wagtail.log_actions import log
 
 from .enums import BundleStatus
 from .models import Bundle
@@ -48,6 +49,36 @@ class BundleEditView(EditView):
                 data["status"] = BundleStatus.RELEASED.value
                 kwargs["data"] = data
         return kwargs
+
+    def save_instance(self):
+        instance = self.form.save()
+        self.has_content_changes = self.form.has_changed()
+
+        if self.has_content_changes:
+            log(action="wagtail.edit", instance=instance, content_changed=True, data={"fields": self.form.changed_data})
+
+            if "status" in self.form.changed_data:
+                kwargs = {"content_changed": self.has_content_changes}
+                if instance.status == BundleStatus.APPROVED.value:
+                    action = "bundles.approve"
+                    kwargs["data"] = {"old": BundleStatus[self.form.original_status].label}
+                elif instance.status == BundleStatus.RELEASED.value:
+                    action = "wagtail.publish"
+                else:
+                    action = "bundles.update_status"
+                    kwargs["data"] = {
+                        "old": BundleStatus[self.form.original_status].label,
+                        "new": instance.get_status_display(),
+                    }
+
+                # now log the status change
+                log(
+                    action=action,
+                    instance=instance,
+                    **kwargs,
+                )
+
+        return instance
 
     def run_after_hook(self):
         if self.action == "publish":

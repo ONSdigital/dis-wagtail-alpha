@@ -33,6 +33,8 @@ class BundleAdminForm(WagtailAdminModelForm):
         self.fields["approved_by"].disabled = True
         self.fields["approved_by"].widget = forms.HiddenInput()
 
+        self.original_status = self.instance.status
+
     def _validate_bundled_pages(self):
         for idx, form in enumerate(self.formsets["bundled_pages"].forms):
             if not form.is_valid():
