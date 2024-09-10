@@ -1,9 +1,16 @@
 {% extends "templates/base_page.html" %}
 
-{% block content %}
-    <div class="layout">
-        <h1>{{ page.title }}</h1>
+{% from "components/panel/_macro.njk" import onsPanel %}
 
-        {{ page.strapline }}
-    </div>
+{% block main %}
+    {% with admin_url= url('wagtailadmin_home') %}
+        {% call onsPanel({"variant": 'announcement'}) %}
+            <h2 class="ons-u-mb-no">Welcome to the ONS Wagtail Alpha instance</h2>
+
+            <div class="ons-u-fs-r">
+                <p>Please note that this is not a finished product. It is a series of proofs of concept and explorations on how we may model things with Wagtail</p>
+                <p>To access the administrative interface, please go to <a href="{{ admin_url }}"><code>/admin</code></a></p>
+            </div>
+        {% endcall %}
+    {% endwith %}
 {% endblock %}
