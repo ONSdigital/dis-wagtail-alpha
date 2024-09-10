@@ -1,6 +1,8 @@
 {% extends "templates/base_page.html" %}
 
 {% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
+{% from "components/related-content/_macro.njk" import onsRelatedContent %}
+{% from "components/panel/_macro.njk" import onsPanel %}
 
 {% block main %}
     <h1>{{ page.title }}</h1>
@@ -24,6 +26,16 @@
             </div>
 
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
+                {% if page.sections %}
+                    {# fmt:off #}
+                    {{-
+                        onsPanel({
+                            "body": '<p>Currently we show the latest bulletin and articles per series, and the last five methodology pages ordered by the last review date</p>'
+                        })
+                    }}
+                    {# fmt:on #}
+                    <br />
+                {% endif %}
                 {% for section_title, section_items in page.sections.items() %}
                     <section id="{{ section_title|slugify() }}">
                         <h2>{{ section_title }}</h2>
@@ -42,6 +54,39 @@
                         </div>
                     </section>
                 {% endfor %}
+
+                {% if page.related_by_topic %}
+                    <section id="related">
+                        <h2>{{ _("Related content") }}</h2>
+                        <p>{% trans topic=page.topic %}This sections surfaces content tagged with "{{ topic }}"{% endtrans %}</p>
+
+                        {% set rows=[] %}
+                        {% for type, items in page.related_by_topic.items() %}
+                            {% set items_list=[] %}
+                            {% for item in items %}
+                                {% do items_list.append({"url": pageurl(item), "text": item.full_title or item.title}) %}
+                            {% endfor %}
+                            {# fmt:off #}
+                            {%
+                                do rows.append({
+                                    "id": "related-content-" + type|slugify(),
+                                    "title": type,
+                                    "itemsList": items_list
+                                })
+                            %}
+                            {# fmt:on #}
+                        {% endfor %}
+
+                        {# fmt:off #}
+                        {{
+                            onsRelatedContent({
+                                "ariaLabel": 'Related content',
+                                "rows": rows
+                            })
+                        }}
+                        {# fmt:on #}
+                    </section>
+                {% endif %}
             </div>
         </div>
     {% endif %}
