@@ -46,8 +46,8 @@ def get_translation_urls(context) -> list[dict[str, str | bool]]:
     urls = []
     for locale in Locale.objects.all().order_by("pk"):
         variant = variants.get(locale.pk, default_page)
-        url = variant.get_url(request=context["request"])
-        if variant == default_page and locale.pk != variant.locale_id:
+        url = variant.get_url(request=context["request"]) if variant is not None else ""
+        if variant and variant == default_page and locale.pk != variant.locale_id:
             # if there is no translation in this locale, append the language code to the path
             # Wagtail will serve the original page, but strings in templates will be localized
             url = f"/{locale.language_code}{url}"
