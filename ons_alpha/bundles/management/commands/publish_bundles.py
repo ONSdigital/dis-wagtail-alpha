@@ -1,3 +1,4 @@
+import time
 import uuid
 
 from django.core.management.base import BaseCommand
@@ -7,6 +8,7 @@ from wagtail.log_actions import log
 
 from ons_alpha.bundles.enums import BundleStatus
 from ons_alpha.bundles.models import Bundle
+from ons_alpha.bundles.notifications import notify_slack_of_publication_start, notify_slack_of_publish_end
 from ons_alpha.release_calendar.models import ReleaseStatus
 
 
@@ -45,6 +47,8 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle_bundle(self, bundle: Bundle):
+        start_time = time.time()
+        notify_slack_of_publication_start(bundle)
         for page in bundle.get_bundled_pages():
             if (revision := page.scheduled_revision) is None:
                 continue
@@ -58,6 +62,8 @@ class Command(BaseCommand):
 
         bundle.status = BundleStatus.RELEASED
         bundle.save()
+
+        notify_slack_of_publish_end(bundle, time.time() - start_time)
 
         log(action="wagtail.publish.scheduled", instance=bundle)
 
