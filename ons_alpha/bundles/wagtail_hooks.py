@@ -1,7 +1,12 @@
+from functools import cached_property
+
+from django.db.models import QuerySet
+from django.http import HttpRequest
 from django.urls import include, path
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
+from wagtail.admin.ui.components import Component
 from wagtail.admin.widgets import PageListingButton
 from wagtail.permission_policies import ModelPermissionPolicy
 
@@ -65,3 +70,34 @@ def preset_golive_date(request, page):  # pylint: disable=unused-argument
     if now() < page.active_bundle.scheduled_publication_date != page.go_live_at:
         # pre-set the scheduled publishing time
         page.go_live_at = page.active_bundle.scheduled_publication_date
+
+
+class LatestBundlesPanel(Component):
+    name = "latest_bundles"
+    order = 150
+    template_name = "bundles/wagtailadmin/panels/latest_bundles.html"
+
+    def __init__(self, request):
+        self.request = request
+        self.permission_policy = ModelPermissionPolicy(Bundle)
+
+    @cached_property
+    def is_shown(self) -> bool:
+        return self.permission_policy.user_has_any_permission(self.request.user, {"add", "change", "delete"})
+
+    def get_latest_bundles(self) -> QuerySet[Bundle]:
+        if self.is_shown:
+            return Bundle.objects.active().select_related("created_by")[:10]
+        return Bundle.objects.none()
+
+    def get_context_data(self, parent_context):
+        context = super().get_context_data(parent_context)
+        context["request"] = self.request
+        context["bundles"] = self.get_latest_bundles()
+        context["is_shown"] = self.is_shown
+        return context
+
+
+@hooks.register("construct_homepage_panels")
+def add_another_welcome_panel(request: HttpRequest, panels: list[Component]):
+    panels.append(LatestBundlesPanel(request))
