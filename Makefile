@@ -1,4 +1,3 @@
-ECR_AWS_ACCOUNT_ID := $(shell aws sts get-caller-identity --query "Account" --output text)
 DESIGN_SYSTEM_VERSION=`cat .design-system-version`
 
 .DEFAULT_GOAL := help
@@ -39,14 +38,3 @@ messages:  ## 🌍   - Make strings available for translation
 
 compile-messages:  ## 🌏   - Compile translated messages
 	poetry run python -m manage compilemessages --use-fuzzy
-
-docker-ecr-login:
-	aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin $(ECR_AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com
-
-build-container:
-	docker build -t ${REPO}:$(TAG) -t $(ECR_AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com/${REPO}:$(TAG) --target production .
-
-push-container: docker-ecr-login
-	docker push $(ECR_AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com/${REPO}:$(TAG)
-
-container-build-push: build-container push-container
