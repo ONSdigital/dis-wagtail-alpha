@@ -4,15 +4,12 @@ Django settings for ons_alpha project.
 
 import os
 import sys
-
 from pathlib import Path
 
 import dj_database_url
-
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 from django_jinja.builtins import DEFAULT_EXTENSIONS
-
 
 env = os.environ.copy()
 
@@ -313,7 +310,8 @@ WHITENOISE_ROOT = BASE_DIR / "public"
 STATICFILES_DIRS = [
     # "static_compiled" is a folder used by the front-end tooling
     # to output compiled static assets.
-    (PROJECT_DIR / "jinja2" / "assets")
+    (PROJECT_DIR / "jinja2" / "assets"),
+    (PROJECT_DIR / "static_compiled"),
 ]
 
 
@@ -501,7 +499,6 @@ is_in_shell = len(sys.argv) > 1 and sys.argv[1] in ["shell", "shell_plus"]
 
 if "SENTRY_DSN" in env and not is_in_shell:
     import sentry_sdk
-
     from sentry_sdk.integrations.django import DjangoIntegration
     from sentry_sdk.utils import get_default_release
 
