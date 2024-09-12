@@ -6,25 +6,16 @@ from django.db.models.functions import Coalesce
 from django.utils.timezone import now
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, PageChooserPanel
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, HelpPanel, InlinePanel
 from wagtail.fields import StreamField
 from wagtail.models import Orderable, Page
 from wagtail.search import index
 
-from ..datasets.blocks import DatasetStoryBlock
+from ons_alpha.datasets.blocks import DatasetStoryBlock
+
+from .enums import ACTIVE_BUNDLE_STATUSES, EDITABLE_BUNDLE_STATUSES, BundleStatus
 from .forms import BundleAdminForm
-from .panels import BundleNotePanel
-
-
-class BundleStatus(models.TextChoices):
-    PENDING = "PENDING", "Pending"
-    IN_REVIEW = "IN_REVIEW", "In Review"
-    APPROVED = "APPROVED", "Approved"
-    RELEASED = "RELEASED", "Released"
-
-
-ACTIVE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW, BundleStatus.APPROVED]
-EDITABLE_BUNDLE_STATUSES = [BundleStatus.PENDING, BundleStatus.IN_REVIEW]
+from .panels import BundleNotePanel, PageChooserWithStatusPanel
 
 
 class BundlePage(Orderable):
@@ -32,7 +23,9 @@ class BundlePage(Orderable):
     page = models.ForeignKey("wagtailcore.Page", blank=True, null=True, on_delete=models.SET_NULL)
 
     panels = [
-        PageChooserPanel("page", ["articles.ArticlePage", "bulletins.BulletinPage", "methodologies.MethodologyPage"]),
+        PageChooserWithStatusPanel(
+            "page", ["articles.ArticlePage", "bulletins.BulletinPage", "methodologies.MethodologyPage"]
+        ),
     ]
 
     def __str__(self):
@@ -58,6 +51,7 @@ class BundleManager(models.Manager.from_queryset(BundlesQuerySet)):
 
 class Bundle(index.Indexed, ClusterableModel):
     base_form_class = BundleAdminForm
+
     name = models.CharField(max_length=255)
     # note: currently not surfaced, but left here for the time being
     collection_reference = models.CharField(max_length=255, blank=True, help_text="Florence Collection reference")
@@ -71,6 +65,16 @@ class Bundle(index.Indexed, ClusterableModel):
         related_name="bundles",
     )
     created_by.wagtail_reference_index_ignore = True
+
+    approved_at = models.DateTimeField(blank=True, null=True)
+    approved_by = models.ForeignKey(
+        "users.User",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="approved_bundles",
+    )
+    approved_by.wagtail_reference_index_ignore = True
 
     publication_date = models.DateTimeField(blank=True, null=True)
     release_calendar_page = models.ForeignKey(
@@ -87,6 +91,10 @@ class Bundle(index.Indexed, ClusterableModel):
     objects = BundleManager()
 
     panels = [
+        HelpPanel(
+            "Note that all related pages must be in the <code>Ready to publish</code> "
+            "state for the bundle to be approved."
+        ),
         FieldPanel("name"),
         FieldRowPanel(
             [
@@ -97,8 +105,11 @@ class Bundle(index.Indexed, ClusterableModel):
             icon="calendar",
         ),
         FieldPanel("status"),
-        InlinePanel("bundled_pages", heading="Bundled pages", icon="doc-empty"),
+        InlinePanel("bundled_pages", heading="Bundled pages", icon="doc-empty", label="Page"),
         FieldPanel("datasets", help_text="Select the datasets in this bundle.", icon="doc-full"),
+        # these are handled by the form
+        FieldPanel("approved_by", classname="hidden w-hidden"),
+        FieldPanel("approved_at", classname="hidden w-hidden"),
     ]
 
     search_fields = [
@@ -112,6 +123,11 @@ class Bundle(index.Indexed, ClusterableModel):
     @cached_property
     def scheduled_publication_date(self):
         return self.publication_date or (self.release_calendar_page_id and self.release_calendar_page.release_date)
+
+    @property
+    def can_be_approved(self):
+        # note: strictly speaking, the bundle should in "in review" in order for it to be approved
+        return self.status in [BundleStatus.PENDING, BundleStatus.IN_REVIEW]
 
     def get_bundled_pages(self) -> QuerySet[Page]:
         return Page.objects.filter(pk__in=self.bundled_pages.values_list("page__pk", flat=True))

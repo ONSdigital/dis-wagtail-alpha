@@ -16,3 +16,17 @@ class ReadOnlyGroupTask(AbstractGroupApprovalTask):
     class Meta:
         verbose_name = _("Read-only Group approval task")
         verbose_name_plural = _("Read-only Group approval tasks")
+
+
+class ReadyToPublishGroupTask(AbstractGroupApprovalTask):
+    """
+    Placeholder task model to use in the Bundle approval logic
+    """
+
+    @classmethod
+    def get_description(cls):
+        return _("Denotes a page that is ready to be published. Use by bundles.")
+
+    class Meta:
+        verbose_name = _("Ready to publish Group approval task")
+        verbose_name_plural = _("Ready to publish Group approval tasks")

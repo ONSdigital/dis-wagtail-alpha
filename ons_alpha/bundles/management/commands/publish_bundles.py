@@ -4,7 +4,8 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from ons_alpha.bundles.models import Bundle, BundleStatus
+from ons_alpha.bundles.enums import BundleStatus
+from ons_alpha.bundles.models import Bundle
 from ons_alpha.release_calendar.models import ReleaseStatus
 
 
