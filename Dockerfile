@@ -30,6 +30,7 @@ ENV PATH=$VIRTUAL_ENV/bin:$PATH \
     POETRY_INSTALL_ARGS=${POETRY_INSTALL_ARGS} \
     PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=ons_alpha.settings.production \
+    WEB_CONCURRENCY=2 \
     PORT=8000
 
 # Make $BUILD_ENV available at runtime
