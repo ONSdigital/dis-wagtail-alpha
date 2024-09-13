@@ -17,8 +17,5 @@ accesslog = "-"
 # Time out after 25 seconds (notably shorter than Heroku's)
 timeout = 25
 
-# Workers can be overridden by `$WEB_CONCURRENCY`
-workers = 2
-
 # Load app pre-fork to save memory and worker startup time
 preload_app = True
