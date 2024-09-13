@@ -797,7 +797,10 @@ CRISPY_FAIL_SILENTLY = False  # Default for local development. Gets overridden.
 # from third-party applications like PayPal or Zoom as needed
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin"
 
+# Note: SLACK_PUBLISH_NOTIFICATION_WEBHOOK_URL is used specifically in the "after_publish_page" Wagtail hook
+# whereas SLACK_NOTIFICATIONS_WEBHOOK_URL is intended for general notifications
 SLACK_PUBLISH_NOTIFICATION_WEBHOOK_URL = env.get("SLACK_PUBLISH_NOTIFICATION_WEBHOOK_URL")
+SLACK_NOTIFICATIONS_WEBHOOK_URL = env.get("SLACK_NOTIFICATIONS_WEBHOOK_URL")
 
 SHORT_DATETIME_FORMAT = "d/m/Y P"
 
