@@ -1,4 +1,5 @@
 from functools import cached_property
+from typing import TYPE_CHECKING
 
 from django.db.models import QuerySet
 from django.http import HttpRequest
@@ -8,11 +9,16 @@ from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.ui.components import Component
 from wagtail.admin.widgets import PageListingButton
+from wagtail.log_actions import LogFormatter
 from wagtail.permission_policies import ModelPermissionPolicy
 
 from . import admin_urls
 from .models import Bundle, BundledPageMixin
 from .viewsets import bundle_chooser_viewset, bundle_viewset
+
+
+if TYPE_CHECKING:
+    from wagtail.log_actions import LogActionRegistry
 
 
 @hooks.register("register_admin_viewset")
@@ -101,3 +107,26 @@ class LatestBundlesPanel(Component):
 @hooks.register("construct_homepage_panels")
 def add_another_welcome_panel(request: HttpRequest, panels: list[Component]):
     panels.append(LatestBundlesPanel(request))
+
+
+@hooks.register("register_log_actions")
+def register_bundle_log_actions(actions: "LogActionRegistry"):
+    @actions.register_action("bundles.update_status")
+    class ChangeBundleStatus(LogFormatter):  # pylint: disable=unused-variable
+        label = _("Change bundle status")
+
+        def format_message(self, log_entry):
+            try:
+                return _(f"Changed the bundle status from '{log_entry.data["old"]}' to '{log_entry.data["new"]}'")
+            except KeyError:
+                return _("Changed the bundle status")
+
+    @actions.register_action("bundles.approve")
+    class ApproveBundle(LogFormatter):  # pylint: disable=unused-variable
+        label = _("Approve bundle")
+
+        def format_message(self, log_entry):
+            try:
+                return _(f"Approved the bundle. (Old status: '{log_entry.data["old"]}')")
+            except KeyError:
+                return _("Approved the bundle")

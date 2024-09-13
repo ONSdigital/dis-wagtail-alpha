@@ -1,3 +1,5 @@
+import time
+
 from functools import cached_property
 
 from django.http import HttpRequest
@@ -11,9 +13,11 @@ from wagtail.admin.views.generic import CreateView, EditView, IndexView, Inspect
 from wagtail.admin.views.generic.chooser import ChooseView
 from wagtail.admin.viewsets.chooser import ChooserViewSet
 from wagtail.admin.viewsets.model import ModelViewSet
+from wagtail.log_actions import log
 
 from .enums import BundleStatus
 from .models import Bundle
+from .notifications import notify_slack_of_publication_start, notify_slack_of_publish_end, notify_slack_of_status_change
 
 
 class BundleCreateView(CreateView):
@@ -28,6 +32,8 @@ class BundleCreateView(CreateView):
 class BundleEditView(EditView):
     actions = ["edit", "save-and-approve", "publish"]
     template_name = "bundles/wagtailadmin/edit.html"
+    has_content_changes: bool = False
+    start_time: float = None
 
     def dispatch(self, request: HttpRequest, *args, **kwargs):
         if (instance := self.get_object()) and instance.status == BundleStatus.RELEASED:
@@ -49,11 +55,51 @@ class BundleEditView(EditView):
                 kwargs["data"] = data
         return kwargs
 
+    def save_instance(self):
+        instance = self.form.save()
+        self.has_content_changes = self.form.has_changed()
+
+        if self.has_content_changes:
+            log(action="wagtail.edit", instance=instance, content_changed=True, data={"fields": self.form.changed_data})
+
+            if "status" in self.form.changed_data:
+                kwargs = {"content_changed": self.has_content_changes}
+                original_status = BundleStatus[self.form.original_status].label
+                url = self.request.build_absolute_uri(reverse("bundle:inspect", args=(instance.pk,)))
+
+                if instance.status == BundleStatus.APPROVED.value:
+                    action = "bundles.approve"
+                    kwargs["data"] = {"old": original_status}
+                    notify_slack_of_status_change(instance, original_status, user=self.request.user, url=url)
+                elif instance.status == BundleStatus.RELEASED.value:
+                    action = "wagtail.publish"
+                    self.start_time = time.time()
+                else:
+                    action = "bundles.update_status"
+                    kwargs["data"] = {
+                        "old": original_status,
+                        "new": instance.get_status_display(),
+                    }
+                    notify_slack_of_status_change(instance, original_status, user=self.request.user, url=url)
+
+                # now log the status change
+                log(
+                    action=action,
+                    instance=instance,
+                    **kwargs,
+                )
+
+        return instance
+
     def run_after_hook(self):
-        if self.action == "publish":
+        if self.action == "publish" or (self.action == "edit" and self.object.status == BundleStatus.RELEASED):
+            notify_slack_of_publication_start(self.object, user=self.request.user)
+            start_time = self.start_time or time.time()
             for page in self.object.get_bundled_pages():
                 if page.current_workflow_state:
                     page.current_workflow_state.current_task_state.approve(user=self.request.user)
+
+            notify_slack_of_publish_end(self.object, time.time() - start_time, user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
