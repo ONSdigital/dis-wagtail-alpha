@@ -30,6 +30,23 @@ jobs:
         run: make lint-py
       - name: Lint HTML
         run: make lint-html
+  lint-front-end:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install npm dependencies
+        run: npm install
+      - name: CSS linting
+        run: npm run lint:css
+      - name: JS linting
+        run: npm run lint:js
+      - name: Prettier
+        run: npm run format
+      - name: JS tests
+        run: npm run test
   compile_static:
     runs-on: ubuntu-latest
     steps:
