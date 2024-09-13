@@ -1,8 +1,10 @@
 import time
 import uuid
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.urls import reverse
 from django.utils import timezone
 from wagtail.log_actions import log
 
@@ -13,6 +15,8 @@ from ons_alpha.release_calendar.models import ReleaseStatus
 
 
 class Command(BaseCommand):
+    base_url: str = ""
+
     def add_arguments(self, parser):
         parser.add_argument(
             "--dry-run",
@@ -47,8 +51,11 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle_bundle(self, bundle: Bundle):
+        # only provide a URL if we can generate a full one
+        inspect_url = self.base_url + reverse("bundle:inspect", args=(bundle.pk,)) if self.base_url else None
+
         start_time = time.time()
-        notify_slack_of_publication_start(bundle)
+        notify_slack_of_publication_start(bundle, url=inspect_url)
         for page in bundle.get_bundled_pages():
             if (revision := page.scheduled_revision) is None:
                 continue
@@ -63,7 +70,7 @@ class Command(BaseCommand):
         bundle.status = BundleStatus.RELEASED
         bundle.save()
 
-        notify_slack_of_publish_end(bundle, time.time() - start_time)
+        notify_slack_of_publish_end(bundle, time.time() - start_time, url=inspect_url)
 
         log(action="wagtail.publish.scheduled", instance=bundle)
 
@@ -72,6 +79,8 @@ class Command(BaseCommand):
         if options["dry_run"]:
             self.stdout.write("Will do a dry run.")
             dry_run = True
+
+        self.base_url = getattr(settings, "WAGTAILADMIN_BASE_URL", "")
 
         bundles_to_publish = Bundle.objects.filter(status=BundleStatus.APPROVED, release_date__lte=timezone.now())
         if dry_run:
