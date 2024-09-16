@@ -15,6 +15,7 @@ node_modules/
 /npm-debug.log
 /.idea/
 .vscode
+.python-version
 coverage
 
 # Distribution / packaging
