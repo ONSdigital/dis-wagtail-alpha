@@ -21,6 +21,10 @@ timeout = 25
 # Load app pre-fork to save memory and worker startup time
 preload_app = True
 
-# Add milliseconds to gunicorn's log messages
-gunicorn.glogging.Logger.datefmt = None
-del gunicorn.glogging.CONFIG_DEFAULTS["formatters"]["generic"]["datefmt"]
+
+class CustomLogger(gunicorn.glogging.Logger):
+    # Clear custom date format so logs include milliseconds
+    datefmt = None
+
+
+logger_class = CustomLogger
