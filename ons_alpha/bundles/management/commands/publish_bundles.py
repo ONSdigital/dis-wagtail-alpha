@@ -1,3 +1,4 @@
+import logging
 import time
 import uuid
 
@@ -12,6 +13,9 @@ from ons_alpha.bundles.enums import BundleStatus
 from ons_alpha.bundles.models import Bundle
 from ons_alpha.bundles.notifications import notify_slack_of_publication_start, notify_slack_of_publish_end
 from ons_alpha.release_calendar.models import ReleaseStatus
+
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -54,6 +58,7 @@ class Command(BaseCommand):
         # only provide a URL if we can generate a full one
         inspect_url = self.base_url + reverse("bundle:inspect", args=(bundle.pk,)) if self.base_url else None
 
+        logger.info("Publishing bundle=%d", bundle.id)
         start_time = time.time()
         notify_slack_of_publication_start(bundle, url=inspect_url)
         for page in bundle.get_bundled_pages():
@@ -69,8 +74,10 @@ class Command(BaseCommand):
 
         bundle.status = BundleStatus.RELEASED
         bundle.save()
+        publish_duration = time.time() - start_time
+        logger.info("Published bundle=%d duration=%.3fms", bundle.id, publish_duration * 1000)
 
-        notify_slack_of_publish_end(bundle, time.time() - start_time, url=inspect_url)
+        notify_slack_of_publish_end(bundle, publish_duration, url=inspect_url)
 
         log(action="wagtail.publish.scheduled", instance=bundle)
 
@@ -99,4 +106,7 @@ class Command(BaseCommand):
                 self.stdout.write("No bundles to go live.")
         else:
             for bundle in bundles_to_publish:
-                self.handle_bundle(bundle)
+                try:
+                    self.handle_bundle(bundle)
+                except Exception:  # pylint: disable=broad-exception-caught
+                    logger.exception("Publish failed bundle=%d", bundle.id)
