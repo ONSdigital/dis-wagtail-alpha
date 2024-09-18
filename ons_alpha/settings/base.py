@@ -215,12 +215,19 @@ if "PG_DB_ADDR" in env:
             "OPTIONS": {"use_iam_auth": True, "sslmode": "require"},
         }
     }
+
+    # Additionally configure a read-replica if one is available
+    if "PG_DB_READ_ADDR" in env:
+        DATABASES["read_replica"] = {**DATABASES["default"], "HOST": env["PG_DB_READ_ADDR"]}
+
 else:
     # This setting will use DATABASE_URL environment variable.
     DATABASES = {
         "default": dj_database_url.config(conn_max_age=900, conn_health_checks=True, default="postgres:///ons_alpha")
     }
 
+if "read_replica" in DATABASES:
+    DATABASE_ROUTERS = ["ons_alpha.utils.db_router.ReadReplicaRouter"]
 
 # Server-side cache settings. Do not confuse with front-end cache.
 # https://docs.djangoproject.com/en/stable/topics/cache/
