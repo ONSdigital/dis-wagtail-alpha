@@ -38,7 +38,7 @@ jobs:
         with:
           node-version: '20'
       - name: Install npm dependencies
-        run: npm install
+        run: npm ci --no-audit
       - name: CSS linting
         run: npm run lint:css
       - name: JS linting
