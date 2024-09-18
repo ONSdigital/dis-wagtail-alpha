@@ -30,7 +30,7 @@ const options = {
                     context: path.resolve(`./${projectRoot}/static_src/`),
                     to: path.resolve(`./${projectRoot}/static_compiled/images`),
                     globOptions: {
-                        ignore: ['cssBackgrounds/*'],
+                        ignore: ['css-backgrounds/*'],
                     },
                 },
             ],
@@ -119,20 +119,20 @@ const options = {
                 },
             },
             {
-                // Handles CSS background images in the cssBackgrounds folder
+                // Handles CSS background images in the css-backgrounds folder
                 // Those less than 1024 bytes are automatically encoded in the CSS - see `_test-background-images.scss`
-                // the publicPath matches the path from the compiled css to the cssBackgrounds file
+                // the publicPath matches the path from the compiled css to the css-backgrounds file
                 test: /\.(svg|jpg|png)$/,
                 include: path.resolve(
-                    `./${projectRoot}/static_src/images/cssBackgrounds/`,
+                    `./${projectRoot}/static_src/images/css-backgrounds/`,
                 ),
                 use: {
                     loader: 'url-loader',
                     options: {
                         fallback: 'file-loader',
                         name: '[name].[ext]',
-                        outputPath: 'images/cssBackgrounds/',
-                        publicPath: '../images/cssBackgrounds/',
+                        outputPath: 'images/css-backgrounds/',
+                        publicPath: '../images/css-backgrounds/',
                         limit: 1024,
                     },
                 },
