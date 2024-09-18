@@ -1,7 +1,7 @@
 node_modules
 coverage
-static_compiled
+/ons_alpha/static_compiled
 venv
-jinja2
-core
-workflows
+ons_alpha/jinja2
+ons_alpha/core
+ons_alpha/workflows
