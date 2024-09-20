@@ -24,6 +24,7 @@ services:
       - 8000:8000 # runserver
       - 8001:8001 # mkdocs serve
       - 6900:6900 # pudb
+      - 3000:3000 # browser-sync
     volumes:
       - ./.git:/app/.git:rw
       - ./docs:/app/docs:rw
