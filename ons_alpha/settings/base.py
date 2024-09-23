@@ -285,7 +285,7 @@ else:
 # Search
 # https://docs.wagtail.io/en/latest/topics/search/backends.html
 
-WAGTAILSEARCH_BACKENDS = {"default": {"BACKEND": "wagtail.search.backends.database"}}
+WAGTAILSEARCH_BACKENDS = {"default": {"BACKEND": "ons_alpha.utils.search.ONSPostgresSearchBackend"}}
 
 
 # Password validation
