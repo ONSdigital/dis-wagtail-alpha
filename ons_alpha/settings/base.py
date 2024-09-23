@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "ons_alpha.images",
     "ons_alpha.methodologies",
     "ons_alpha.navigation",
+    "ons_alpha.private_media",
     "ons_alpha.release_calendar",
     "ons_alpha.search",
     "ons_alpha.standardpages",
@@ -135,6 +136,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    "ons_alpha.private_media.middleware.PreventRootCollectionChangesMiddleware",
 ]
 
 # Some middleware isn't needed for a external environment.

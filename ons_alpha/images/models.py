@@ -1,12 +1,14 @@
 from django.db import models
-from wagtail.images.models import AbstractImage, AbstractRendition, Image
+from wagtail.images.models import AbstractImage, Image
+
+from ons_alpha.private_media.models import PrivateAbstractRendition, PrivateImageMixin
 
 
-class CustomImage(AbstractImage):
+class CustomImage(PrivateImageMixin, AbstractImage):
     admin_form_fields = Image.admin_form_fields
 
 
-class Rendition(AbstractRendition):
+class Rendition(PrivateAbstractRendition):
     image = models.ForeignKey("CustomImage", related_name="renditions", on_delete=models.CASCADE)
 
     class Meta:

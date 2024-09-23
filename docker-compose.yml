@@ -6,6 +6,7 @@ services:
         BUILD_ENV: dev
         POETRY_INSTALL_ARGS: ''
       target: dev
+    env_file: .env
     environment:
       HEROKU_APP_NAME: local # this stops Birdbath's HerokuNotProductionCheck complaining
       DATABASE_URL: postgres://ons_alpha:ons_alpha@db:5432/ons_alpha # pragma: allowlist secret
