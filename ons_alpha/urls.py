@@ -1,7 +1,7 @@
 from django.apps import apps
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.decorators.cache import never_cache
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import TemplateView
@@ -10,6 +10,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.utils.urlpatterns import decorate_urlpatterns
 
+from ons_alpha.images.views import ImageServeView
 from ons_alpha.search import views as search_views
 from ons_alpha.utils.cache import get_default_cache_control_decorator
 
@@ -71,7 +72,10 @@ if settings.DEBUG:
         debug_urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + debug_urlpatterns
 
 # Public URLs that are meant to be cached.
-urlpatterns = [path("sitemap.xml", sitemap)]
+urlpatterns = [
+    path("sitemap.xml", sitemap),
+    re_path(r"^images/([^/]*)/(\d*)/([^/]*)/[^/]*$", ImageServeView.as_view(), name="wagtailimages_serve"),
+]
 # Set public URLs to use the "default" cache settings.
 urlpatterns = decorate_urlpatterns(urlpatterns, get_default_cache_control_decorator())
 
