@@ -29,6 +29,25 @@ repos:
     hooks:
       - id: djhtml
 
+  # Front-end linting
+  - repo: local
+    hooks:
+      - id: lint:js
+        name: lint:js
+        language: system
+        entry: npm run lint:js
+        types_or: [javascript, ts, tsx]
+      - id: lint:css
+        name: lint:css
+        language: system
+        entry: npm run lint:css
+        types_or: [css, scss]
+      - id: lint:format
+        name: lint:format
+        language: system
+        entry: npm run format
+        types_or: [css, scss, javascript, ts, tsx, json, yaml, vue]
+
   # Misc. other linters
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.4.0 # keep version in sync with pyproject.toml

@@ -81,6 +81,28 @@ The site should be available on the host machine at: http://127.0.0.1:8000/
 
 Upon first starting the container, the static files may not exist, or may be out of date. To resolve this, simply run `make load-design-system-templates`.
 
+### Frontend tooling
+
+Here are the common commands:
+
+```bash
+# Install front-end dependencies.
+npm install
+# Start the Webpack build in watch mode, without live-reload.
+npm run start
+# Start the Webpack server build on port 3000 only with live-reload.
+npm run start:reload
+# Do a one-off Webpack development build.
+npm run build
+# Do a one-off Webpack production build.
+npm run build:prod
+```
+
+There are two ways to run the frontend tooling:
+
+- In Docker. This is the default, most portable and secure, but much slower on macOS.
+- Or run npm commands from a terminal on your local machine. Create a `.env` file in the project root (see `.env.example`) with `FRONTEND=local`.
+
 ## Installing Python packages
 
 Python packages can be installed using `poetry` in the web container:
@@ -149,7 +171,6 @@ Ensure you have the following installed:
    ```sh
    poetry install
    ```
-
 
 ### Linting and Formatting
 

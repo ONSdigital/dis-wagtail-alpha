@@ -313,7 +313,8 @@ WHITENOISE_ROOT = BASE_DIR / "public"
 STATICFILES_DIRS = [
     # "static_compiled" is a folder used by the front-end tooling
     # to output compiled static assets.
-    (PROJECT_DIR / "jinja2" / "assets")
+    (PROJECT_DIR / "jinja2" / "assets"),
+    (PROJECT_DIR / "static_compiled"),
 ]
 
 

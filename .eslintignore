@@ -1,0 +1,7 @@
+node_modules
+coverage
+/ons_alpha/static_compiled
+venv
+ons_alpha/jinja2
+ons_alpha/core
+ons_alpha/workflows
