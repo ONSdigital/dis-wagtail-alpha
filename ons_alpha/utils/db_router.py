@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db import DEFAULT_DB_ALIAS
+from django.db import DEFAULT_DB_ALIAS, router, transaction
 
 
 class ReadReplicaRouter:  # pylint: disable=unused-argument
@@ -19,14 +19,27 @@ class ReadReplicaRouter:  # pylint: disable=unused-argument
     def db_for_read(self, model, **hints):
         """
         Which database should be used for read queries?
+
+        If the write database is in a (uncommitted) transaction,
+        a subsequent SELECT (or other read query) may return inconsistent data.
+        In this case, use the write connection for reads, with the aim of
+        improved consistency.
         """
+
+        write_db = router.db_for_write(model, **hints)
+
+        if not transaction.get_autocommit(using=write_db):
+            # In a transaction, use the write database
+            return write_db
+
         return self.REPLICA_DB_ALIAS
 
     def db_for_write(self, model, **hints):
         """
         Which database should be used for write queries?
 
-        This should always be the default database.
+        This should always be the "default" database, since the replica
+        doesn't allow writes.
         """
         return DEFAULT_DB_ALIAS
 
