@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     "ons_alpha.bulletins",
     "ons_alpha.bundles",
     "ons_alpha.workflows",
+    "ons_alpha.charts",
     "crispy_forms",
     "tbxforms",
     "wagtail.embeds",
@@ -111,6 +112,8 @@ INSTALLED_APPS = [
     "wagtail_2fa",
     "django_otp",
     "django_otp.plugins.otp_totp",
+    "wagtail.api.v2",
+    "rest_framework",
 ]
 
 if not IS_EXTERNAL_ENV:
