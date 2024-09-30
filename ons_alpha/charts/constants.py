@@ -8,8 +8,8 @@ class AnnotationStyle(TextChoices):
 
 
 class DataSource(TextChoices):
-    CSV = "data_csv", _("Upload a CSV")
-    MANUAL = "data", _("Input data manually")
+    CSV = "csv", _("Upload a CSV")
+    MANUAL = "manual", _("Input data manually")
 
 
 class BarChartType(TextChoices):

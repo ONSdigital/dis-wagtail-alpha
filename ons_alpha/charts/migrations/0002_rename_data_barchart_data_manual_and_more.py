@@ -23,11 +23,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="barchart",
             name="data_source",
-            field=models.CharField(default="data_csv", max_length=10),
+            field=models.CharField(default="csv", max_length=10),
         ),
         migrations.AddField(
             model_name="linechart",
             name="data_source",
-            field=models.CharField(default="data_csv", max_length=10),
+            field=models.CharField(default="csv", max_length=10),
         ),
     ]
