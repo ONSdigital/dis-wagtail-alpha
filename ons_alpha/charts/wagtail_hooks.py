@@ -9,8 +9,6 @@ from .admin_views import ChartViewSet
 register_snippet(ChartViewSet)
 
 
-@hooks.register('insert_editor_js')
+@hooks.register("insert_editor_js")
 def editor_js():
-    return format_html(
-        '<script src="{}"></script>', static("admin/charts/js/toggleDataSourceFields.js")
-    )
+    return format_html('<script src="{}"></script>', static("admin/charts/js/toggleDataSourceFields.js"))

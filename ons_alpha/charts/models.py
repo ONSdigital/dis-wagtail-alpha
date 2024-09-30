@@ -213,7 +213,7 @@ class BaseHighchartsChart(Chart):
         return self.data_manual[0].value
 
     def get_data_url(self) -> str:
-        return reverse("charts-api:chart-serve-data", args=[self.uuid])
+        return reverse("chart-data", args=[self.uuid])
 
     general_panels = [
         FieldPanel("name"),
