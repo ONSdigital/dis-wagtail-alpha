@@ -1,9 +1,12 @@
 import uuid
 
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.http import HttpRequest
 from django.utils.functional import classproperty
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
 from modelcluster.models import ClusterableModel
 from wagtail import blocks
 from wagtail.admin.panels import (
@@ -22,15 +25,14 @@ from wagtail.models import (
     SpecificMixin,
 )
 
-from ons_alpha.charts.admin_forms import BaseChartEditForm
-from ons_alpha.charts.constants import AnnotationStyle, BarChartType, LegendPosition
+from ons_alpha.charts.constants import BarChartType, DataSource, LegendPosition
 from ons_alpha.charts.validators import csv_file_validator
 
 
 class Chart(
     PreviewableMixin, DraftStateMixin, RevisionMixin, SpecificMixin, ClusterableModel
 ):
-    base_form_class = BaseChartEditForm
+    template: str | None = None
     uuid = models.UUIDField(
         verbose_name=_("UUID"),
         default=uuid.uuid4,
@@ -56,6 +58,27 @@ class Chart(
     def __str__(self):
         return self.name
 
+    def get_template(self, request, **kwargs) -> str:
+        if self.template is None:
+            raise ValueError(
+                f"{type(self).__name__}.template is None and the get_template() method has not been overridden."
+            )
+        return self.template
+
+    def get_preview_template(self, request, **kwargs):
+        return self.get_template(request, **kwargs)
+
+    def get_context(self, request, **kwargs):
+        context = {
+            "chart": self.specific,
+            "chart_type": self.specific_class,
+        }
+        context.update(kwargs)
+        return context
+
+    def get_preview_context(self, request, **kwargs):
+        return self.get_context(request, **kwargs)
+
 
 class BaseHighchartsChart(Chart):
     title = models.CharField(verbose_name=_("title"), max_length=255)
@@ -73,6 +96,7 @@ class BaseHighchartsChart(Chart):
     y_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
     y_min = models.FloatField(verbose_name=_("scale cap (min)"), blank=True, null=True)
 
+    data_source = models.CharField(max_length=10, choices=DataSource.choices, default=DataSource.CSV)
     data_file = models.FileField(
         verbose_name=_("CSV file"),
         upload_to="charts",
@@ -80,7 +104,7 @@ class BaseHighchartsChart(Chart):
         blank=True,
         validators=[csv_file_validator],
     )
-    data = StreamField(
+    data_manual = StreamField(
         [
             (
                 "table",
@@ -101,11 +125,57 @@ class BaseHighchartsChart(Chart):
     class Meta:
         abstract = True
 
+    def clean(self):
+        super().clean()
+        if self.data_source == DataSource.CSV and not self.data_file:
+            raise ValidationError({"data_file": _("This field is required")})
+        if self.data_source == DataSource.MANUAL and not self.data_manual:
+            raise ValidationError({"data_manual": _("This field is required")})
+
+    def get_context(self, request, **kwargs):
+        context = {}
+        if self.include_data_in_context(request):
+            context["data"] = self.get_data_json(request)
+        else:
+            context["data_url"] = self.get_data_url()
+        context.update(**kwargs)
+        return super().get_context(request, **context)
+
+    def include_data_in_context(self, request) -> bool:
+        """
+        Return a `bool` indicating whether the chart should be rendered with the data available
+        in the template context. If `True` value indicates that data should be used to render the
+        chart directly. A `False` value indicates that data should be loaded dynamically, by making
+        a separate HTTP request to the 'retrieve_data' API endpoint for this chart.
+
+        Always returns `True` when previewing a chart, or the chart has not yet been published.
+        This is required to allow changes to the data to be reflected in previews, and to get
+        around the fact that the 'retrieve_data' API endpoint only works for published charts, and
+        only surfaces the most recently-published data.
+        """
+        if not self.live or getattr(request, "is_preview", False):
+            return True
+        # Only use the data API for published charts, where the data was added manually,
+        # or the uploaded CSV is below 1.5M.
+        return self.data_source == DataSource.MANUAL or (self.data_source == DataSource.CSV and self.data_file.size <= 1572864)
+
+    def get_data_json(self, request: HttpRequest):
+        """
+        Return a JSON-compatible representation of the chart's data. Used by both:
+
+        * `get_context()` (when including chart data directly in the template context)
+        * `ChartAPIViewSet.retrieve_data()` (when serving live data via the API)
+        """
+        return []
+
+    def get_data_url(self) -> str:
+        return reverse("charts-api:retrieve_data", args=[self.uuid])
+
     general_panels = [
         FieldPanel("name"),
         FieldPanel("data_source"),
         FieldPanel("data_file"),
-        FieldPanel("data"),
+        FieldPanel("data_manual"),
     ]
 
     config_panels = [
