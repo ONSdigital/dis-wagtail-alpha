@@ -1,12 +1,15 @@
+import csv
 import uuid
+
+from typing import Any
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
+from django.urls import reverse
 from django.utils.functional import classproperty
 from django.utils.translation import gettext_lazy as _
-from django.urls import reverse
 from modelcluster.models import ClusterableModel
 from wagtail import blocks
 from wagtail.admin.panels import (
@@ -29,9 +32,7 @@ from ons_alpha.charts.constants import BarChartType, DataSource, LegendPosition
 from ons_alpha.charts.validators import csv_file_validator
 
 
-class Chart(
-    PreviewableMixin, DraftStateMixin, RevisionMixin, SpecificMixin, ClusterableModel
-):
+class Chart(PreviewableMixin, DraftStateMixin, RevisionMixin, SpecificMixin, ClusterableModel):
     template: str | None = None
     uuid = models.UUIDField(
         verbose_name=_("UUID"),
@@ -43,9 +44,7 @@ class Chart(
     name = models.CharField(
         verbose_name=_("name"),
         max_length=255,
-        help_text=_(
-            "The editor-facing name that will appear in the listing and chooser interfaces."
-        ),
+        help_text=_("The editor-facing name that will appear in the listing and chooser interfaces."),
     )
     content_type = models.ForeignKey(
         ContentType,
@@ -84,9 +83,7 @@ class BaseHighchartsChart(Chart):
     title = models.CharField(verbose_name=_("title"), max_length=255)
     subtitle = models.CharField(verbose_name=_("subtitle"), max_length=255, blank=True)
     show_legend = models.BooleanField(default=False)
-    legend_position = models.CharField(
-        max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP
-    )
+    legend_position = models.CharField(max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP)
 
     x_label = models.CharField(verbose_name=_("label"), max_length=255)
     x_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
@@ -132,10 +129,10 @@ class BaseHighchartsChart(Chart):
         if self.data_source == DataSource.MANUAL and not self.data_manual:
             raise ValidationError({"data_manual": _("This field is required")})
 
-    def get_context(self, request, **kwargs):
-        context = {}
+    def get_context(self, request, **kwargs) -> dict[str, Any]:
+        context: dict[str, Any] = {"data_headers": self.get_headers()}
         if self.include_data_in_context(request):
-            context["data"] = self.get_data_json(request)
+            context["data_rows"] = self.get_data_json(request)
         else:
             context["data_url"] = self.get_data_url()
         context.update(**kwargs)
@@ -157,19 +154,51 @@ class BaseHighchartsChart(Chart):
             return True
         # Only use the data API for published charts, where the data was added manually,
         # or the uploaded CSV is below 1.5M.
-        return self.data_source == DataSource.MANUAL or (self.data_source == DataSource.CSV and self.data_file.size <= 1572864)
+        return self.data_source == DataSource.MANUAL or (
+            self.data_source == DataSource.CSV and self.data_file.size <= 1572864
+        )
 
-    def get_data_json(self, request: HttpRequest):
+    def get_data_json(self, request: HttpRequest, *, for_data_api: bool = False):
         """
-        Return a JSON-compatible representation of the chart's data. Used by both:
+        Return a JSON-serializable representation of the chart's data. Used by both:
 
         * `get_context()` (when including chart data directly in the template context)
         * `ChartAPIViewSet.retrieve_data()` (when serving live data via the API)
         """
+        if self.data_source == DataSource.MANUAL and self.data_manual:
+            return {
+                "columns": [col["heading"] for col in self.data_manual.columns],
+                "rows": self.data_manual.row_data,
+            }
+        if self.data_source == DataSource.CSV and self.data_file:
+            columns = []
+            rows = []
+            with open(self.data_file, "+r", newline="") as csvfile:
+                dialect = csv.Sniffer().sniff(csvfile.read(1024))
+                csvfile.seek(0)
+                reader = csv.reader(csvfile, dialect=dialect)
+                for i, row in enumerate(reader):
+                    if not i:
+                        columns = row
+                    else:
+                        rows.append(row)
+            return {
+                "columns": columns,
+                "rows": rows,
+            }
+        return {}
+
+    def get_headers(self) -> list[str]:
+        if self.data_source == DataSource.CSV and self.data_file:
+            for i, row in enumerate(self.read_rows_from_file()):
+                if not i:
+                    return row
+        if self.data_source == DataSource.MANUAL and self.data_manual:
+            return [c["heading"] for c in self.data_manual.columns]
         return []
 
     def get_data_url(self) -> str:
-        return reverse("charts-api:retrieve_data", args=[self.uuid])
+        return reverse("charts-api:chart-serve-data", args=[self.uuid])
 
     general_panels = [
         FieldPanel("name"),

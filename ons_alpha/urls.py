@@ -10,7 +10,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.utils.urlpatterns import decorate_urlpatterns
 
-from ons_alpha.images.views import ImageServeView
+from ons_alpha.charts import urls as chart_api_urls
 from ons_alpha.search import views as search_views
 from ons_alpha.utils.cache import get_default_cache_control_decorator
 from ons_alpha.utils.views import ManageCookieSettingsView
@@ -76,6 +76,7 @@ if settings.DEBUG:
 urlpatterns = [
     path("sitemap.xml", sitemap),
     re_path(r"^images/([^/]*)/(\d*)/([^/]*)/[^/]*$", ImageServeView.as_view(), name="wagtailimages_serve"),
+    path("charts/", include(chart_api_urls)),
 ]
 # Set public URLs to use the "default" cache settings.
 urlpatterns = decorate_urlpatterns(urlpatterns, get_default_cache_control_decorator())
