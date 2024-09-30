@@ -1,6 +1,6 @@
 from wagtail.snippets.models import register_snippet
 
-from .views import ChartViewSet
+from .admin_views import ChartViewSet
 
 
 register_snippet(ChartViewSet)

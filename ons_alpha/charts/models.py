@@ -57,6 +57,16 @@ class Chart(PreviewableMixin, DraftStateMixin, RevisionMixin, SpecificMixin, Clu
     def __str__(self):
         return self.name
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.id and not self.content_type_id:
+            # this model is being newly created
+            # rather than retrieved from the db;
+
+            # set content type to correctly represent the model class
+            # that this was created as
+            self.content_type = ContentType.objects.get_for_model(self)
+
     def get_template(self, request, **kwargs) -> str:
         if self.template is None:
             raise ValueError(
@@ -64,8 +74,8 @@ class Chart(PreviewableMixin, DraftStateMixin, RevisionMixin, SpecificMixin, Clu
             )
         return self.template
 
-    def get_preview_template(self, request, **kwargs):
-        return self.get_template(request, **kwargs)
+    def get_preview_template(self, request, preview_mode: str, **kwargs):
+        return self.get_template(request, preview_mode=preview_mode, **kwargs)
 
     def get_context(self, request, **kwargs):
         context = {
@@ -75,8 +85,8 @@ class Chart(PreviewableMixin, DraftStateMixin, RevisionMixin, SpecificMixin, Clu
         context.update(kwargs)
         return context
 
-    def get_preview_context(self, request, **kwargs):
-        return self.get_context(request, **kwargs)
+    def get_preview_context(self, request, preview_mode: str, **kwargs):
+        return self.get_context(request, preview_mode=preview_mode, **kwargs)
 
 
 class BaseHighchartsChart(Chart):
@@ -114,6 +124,7 @@ class BaseHighchartsChart(Chart):
                 ),
             )
         ],
+        verbose_name="data",
         blank=True,
         null=True,
         max_num=1,
@@ -167,8 +178,8 @@ class BaseHighchartsChart(Chart):
         """
         if self.data_source == DataSource.MANUAL and self.data_manual:
             return {
-                "columns": [col["heading"] for col in self.data_manual.columns],
-                "rows": self.data_manual.row_data,
+                "columns": [col["heading"] for col in self.data_table.columns],
+                "rows": self.data_table.row_data,
             }
         if self.data_source == DataSource.CSV and self.data_file:
             columns = []
@@ -194,8 +205,12 @@ class BaseHighchartsChart(Chart):
                 if not i:
                     return row
         if self.data_source == DataSource.MANUAL and self.data_manual:
-            return [c["heading"] for c in self.data_manual.columns]
+            return [c["heading"] for c in self.data_table.columns]
         return []
+
+    @property
+    def data_table(self):
+        return self.data_manual[0].value
 
     def get_data_url(self) -> str:
         return reverse("charts-api:chart-serve-data", args=[self.uuid])
@@ -257,7 +272,7 @@ class BaseHighchartsChart(Chart):
 
 
 class LineChart(BaseHighchartsChart):
-    template = "components/charts/line-chart.html"
+    template = "templates/components/charts/line_chart.html"
 
     class Meta:
         verbose_name = _("line chart")
@@ -277,7 +292,7 @@ class LineChart(BaseHighchartsChart):
 
 
 class BarChart(BaseHighchartsChart):
-    template = "components/charts/bar-chart.html"
+    template = "templates/components/charts/bar_chart.html"
 
     subtype = models.CharField(
         max_length=20,
