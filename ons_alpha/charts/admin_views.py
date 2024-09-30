@@ -4,7 +4,15 @@ from django.views.generic.edit import BaseFormView
 from wagtail.admin.views.generic.base import WagtailAdminTemplateMixin
 from wagtail.admin.views.generic.mixins import LocaleMixin
 from wagtail.admin.views.generic.permissions import PermissionCheckedMixin
-from wagtail.snippets.views.snippets import CreateView, DeleteView, EditView, SnippetViewSet
+from wagtail.snippets.views.snippets import (
+    CreateView,
+    DeleteView,
+    EditView,
+    HistoryView,
+    PreviewOnCreateView,
+    PreviewOnEditView,
+    SnippetViewSet,
+)
 
 from .admin_forms import ChartTypeSelectForm
 from .models import Chart
@@ -30,6 +38,16 @@ class ChartTypeSelectView(LocaleMixin, PermissionCheckedMixin, WagtailAdminTempl
         return reverse("wagtailsnippets_charts_chart:specific_add", kwargs={"chart_type": chart_type})
 
 
+class SpecificObjectViewMixin:
+    def setup(self, request, *args, **kwargs):
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        self.form_class = None
+        self.object = self.get_object().specific
+        self.model = type(self.object)
+
+
 class SpecificAddView(CreateView):
 
     def setup(self, request, *args, **kwargs):
@@ -53,31 +71,49 @@ class SpecificAddView(CreateView):
         return edit_handler.bind_to_model(self.model)
 
 
-class SpecificEditView(EditView):
+class SpecificEditView(SpecificObjectViewMixin, EditView):
+    draftstate_enabled = True
+    locking_enabled = False
+    preview_enabled = True
+    revision_enabled = True
 
     def setup(self, request, *args, **kwargs):
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        self.action = self.get_action(request)
+
         # This override is required to cancel out the 'form_class' added
         # by the SnippetViewSet, and allow a form to be generated from the
         # specific model instead
         self.form_class = None
 
-        super().setup(request, *args, **kwargs)
-
         # Convert the vanilla Chart object into a specific one
-        self.object = self.object.specific
+        self.object = self.get_object().specific
+        self.lock = self.get_lock()
+        self.locked_for_user = self.lock and self.lock.for_user(request.user)
         self.model = type(self.object)
+        self.panel = self.get_panel()
 
     def get_panel(self):
         edit_handler = self.model.edit_handler
         return edit_handler.bind_to_model(self.model)
 
 
-class SpecificDeleteView(DeleteView):
+class SpecificDeleteView(SpecificObjectViewMixin, DeleteView):
+    pass
 
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.object = self.object.specific
-        self.specific_model = type(self.object)
+
+class SpecificPreviewCreateAddView(SpecificObjectViewMixin, PreviewOnCreateView):
+    pass
+
+
+class SpecificPreviewOnEditView(SpecificObjectViewMixin, PreviewOnEditView):
+    pass
+
+
+class SpecificHistoryView(SpecificObjectViewMixin, HistoryView):
+    pass
 
 
 class ChartViewSet(SnippetViewSet):
@@ -86,6 +122,9 @@ class ChartViewSet(SnippetViewSet):
     specific_add_view_class = SpecificAddView
     edit_view_class = SpecificEditView
     delete_view_class = SpecificDeleteView
+    history_view_class = SpecificHistoryView
+    preview_on_add_view_class = SpecificPreviewCreateAddView
+    preview_on_edit_view_class = SpecificPreviewOnEditView
 
     @property
     def specific_add_view(self):
