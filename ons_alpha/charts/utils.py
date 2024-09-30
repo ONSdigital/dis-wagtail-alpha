@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from django.apps import apps
 from django.utils.text import capfirst
 
+
 if TYPE_CHECKING:
     from ons_alpha.charts.models import Chart
 

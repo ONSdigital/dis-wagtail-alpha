@@ -34,7 +34,7 @@ class SpecificAddView(CreateView):
 
     def setup(self, request, *args, **kwargs):
         try:
-            self.model = get_chart_type_model_from_name(kwargs.get('chart_type'))
+            self.model = get_chart_type_model_from_name(kwargs.get("chart_type"))
         except ValueError:
             raise Http404("Invalid chart type") from None
 
@@ -51,6 +51,7 @@ class SpecificAddView(CreateView):
     def get_panel(self):
         edit_handler = self.model.edit_handler
         return edit_handler.bind_to_model(self.model)
+
 
 class SpecificEditView(EditView):
 
@@ -89,7 +90,6 @@ class ChartViewSet(SnippetViewSet):
     @property
     def specific_add_view(self):
         return self.construct_view(self.specific_add_view_class, **self.get_add_view_kwargs())
-
 
     def get_urlpatterns(self):
         urlpatterns = super().get_urlpatterns()
