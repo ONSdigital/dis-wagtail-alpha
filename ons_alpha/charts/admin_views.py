@@ -44,6 +44,7 @@ class SpecificObjectViewMixin:
         self.args = args
         self.kwargs = kwargs
         self.form_class = None
+        self.pk = kwargs.get("pk") or self.args[0]
         self.object = self.get_object().specific
         self.model = type(self.object)
 
