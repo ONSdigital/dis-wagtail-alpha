@@ -141,9 +141,9 @@ class BaseHighchartsChart(Chart):
             raise ValidationError({"data_manual": _("This field is required")})
 
     def get_context(self, request, **kwargs) -> dict[str, Any]:
-        context: dict[str, Any] = {"data_headers": self.get_headers()}
+        context = {}
         if self.include_data_in_context(request):
-            context["data_rows"] = self.get_data_json(request)
+            context["data"] = self.get_data(request)
         else:
             context["data_url"] = self.get_data_url()
         context.update(**kwargs)
@@ -169,7 +169,7 @@ class BaseHighchartsChart(Chart):
             self.data_source == DataSource.CSV and self.data_file.size <= 1572864
         )
 
-    def get_data_json(self, request: HttpRequest, *, for_data_api: bool = False):
+    def get_data(self, request: HttpRequest, *, for_data_api: bool = False):
         """
         Return a JSON-serializable representation of the chart's data. Used by both:
 
@@ -198,15 +198,6 @@ class BaseHighchartsChart(Chart):
                 "rows": rows,
             }
         return {}
-
-    def get_headers(self) -> list[str]:
-        if self.data_source == DataSource.CSV and self.data_file:
-            for i, row in enumerate(self.read_rows_from_file()):
-                if not i:
-                    return row
-        if self.data_source == DataSource.MANUAL and self.data_manual:
-            return [c["heading"] for c in self.data_table.columns]
-        return []
 
     @property
     def data_table(self):

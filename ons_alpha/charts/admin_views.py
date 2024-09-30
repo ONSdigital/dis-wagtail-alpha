@@ -39,6 +39,7 @@ class ChartTypeSelectView(LocaleMixin, PermissionCheckedMixin, WagtailAdminTempl
 
 
 class SpecificObjectViewMixin:
+
     def setup(self, request, *args, **kwargs):
         self.request = request
         self.args = args
@@ -77,28 +78,23 @@ class SpecificEditView(SpecificObjectViewMixin, EditView):
     locking_enabled = False
     preview_enabled = True
     revision_enabled = True
+    action = "edit"
 
     def setup(self, request, *args, **kwargs):
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
-        self.action = self.get_action(request)
-
-        # This override is required to cancel out the 'form_class' added
-        # by the SnippetViewSet, and allow a form to be generated from the
-        # specific model instead
-        self.form_class = None
-
+        super().setup(request, *args, **kwargs)
         # Convert the vanilla Chart object into a specific one
-        self.object = self.get_object().specific
-        self.lock = self.get_lock()
-        self.locked_for_user = self.lock and self.lock.for_user(request.user)
         self.model = type(self.object)
         self.panel = self.get_panel()
+        self.locked_for_user = False
 
     def get_panel(self):
         edit_handler = self.model.edit_handler
         return edit_handler.bind_to_model(self.model)
+
+    def get_object(self):
+        if getattr(self, "object", None):
+            return self.object.specific
+        return super().get_object().specific
 
 
 class SpecificDeleteView(SpecificObjectViewMixin, DeleteView):
