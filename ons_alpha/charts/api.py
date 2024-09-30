@@ -24,4 +24,4 @@ class ChartAPIViewSet(ReadOnlyModelViewSet):
     @action(detail=True, methods=["get"])
     def data(self, request, uuid: str):
         chart = get_object_or_404(Chart, uuid=uuid).specific
-        return Response(chart.specific.get_data_json(request, for_data_api=True))
+        return Response(chart.specific.get_data(request, for_data_api=True))
