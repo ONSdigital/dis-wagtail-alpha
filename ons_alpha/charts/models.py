@@ -1,6 +1,7 @@
 import csv
 import uuid
 
+from collections.abc import Sequence
 from typing import Any
 
 from django.contrib.contenttypes.models import ContentType
@@ -8,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.urls import reverse
-from django.utils.functional import classproperty
+from django.utils.functional import cached_property, classproperty
 from django.utils.translation import gettext_lazy as _
 from modelcluster.models import ClusterableModel
 from wagtail import blocks
@@ -19,7 +20,7 @@ from wagtail.admin.panels import (
     ObjectList,
     TabbedInterface,
 )
-from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
+from wagtail.contrib.typed_table_block.blocks import TypedTable, TypedTableBlock
 from wagtail.fields import StreamField
 from wagtail.models import (
     DraftStateMixin,
@@ -124,7 +125,7 @@ class BaseHighchartsChart(Chart):
                 ),
             )
         ],
-        verbose_name="data",
+        verbose_name=_("data"),
         blank=True,
         null=True,
         max_num=1,
@@ -143,7 +144,7 @@ class BaseHighchartsChart(Chart):
     def get_context(self, request, **kwargs) -> dict[str, Any]:
         context = {}
         if self.include_data_in_context(request):
-            context["data"] = self.get_data(request)
+            context["data"] = self.get_data_json(request)
         else:
             context["data_url"] = self.get_data_url()
         context.update(**kwargs)
@@ -169,7 +170,7 @@ class BaseHighchartsChart(Chart):
             self.data_source == DataSource.CSV and self.data_file.size <= 1572864
         )
 
-    def get_data(self, request: HttpRequest, *, for_data_api: bool = False):
+    def get_data_json(self, request: HttpRequest) -> dict[str, list]:
         """
         Return a JSON-serializable representation of the chart's data. Used by both:
 
@@ -178,16 +179,15 @@ class BaseHighchartsChart(Chart):
         """
         if self.data_source == DataSource.MANUAL and self.data_manual:
             return {
-                "columns": [col["heading"] for col in self.data_table.columns],
-                "rows": self.data_table.row_data,
+                "columns": [col["heading"] for col in self.manual_data_table.columns],
+                "rows": self.manual_data_table.row_data,
             }
+
+        columns = []
+        rows = []
         if self.data_source == DataSource.CSV and self.data_file:
-            columns = []
-            rows = []
             with open(self.data_file, "+r", newline="") as csvfile:
-                dialect = csv.Sniffer().sniff(csvfile.read(1024))
-                csvfile.seek(0)
-                reader = csv.reader(csvfile, dialect=dialect)
+                reader = csv.reader(csvfile)
                 for i, row in enumerate(reader):
                     if not i:
                         columns = row
@@ -199,12 +199,22 @@ class BaseHighchartsChart(Chart):
             }
         return {}
 
+    @cached_property
+    def data_headers(self) -> Sequence[str]:
+        if self.data_source == DataSource.CSV and self.data_file:
+            with open(self.data_file, "+r", newline="") as csvfile:
+                reader = csv.DictReader(csvfile)
+                return reader.fieldnames or []
+        if self.data_source == DataSource.MANUAL and self.data_manual:
+            return [col["heading"] for col in self.manual_data_table.columns]
+        return []
+
     @property
-    def data_table(self):
+    def manual_data_table(self) -> TypedTable:
         return self.data_manual[0].value
 
     def get_data_url(self) -> str:
-        return reverse("chart-data", args=[self.uuid])
+        return reverse("chart-data-csv", args=[self.uuid])
 
     general_panels = [
         FieldPanel("name"),
