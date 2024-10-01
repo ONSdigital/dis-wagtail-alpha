@@ -115,6 +115,7 @@ class SpecificHistoryView(SpecificObjectViewMixin, HistoryView):
 
 class ChartViewSet(SnippetViewSet):
     model = Chart
+    add_to_admin_menu = True
     add_view_class = ChartTypeSelectView
     specific_add_view_class = SpecificAddView
     edit_view_class = SpecificEditView
