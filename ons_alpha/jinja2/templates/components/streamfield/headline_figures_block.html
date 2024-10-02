@@ -1,0 +1,11 @@
+<div class="ons-headline-figures">
+    {% for figure in value %}
+        <div class="ons-headline-figure">
+            <p class="ons-headline-figure__title">{{ figure.title }}</p>
+            <p class="ons-headline-figure__figure">{{ figure.figure }}</p>
+            {% if figure.supporting_text %}
+                <p class="ons-headline-figure__supporting_text">{{ figure.supporting_text }}</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
