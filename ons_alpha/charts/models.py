@@ -29,11 +29,19 @@ from wagtail.models import (
     SpecificMixin,
 )
 
+from ons_alpha.private_media.models import PrivateMediaCollectionMember
 from ons_alpha.charts.constants import BarChartType, DataSource, LegendPosition
 from ons_alpha.charts.validators import csv_file_validator
 
 
-class Chart(PreviewableMixin, DraftStateMixin, RevisionMixin, SpecificMixin, ClusterableModel):
+class Chart(
+    PreviewableMixin,
+    DraftStateMixin,
+    RevisionMixin,
+    SpecificMixin,
+    PrivateMediaCollectionMember,
+    ClusterableModel,
+):
     template: str | None = None
     uuid = models.UUIDField(
         verbose_name=_("UUID"),
@@ -45,7 +53,9 @@ class Chart(PreviewableMixin, DraftStateMixin, RevisionMixin, SpecificMixin, Clu
     name = models.CharField(
         verbose_name=_("name"),
         max_length=255,
-        help_text=_("The editor-facing name that will appear in the listing and chooser interfaces."),
+        help_text=_(
+            "The editor-facing name that will appear in the listing and chooser interfaces."
+        ),
     )
     content_type = models.ForeignKey(
         ContentType,
@@ -89,12 +99,16 @@ class Chart(PreviewableMixin, DraftStateMixin, RevisionMixin, SpecificMixin, Clu
     def get_preview_context(self, request, preview_mode: str, **kwargs):
         return self.get_context(request, preview_mode=preview_mode, **kwargs)
 
+    def get_privacy_controlled_files(self):
+        return []
 
 class BaseHighchartsChart(Chart):
     title = models.CharField(verbose_name=_("title"), max_length=255)
     subtitle = models.CharField(verbose_name=_("subtitle"), max_length=255, blank=True)
     show_legend = models.BooleanField(default=False)
-    legend_position = models.CharField(max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP)
+    legend_position = models.CharField(
+        max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP
+    )
 
     x_label = models.CharField(verbose_name=_("label"), max_length=255)
     x_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
@@ -104,7 +118,9 @@ class BaseHighchartsChart(Chart):
     y_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
     y_min = models.FloatField(verbose_name=_("scale cap (min)"), blank=True, null=True)
 
-    data_source = models.CharField(max_length=10, choices=DataSource.choices, default=DataSource.CSV)
+    data_source = models.CharField(
+        max_length=10, choices=DataSource.choices, default=DataSource.CSV
+    )
     data_file = models.FileField(
         verbose_name=_("CSV file"),
         upload_to="charts",
@@ -133,6 +149,12 @@ class BaseHighchartsChart(Chart):
 
     class Meta:
         abstract = True
+
+    def get_privacy_controlled_files(self):
+        files = []
+        if self.data_file:
+            files.append(self.data_file)
+        return files
 
     def clean(self):
         super().clean()
@@ -218,6 +240,7 @@ class BaseHighchartsChart(Chart):
 
     general_panels = [
         FieldPanel("name"),
+        FieldPanel("collection"),
         FieldPanel("data_source"),
         FieldPanel("data_file"),
         FieldPanel("data_manual"),
