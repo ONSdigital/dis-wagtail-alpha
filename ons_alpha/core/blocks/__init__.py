@@ -1,6 +1,7 @@
 from .document_list import DocumentListBlock
 from .embeddable import DocumentBlock, DocumentsBlock, ImageBlock, ONSEmbedBlock
 from .featured_document import FeaturedDocumentBlock
+from .headline_figures import HeadlineFiguresBlock
 from .markup import HeadingBlock, ONSTableBlock, QuoteBlock, TableBlock, TypedTableBlock
 from .panels import CorrectionBlock, NoticeBlock, PanelBlock
 from .related import RelatedContentBlock, RelatedLinksBlock
@@ -13,6 +14,7 @@ __all__ = [
     "DocumentListBlock",
     "FeaturedDocumentBlock",
     "HeadingBlock",
+    "HeadlineFiguresBlock",
     "ImageBlock",
     "NoticeBlock",
     "ONSEmbedBlock",
