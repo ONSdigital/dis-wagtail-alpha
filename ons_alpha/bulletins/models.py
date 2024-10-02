@@ -18,6 +18,7 @@ from wagtail.models import Page
 from wagtail.search import index
 
 from ons_alpha.bundles.models import BundledPageMixin
+from ons_alpha.core.blocks import HeadlineFiguresBlock
 from ons_alpha.core.blocks.stream_blocks import CoreStoryBlock, CorrectionsNoticesStoryBlock
 from ons_alpha.core.forms import PageWithUpdatesAdminForm
 from ons_alpha.core.models.base import BasePage
@@ -42,6 +43,7 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
         related_name="+",
     )
     is_accredited = models.BooleanField(default=False)
+    headline_figures = StreamField([("figures", HeadlineFiguresBlock())], blank=True)
     body = StreamField(CoreStoryBlock(), use_json_field=True)
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
 
@@ -73,6 +75,7 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
                 ],
                 heading="Metadata",
             ),
+            FieldPanel("headline_figures"),
             FieldPanel("body"),
         ]
     )

@@ -47,6 +47,10 @@
         {{ onsPanel({"body": notice}) }}
     {% endif %}
 
+    {% if page.headline_figures %}
+        {% include_block page.headline_figures %}
+    {% endif %}
+
     <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
         <div class="ons-grid__col ons-u-p-no ons-u-mb-s">
             {% if page.updates %}
