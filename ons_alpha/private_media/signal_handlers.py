@@ -26,7 +26,7 @@ def publish_page_media_on_publish(instance, **kwargs):  # pylint: disable=unused
 
     for ct_id, id_list in ids_by_ctype.items():
         model_class = ContentType.objects.get_for_id(ct_id).model_class()
-        id_list = [model_class._meta.pk_field.to_python(id) for id in id_list]
+        id_list = [model_class._meta.pk.to_python(id) for id in id_list]
         private_objects_qs = model_class.objects.filter(id__in=id_list, is_private=True).select_related(
             "collection", "last_public_collection", "last_private_collection"
         )
@@ -48,7 +48,7 @@ def unpublish_page_media_on_unpublish(instance, **kwargs):  # pylint: disable=un
 
     for ct_id, id_list in ids_by_ctype.items():
         model_class = ContentType.objects.get_for_id(ct_id).model_class()
-        id_list = [model_class._meta.pk_field.to_python(id) for id in id_list]
+        id_list = [model_class._meta.pk.to_python(id) for id in id_list]
         public_objects_qs = model_class.objects.filter(id__in=id_list, is_private=False).select_related(
             "collection", "last_public_collection", "last_private_collection"
         )
