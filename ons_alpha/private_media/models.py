@@ -103,7 +103,7 @@ class PrivateMediaManager(models.Manager):
 
         results = utils.set_file_acls(all_files, acl_name)
 
-        for obj, files in files_by_object:
+        for obj, files in files_by_object.items():
             if all(results.get(file) for file in files):
                 obj.acls_last_set = timezone.now()
                 successfully_updated_objects.append(obj)
