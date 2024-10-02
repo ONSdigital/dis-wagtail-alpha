@@ -184,6 +184,13 @@ class PrivateMediaCollectionMember(CollectionMember):
     def is_public(self) -> bool:
         return not self.is_private
 
+    def acls_are_up_to_date(self) -> bool:
+        if self.privacy_last_changed is None:
+            return True
+        if self.acls_last_set is None:
+            return False
+        return self.acls_last_set > self.privacy_last_changed
+
     def determine_privacy(self) -> bool:
         was_private = self.is_private
         privacy_changed = False
@@ -315,7 +322,7 @@ class PrivateAbstractRendition(AbstractRendition):
         """
         from wagtail.images.views.serve import generate_image_url  # pylint: disable=import-outside-toplevel
 
-        if self.image.is_public and self.image.acls_last_set > self.image.privacy_last_changed:
+        if self.image.is_public and self.image.acls_are_up_to_date():
             return self.file.url
         return generate_image_url(self.image, self.filter_spec)
 
