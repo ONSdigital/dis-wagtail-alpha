@@ -246,7 +246,7 @@ class BaseHighchartsChart(Chart):
         FieldPanel("data_manual"),
     ]
 
-    config_panels = [
+    settings_panels = [
         FieldPanel("title"),
         FieldPanel("subtitle"),
         MultiFieldPanel(
@@ -290,7 +290,7 @@ class BaseHighchartsChart(Chart):
         return TabbedInterface(
             [
                 ObjectList(cls.general_panels, heading=_("Common")),
-                ObjectList(cls.config_panels, heading=_("Options")),
+                ObjectList(cls.settings_panels, heading=_("Chart configuration")),
             ]
         )
 
@@ -301,15 +301,6 @@ class LineChart(BaseHighchartsChart):
     class Meta:
         verbose_name = _("line chart")
         verbose_name_plural = _("line charts")
-
-    @classproperty
-    def edit_handler(cls):
-        return TabbedInterface(
-            [
-                ObjectList(cls.general_panels, heading=_("Common")),
-                ObjectList(cls.config_panels, heading=_("Options")),
-            ]
-        )
 
     def highcharts_chart_type(self):
         return "line"
@@ -338,4 +329,4 @@ class BarChart(BaseHighchartsChart):
     def highcharts_chart_type(self):
         return self.subtype.split("_")[-1]
 
-    config_panels = [FieldPanel("subtype")] + BaseHighchartsChart.config_panels
+    settings_panels = [FieldPanel("subtype")] + BaseHighchartsChart.settings_panels
