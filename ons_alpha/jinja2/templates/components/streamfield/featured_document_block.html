@@ -1,0 +1,13 @@
+{% from "components/document-list/_macro.njk" import onsDocumentList %}
+
+<section id="{{ slug }}">
+    <h2 >{{ heading }}</h2>
+
+    {# fmt:off #}
+    {{-
+        onsDocumentList({
+            "documents": documents,
+        })
+    }}
+    {# fmt:on #}
+</section>
