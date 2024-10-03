@@ -1,0 +1,15 @@
+/* New navigation styling for November protoype */
+
+.navigation {
+    background: var(--ons-color-branded-tint);
+    width: 100%;
+
+    &__key-links {
+        border-bottom: 1px solid var(--ons-color-ocean-blue);
+    }
+
+    &__heading,
+    &__paragraph {
+        line-height: 1.714;
+    }
+}
