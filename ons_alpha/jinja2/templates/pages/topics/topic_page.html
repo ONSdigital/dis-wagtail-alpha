@@ -11,6 +11,10 @@
         <p>{{ page.summary }}</p>
     {% endif %}
 
+    {% if page.headline_figures %}
+        {% include_block page.headline_figures %}
+    {% endif %}
+
     {% if page.toc %}
         <div class="ons-grid ons-js-toc-container ons-u-ml-no ons-u-mt-s">
             <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
@@ -26,66 +30,75 @@
             </div>
 
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
-                {% if page.sections %}
-                    {# fmt:off #}
-                    {{-
-                        onsPanel({
-                            "body": '<p>Currently we show the latest bulletin and articles per series, and the last five methodology pages ordered by the last review date</p>'
-                        })
-                    }}
-                    {# fmt:on #}
-                    <br />
-                {% endif %}
-                {% for section_title, section_items in page.sections.items() %}
-                    <section id="{{ section_title|slugify() }}">
-                        <h2>{{ section_title }}</h2>
-
-                        <div class="ons-timeline">{# done as markup as onsTimeline() errors even with the example in the DS #}
-                            {% for item in section_items %}
-                                <div class="ons-timeline__item">
-                                    <h2 class="ons-timeline__heading">
-                                        <a href="{{ pageurl(item) }}">{{ item.full_title or item.title }}</a>
-                                    </h2>
-                                    <div class="ons-timeline__content">
-                                        <p>{{ item.summary }}</p>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </section>
-                {% endfor %}
-
-                {% if page.related_by_topic %}
-                    <section id="related">
-                        <h2>{{ _("Related content") }}</h2>
-                        <p>{% trans topic=page.topic %}This sections surfaces content tagged with "{{ topic }}"{% endtrans %}</p>
-
-                        {% set rows=[] %}
-                        {% for type, items in page.related_by_topic.items() %}
-                            {% set items_list=[] %}
-                            {% for item in items %}
-                                {% do items_list.append({"url": pageurl(item), "text": item.full_title or item.title}) %}
-                            {% endfor %}
-                            {# fmt:off #}
-                            {%
-                                do rows.append({
-                                    "id": "related-content-" + type|slugify(),
-                                    "title": type,
-                                    "itemsList": items_list
-                                })
-                            %}
-                            {# fmt:on #}
-                        {% endfor %}
-
+                {% if page.body %}
+                    {% for content_block in page.body %}
+                        {% with block_id = content_block.id %}
+                            {% include_block content_block %}
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    {% if page.sections %}
                         {# fmt:off #}
-                        {{
-                            onsRelatedContent({
-                                "ariaLabel": 'Related content',
-                                "rows": rows
+                        {{-
+                            onsPanel({
+                                "body": '<p>Currently we show the latest bulletin and articles per series, and the last five methodology pages ordered by the last review date</p>'
                             })
                         }}
                         {# fmt:on #}
-                    </section>
+                        <br />
+
+                        {% for section_title, section_items in page.sections.items() %}
+                            <section id="{{ section_title|slugify() }}">
+                                <h2>{{ section_title }}</h2>
+
+                                <div class="ons-timeline">{# done as markup as onsTimeline() errors even with the example in the DS #}
+                                    {% for item in section_items %}
+                                        <div class="ons-timeline__item">
+                                            <h2 class="ons-timeline__heading">
+                                                <a href="{{ pageurl(item) }}">{{ item.full_title or item.title }}</a>
+                                            </h2>
+                                            <div class="ons-timeline__content">
+                                                <p>{{ item.summary }}</p>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </section>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if page.related_by_topic %}
+                        <section id="related">
+                            <h2>{{ _("Related content") }}</h2>
+                            <p>{% trans topic=page.topic %}This sections surfaces content tagged with "{{ topic }}"{% endtrans %}</p>
+
+                            {% set rows=[] %}
+                            {% for type, items in page.related_by_topic.items() %}
+                                {% set items_list=[] %}
+                                {% for item in items %}
+                                    {% do items_list.append({"url": pageurl(item), "text": item.full_title or item.title}) %}
+                                {% endfor %}
+                                {# fmt:off #}
+                                {%
+                                    do rows.append({
+                                        "id": "related-content-" + type|slugify(),
+                                        "title": type,
+                                        "itemsList": items_list
+                                    })
+                                %}
+                                {# fmt:on #}
+                            {% endfor %}
+
+                            {# fmt:off #}
+                            {{
+                                onsRelatedContent({
+                                    "ariaLabel": 'Related content',
+                                    "rows": rows
+                                })
+                            }}
+                            {# fmt:on #}
+                        </section>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
