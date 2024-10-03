@@ -4,6 +4,7 @@ from typing import Type
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import OuterRef, QuerySet, Subquery
+from django.utils.functional import classproperty
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from wagtail.admin.panels import FieldPanel, ObjectList, TabbedInterface
@@ -11,15 +12,15 @@ from wagtail.models import Page
 
 from ons_alpha.articles.models import ArticlePage, ArticleSeriesPage
 from ons_alpha.bulletins.models import BulletinPage, BulletinSeriesPage
+from ons_alpha.core.blocks import DocumentListBlock, FeaturedDocumentBlock, HeadlineFiguresBlock
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.core.models.mixins import SubpageMixin
 from ons_alpha.methodologies.models import MethodologyPage
 from ons_alpha.taxonomy.models import Topic
+from ons_alpha.utils.fields import StreamField
 
 
 class BaseTopicPage(SubpageMixin, BasePage):
-    summary = models.TextField(blank=True)
-
     topic = models.ForeignKey(
         Topic,
         on_delete=models.SET_NULL,
@@ -30,19 +31,23 @@ class BaseTopicPage(SubpageMixin, BasePage):
         # https://docs.djangoproject.com/en/5.0/topics/db/models/#be-careful-with-related-name-and-related-query-name
     )
 
+    summary = models.TextField(blank=True)
+
     content_panels = BasePage.content_panels + [FieldPanel("summary")]
 
-    edit_handler = TabbedInterface(
-        [
-            ObjectList(content_panels, heading="Content"),
-            ObjectList(
-                [FieldPanel("topic")],
-                help_text="Select the topics that this page relates to.",
-                heading="Taxonomy",
-            ),
-            ObjectList(BasePage.promote_panels, heading="Promote"),
-        ]
-    )
+    @classproperty
+    def edit_handler(cls):
+        return TabbedInterface(
+            [
+                ObjectList(cls.content_panels, heading="Content"),
+                ObjectList(
+                    [FieldPanel("topic")],
+                    help_text="Select the topics that this page relates to.",
+                    heading="Taxonomy",
+                ),
+                ObjectList(BasePage.promote_panels, heading="Promote"),
+            ]
+        )
 
     class Meta:
         abstract = True
@@ -62,6 +67,21 @@ class TopicPage(BaseTopicPage):
     parent_page_types = ["topics.TopicSectionPage"]
     subpage_types = ["articles.ArticleSeriesPage", "bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
+
+    headline_figures = StreamField([("figures", HeadlineFiguresBlock())], blank=True)
+    body = StreamField(
+        [("featured_document", FeaturedDocumentBlock()), ("document_list", DocumentListBlock())],
+        blank=True,
+        block_counts={
+            "featured_document": {"max_num": 1},
+        },
+    )
+
+    content_panels = BasePage.content_panels + [
+        FieldPanel("summary"),
+        FieldPanel("headline_figures"),
+        FieldPanel("body"),
+    ]
 
     def latest_by_series(self, model: Type[Page], series_model: Type[Page], topic: Topic = None) -> QuerySet:
         newest_qs = (
@@ -128,9 +148,19 @@ class TopicPage(BaseTopicPage):
     @cached_property
     def toc(self) -> list[dict[str, str]]:
         items = []
+
+        # When related content is specified manually, use it to generate the TOC,
+        # and return early to prevent unnecessary lookups
+        if self.body:
+            for block in self.body:  # pylint: disable=not-an-iterable,useless-suppression
+                if hasattr(block.block, "to_table_of_contents_items"):
+                    items += block.block.to_table_of_contents_items(block.value)
+                # Return the list to terminate here
+                return items
+
+        # Generate the TOC automatically (via topic association)
         for title in self.sections:
             items.append({"url": f"#{slugify(title)}", "text": title})
-
         if self.related_by_topic:
             items.append({"url": "#related", "text": _("Related content")})
         return items
