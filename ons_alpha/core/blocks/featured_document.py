@@ -41,7 +41,6 @@ class FeaturedDocumentBlock(StructBlock):
             "metadata": {
                 "type": {"text": value["content_type_label"]},
             },
-
         }
         if release_date := getattr(page, "release_date", None):
             document["metadata"]["date"] = {

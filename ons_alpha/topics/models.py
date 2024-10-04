@@ -9,10 +9,15 @@ from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from wagtail.admin.panels import FieldPanel, ObjectList, TabbedInterface
 from wagtail.models import Page
+from wagtail.search import index
 
 from ons_alpha.articles.models import ArticlePage, ArticleSeriesPage
 from ons_alpha.bulletins.models import BulletinPage, BulletinSeriesPage
-from ons_alpha.core.blocks import DocumentListBlock, FeaturedDocumentBlock, HeadlineFiguresBlock
+from ons_alpha.core.blocks import (
+    DocumentListBlock,
+    FeaturedDocumentBlock,
+    HeadlineFiguresBlock,
+)
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.core.models.mixins import SubpageMixin
 from ons_alpha.methodologies.models import MethodologyPage
@@ -65,12 +70,19 @@ class BaseTopicPage(SubpageMixin, BasePage):
 class TopicPage(BaseTopicPage):
     template = "templates/pages/topics/topic_page.html"
     parent_page_types = ["topics.TopicSectionPage"]
-    subpage_types = ["articles.ArticleSeriesPage", "bulletins.BulletinSeriesPage", "methodologies.MethodologyPage"]
+    subpage_types = [
+        "articles.ArticleSeriesPage",
+        "bulletins.BulletinSeriesPage",
+        "methodologies.MethodologyPage",
+    ]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
 
     headline_figures = StreamField([("figures", HeadlineFiguresBlock())], blank=True)
     body = StreamField(
-        [("featured_document", FeaturedDocumentBlock()), ("document_list", DocumentListBlock())],
+        [
+            ("featured_document", FeaturedDocumentBlock()),
+            ("document_list", DocumentListBlock()),
+        ],
         blank=True,
         block_counts={
             "featured_document": {"max_num": 1},
@@ -81,6 +93,12 @@ class TopicPage(BaseTopicPage):
         FieldPanel("summary"),
         FieldPanel("headline_figures"),
         FieldPanel("body"),
+    ]
+
+    search_fields = BasePage.search_fields + [
+        index.SearchField("summary"),
+        index.SearchField("headline_figures"),
+        index.SearchField("body"),
     ]
 
     def latest_by_series(self, model: Type[Page], series_model: Type[Page], topic: Topic = None) -> QuerySet:
@@ -132,7 +150,9 @@ class TopicPage(BaseTopicPage):
         return related
 
     @cached_property
-    def sections(self) -> dict[str, QuerySet[BulletinPage | ArticlePage | MethodologyPage]]:
+    def sections(
+        self,
+    ) -> dict[str, QuerySet[BulletinPage | ArticlePage | MethodologyPage]]:
         sections_dict = {}
         if bulletins := self.latest_bulletins:
             sections_dict[_("Statistical bulletins")] = bulletins
