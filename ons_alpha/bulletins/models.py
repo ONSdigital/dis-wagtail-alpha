@@ -18,7 +18,11 @@ from wagtail.models import Page
 from wagtail.search import index
 
 from ons_alpha.bundles.models import BundledPageMixin
-from ons_alpha.core.blocks.stream_blocks import CoreStoryBlock, CorrectionsNoticesStoryBlock
+from ons_alpha.core.blocks import HeadlineFiguresBlock
+from ons_alpha.core.blocks.stream_blocks import (
+    CoreStoryBlock,
+    CorrectionsNoticesStoryBlock,
+)
 from ons_alpha.core.forms import PageWithUpdatesAdminForm
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
@@ -42,6 +46,7 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
         related_name="+",
     )
     is_accredited = models.BooleanField(default=False)
+    headline_figures = StreamField([("figures", HeadlineFiguresBlock())], blank=True)
     body = StreamField(CoreStoryBlock(), use_json_field=True)
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
 
@@ -67,12 +72,14 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
                         ]
                     ),
                     FieldPanel(
-                        "is_accredited", help_text="If ticked, will show the official statistics accredited logo."
+                        "is_accredited",
+                        help_text="If ticked, will show the official statistics accredited logo.",
                     ),
                     FieldPanel("contact_details"),
                 ],
                 heading="Metadata",
             ),
+            FieldPanel("headline_figures"),
             FieldPanel("body"),
         ]
     )
@@ -88,7 +95,8 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
                 heading="Taxonomy",
             ),
             ObjectList(
-                [FieldPanel("updates", help_text="Add any corrections or updates")], heading="Corrections & Updates"
+                [FieldPanel("updates", help_text="Add any corrections or updates")],
+                heading="Corrections & Updates",
             ),
             ObjectList(BasePage.promote_panels, heading="Promote"),
             ObjectList(BasePage.settings_panels, heading="Settings", classname="settings"),
@@ -97,6 +105,7 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
 
     search_fields = BasePage.search_fields + [
         index.SearchField("summary"),
+        index.SearchField("headline_figures"),
         index.SearchField("body"),
         index.SearchField("get_admin_display_title", boost=2),
         index.AutocompleteField("get_admin_display_title"),
@@ -148,7 +157,11 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
         revision = get_object_or_404(self.revisions, pk=correction.value["previous_version"])
 
         return self.render(
-            request, context_overrides={"page": revision.as_object(), "latest_version_url": self.get_url(request)}
+            request,
+            context_overrides={
+                "page": revision.as_object(),
+                "latest_version_url": self.get_url(request),
+            },
         )
 
 
@@ -182,7 +195,11 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
         if not latest:
             raise Http404
 
-        return self.render(request, context_overrides={"page": latest}, template="templates/pages/bulletin_page.html")
+        return self.render(
+            request,
+            context_overrides={"page": latest},
+            template="templates/pages/bulletin_page.html",
+        )
 
     @path("previous-releases/")
     def previous_releases(self, request):

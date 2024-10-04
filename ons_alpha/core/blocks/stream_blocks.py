@@ -6,6 +6,7 @@ from wagtailmath.blocks import MathBlock
 from ons_alpha.core.blocks import (
     ChartChooserBlock,
     CorrectionBlock,
+    DocumentListBlock,
     DocumentsBlock,
     HeadingBlock,
     NoticeBlock,
@@ -35,6 +36,7 @@ class CoreStoryBlock(StreamBlock):
         help_text="This is a basic table-only block provided by Wagtail. "
         "Use the 'ONS Table' block for the full ONS needs.",
     )
+    document_list = DocumentListBlock()
 
     class Meta:
         block_counts = {"related_links": {"max_num": 1}}
