@@ -38,6 +38,17 @@ class ChartTypeSelectView(LocaleMixin, PermissionCheckedMixin, WagtailAdminTempl
         return reverse("wagtailsnippets_charts_chart:specific_add", kwargs={"chart_type": chart_type})
 
 
+class ChartTypeKwargMixin:
+    def setup(self, request, *args, **kwargs):
+        self.model = get_chart_type_model_from_name(kwargs["chart_type"])
+        self.form_class = None
+        super().setup(request, *args, **kwargs)
+
+    def get_panel(self):
+        edit_handler = self.model.edit_handler
+        return edit_handler.bind_to_model(self.model)
+
+
 class SpecificObjectViewMixin:
 
     def setup(self, request, *args, **kwargs):
@@ -50,27 +61,15 @@ class SpecificObjectViewMixin:
         self.model = type(self.object)
 
 
-class SpecificAddView(CreateView):
-
-    def setup(self, request, *args, **kwargs):
-        try:
-            self.model = get_chart_type_model_from_name(kwargs.get("chart_type"))
-        except ValueError:
-            raise Http404("Invalid chart type") from None
-
-        # This override is required to cancel-out the `form_class`` added
-        # by the SnippetViewSet, allowing the view to use `get_panel()`
-        # to assemble one for the specific model
-        self.form_class = None
-        super().setup(request, *args, **kwargs)
+class SpecificAddView(ChartTypeKwargMixin, CreateView):
 
     def get_add_url(self):
         # This override is required so that the form posts back to this view
         return reverse("wagtailsnippets_charts_chart:specific_add", kwargs={"chart_type": self.kwargs["chart_type"]})
 
-    def get_panel(self):
-        edit_handler = self.model.edit_handler
-        return edit_handler.bind_to_model(self.model)
+    def get_preview_url(self):
+        args = [self.model._meta.label_lower]
+        return reverse(self.preview_url_name, args=args)
 
 
 class SpecificEditView(SpecificObjectViewMixin, EditView):
@@ -91,26 +90,31 @@ class SpecificEditView(SpecificObjectViewMixin, EditView):
         edit_handler = self.model.edit_handler
         return edit_handler.bind_to_model(self.model)
 
+    def get_preview_url(self):
+        args = [self.model._meta.label_lower, self.object.pk]
+        return reverse(self.preview_url_name, args=args)
+
+
+class SpecificDeleteView(SpecificObjectViewMixin, DeleteView):
     def get_object(self):
         if getattr(self, "object", None):
             return self.object.specific
         return super().get_object().specific
 
 
-class SpecificDeleteView(SpecificObjectViewMixin, DeleteView):
+class SpecificPreviewOnCreateView(ChartTypeKwargMixin, PreviewOnCreateView):
     pass
 
 
-class SpecificPreviewCreateAddView(SpecificObjectViewMixin, PreviewOnCreateView):
-    pass
-
-
-class SpecificPreviewOnEditView(SpecificObjectViewMixin, PreviewOnEditView):
+class SpecificPreviewOnEditView(ChartTypeKwargMixin, PreviewOnEditView):
     pass
 
 
 class SpecificHistoryView(SpecificObjectViewMixin, HistoryView):
-    pass
+    def get_object(self):
+        if getattr(self, "object", None):
+            return self.object.specific
+        return super().get_object().specific
 
 
 class ChartViewSet(SnippetViewSet):
@@ -121,7 +125,7 @@ class ChartViewSet(SnippetViewSet):
     edit_view_class = SpecificEditView
     delete_view_class = SpecificDeleteView
     history_view_class = SpecificHistoryView
-    preview_on_add_view_class = SpecificPreviewCreateAddView
+    preview_on_add_view_class = SpecificPreviewOnCreateView
     preview_on_edit_view_class = SpecificPreviewOnEditView
 
     @property
@@ -129,8 +133,18 @@ class ChartViewSet(SnippetViewSet):
         return self.construct_view(self.specific_add_view_class, **self.get_add_view_kwargs())
 
     def get_urlpatterns(self):
-        urlpatterns = super().get_urlpatterns()
-        urlpatterns.append(
+        urlpatterns = [pattern for pattern in super().get_urlpatterns() if getattr(pattern, "name", "") not in ["preview_on_add", "preview_on_edit"]]
+        urlpatterns.extend([
             path("new/<str:chart_type>/", self.specific_add_view, name="specific_add"),
-        )
+            path("preview/<str:chart_type>/", self.preview_on_add_view, name="preview_on_add"),
+            path("preview/<str:chart_type>/<str:pk>/", self.preview_on_edit_view, name="preview_on_edit"),
+        ])
         return urlpatterns
+
+    @property
+    def preview_on_add_view(self):
+        return self.construct_view(self.preview_on_add_view_class)
+
+    @property
+    def preview_on_edit_view(self):
+        return self.construct_view(self.preview_on_edit_view_class)
