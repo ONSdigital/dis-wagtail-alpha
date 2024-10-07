@@ -1,0 +1,23 @@
+.button-nav {
+    padding: 0 24px;
+    height: 72px;
+
+    &:focus {
+        background-color: var(--ons-color-focus);
+    }
+
+    &[aria-expanded='true'],
+    &:focus &:active {
+        background-color: var(--ons-color-branded-tint);
+    }
+
+    // override design system focus styles
+    &:focus .ons-btn__inner,
+    &:active:focus .ons-btn__inner,
+    &.active:focus .ons-btn__inner {
+        /* stylelint-disable declaration-no-important */
+        box-shadow: none !important;
+        background-color: transparent !important;
+        /* stylelint-enable declaration-no-important */
+    }
+}

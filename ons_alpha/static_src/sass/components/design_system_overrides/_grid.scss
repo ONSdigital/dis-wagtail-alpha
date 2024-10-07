@@ -5,7 +5,7 @@ $grid-gutters: 1rem;
     &--flex-gap {
         display: flex;
         flex-direction: column;
-        gap: 2 * $grid-gutters;
+        column-gap: 40px;
         margin-left: 0;
         flex-wrap: nowrap;
 

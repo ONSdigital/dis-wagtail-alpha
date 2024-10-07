@@ -1,0 +1,14 @@
+// overrides to ons header styles
+.ons-header {
+    &__grid-top {
+        padding: 0;
+    }
+
+    &__org-logo {
+        padding: 20px 0;
+
+        @media (min-width: 980px) {
+            padding: 24px 0;
+        }
+    }
+}

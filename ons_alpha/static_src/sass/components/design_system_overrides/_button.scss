@@ -1,0 +1,18 @@
+// overrides the ons button styles
+.ons-btn {
+    &--text-link {
+        @media (min-width: 980px) {
+            display: inline-block;
+        }
+
+        .ons-btn__inner {
+            font-weight: 700;
+        }
+
+        .ons-icon {
+            width: 16px;
+            height: 16px;
+            margin-top: 0;
+        }
+    }
+}
