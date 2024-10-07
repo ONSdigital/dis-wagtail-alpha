@@ -1,9 +1,0 @@
-// override to ons button style so the menu button displays at desktop
-.ons-btn {
-    &--mobile,
-    &--text-link {
-        @media (min-width: 980px) {
-            display: inline-block;
-        }
-    }
-}
