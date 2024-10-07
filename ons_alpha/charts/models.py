@@ -1,4 +1,5 @@
 import csv
+import io
 import uuid
 
 from collections.abc import Sequence
@@ -29,9 +30,9 @@ from wagtail.models import (
     SpecificMixin,
 )
 
-from ons_alpha.private_media.models import PrivateMediaCollectionMember
 from ons_alpha.charts.constants import BarChartType, DataSource, LegendPosition
 from ons_alpha.charts.validators import csv_file_validator
+from ons_alpha.private_media.models import PrivateMediaCollectionMember
 
 
 class Chart(
@@ -53,9 +54,7 @@ class Chart(
     name = models.CharField(
         verbose_name=_("name"),
         max_length=255,
-        help_text=_(
-            "The editor-facing name that will appear in the listing and chooser interfaces."
-        ),
+        help_text=_("The editor-facing name that will appear in the listing and chooser interfaces."),
     )
     content_type = models.ForeignKey(
         ContentType,
@@ -102,13 +101,12 @@ class Chart(
     def get_privacy_controlled_files(self):
         return []
 
+
 class BaseHighchartsChart(Chart):
     title = models.CharField(verbose_name=_("title"), max_length=255)
     subtitle = models.CharField(verbose_name=_("subtitle"), max_length=255, blank=True)
     show_legend = models.BooleanField(default=False)
-    legend_position = models.CharField(
-        max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP
-    )
+    legend_position = models.CharField(max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP)
 
     x_label = models.CharField(verbose_name=_("label"), max_length=255)
     x_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
@@ -118,9 +116,7 @@ class BaseHighchartsChart(Chart):
     y_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
     y_min = models.FloatField(verbose_name=_("scale cap (min)"), blank=True, null=True)
 
-    data_source = models.CharField(
-        max_length=10, choices=DataSource.choices, default=DataSource.CSV
-    )
+    data_source = models.CharField(max_length=10, choices=DataSource.choices, default=DataSource.CSV)
     data_file = models.FileField(
         verbose_name=_("CSV file"),
         upload_to="charts",
@@ -208,8 +204,10 @@ class BaseHighchartsChart(Chart):
         columns = []
         rows = []
         if self.data_source == DataSource.CSV and self.data_file:
-            with open(self.data_file, "+r", newline="") as csvfile:
-                reader = csv.reader(csvfile)
+            with self.data_file.open("r") as csvfile:
+                textfile = io.TextIOWrapper(csvfile, newline="")
+                textfile.seek(0)
+                reader = csv.reader(textfile)
                 for i, row in enumerate(reader):
                     if not i:
                         columns = row
