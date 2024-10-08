@@ -1,6 +1,6 @@
 from wagtail.snippets.blocks import SnippetChooserBlock
 
-from ons_alpha.core.models.snippets import Chart
+from ons_alpha.charts.models import Chart
 
 
 class ChartChooserBlock(SnippetChooserBlock):
