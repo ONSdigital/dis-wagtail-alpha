@@ -610,6 +610,40 @@ files = [
 Django = ">=4.2"
 
 [[package]]
+name = "django-health-check"
+version = "3.18.3"
+description = "Run checks on services like databases, queue servers, celery processes, etc."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "django_health_check-3.18.3-py2.py3-none-any.whl", hash = "sha256:f5f58762b80bdf7b12fad724761993d6e83540f97e2c95c42978f187e452fa07"},
+    {file = "django_health_check-3.18.3.tar.gz", hash = "sha256:18b75daca4551c69a43f804f9e41e23f5f5fb9efd06cf6a313b3d5031bb87bd0"},
+]
+
+[package.dependencies]
+django = ">=2.2"
+
+[package.extras]
+docs = ["sphinx"]
+test = ["boto3", "celery", "django-storages", "pytest", "pytest-cov", "pytest-django", "redis"]
+
+[[package]]
+name = "django-iam-dbauth"
+version = "0.2.1"
+description = "Django database backends to use AWS Database IAM Authentication"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django_iam_dbauth-0.2.1-py2.py3-none-any.whl", hash = "sha256:c3ea606ce62bf872930af948a59c792c26c6372db61911ad93b0e536009f033d"},
+    {file = "django_iam_dbauth-0.2.1.tar.gz", hash = "sha256:a33885c81ecdfc8eef22842a56b6a8f545c3c1a1595945ce8e87453697481a62"},
+]
+
+[package.dependencies]
+boto3 = "*"
+django = ">=4.2"
+dnspython = "*"
+
+[[package]]
 name = "django-jinja"
 version = "2.11.0"
 description = "Jinja2 templating language integrated in Django."
@@ -755,6 +789,26 @@ files = [
 
 [package.extras]
 dev = ["nox", "pre-commit"]
+
+[[package]]
+name = "dnspython"
+version = "2.6.1"
+description = "DNS toolkit"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "dnspython-2.6.1-py3-none-any.whl", hash = "sha256:5ef3b9680161f6fa89daf8ad451b5f1a33b18ae8a1c6778cdf4b43f08c0a6e50"},
+    {file = "dnspython-2.6.1.tar.gz", hash = "sha256:e8f0f9c23a7b7cb99ded64e6c3a6f3e701d78f50c55e002b839dea7225cff7cc"},
+]
+
+[package.extras]
+dev = ["black (>=23.1.0)", "coverage (>=7.0)", "flake8 (>=7)", "mypy (>=1.8)", "pylint (>=3)", "pytest (>=7.4)", "pytest-cov (>=4.1.0)", "sphinx (>=7.2.0)", "twine (>=4.0.0)", "wheel (>=0.42.0)"]
+dnssec = ["cryptography (>=41)"]
+doh = ["h2 (>=4.1.0)", "httpcore (>=1.0.0)", "httpx (>=0.26.0)"]
+doq = ["aioquic (>=0.9.25)"]
+idna = ["idna (>=3.6)"]
+trio = ["trio (>=0.23)"]
+wmi = ["wmi (>=1.5.1)"]
 
 [[package]]
 name = "draftjs-exporter"
@@ -2388,4 +2442,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "d32032e71470734c604b4ef11febaf8e1080e4458eb6473af7b81e63e62eb2f6"
+content-hash = "c1d3578bb86d174a3679505031c35aec54d35c2b55d10d478ba43b40d2da8d37"

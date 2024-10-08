@@ -109,6 +109,9 @@ INSTALLED_APPS = [
     "wagtailmath",
     "wagtailcharts",
     "wagtailfontawesomesvg",
+    "health_check",
+    "health_check.db",
+    "health_check.cache",
 ]
 
 if not IS_EXTERNAL_ENV:
@@ -198,12 +201,35 @@ WSGI_APPLICATION = "ons_alpha.wsgi.application"
 
 
 # Database
-# This setting will use DATABASE_URL environment variable.
 # https://docs.djangoproject.com/en/stable/ref/settings/#databases
-# https://github.com/kennethreitz/dj-database-url
 
-DATABASES = {"default": dj_database_url.config(conn_max_age=600, default="postgres:///ons_alpha")}
+if "PG_DB_ADDR" in env:
+    # Use IAM authentication to connect to the Database
+    DATABASES = {
+        "default": {
+            "ENGINE": "django_iam_dbauth.aws.postgresql",
+            "NAME": env["PG_DB_DATABASE"],
+            "USER": env["PG_DB_USER"],
+            "HOST": env["PG_DB_ADDR"],
+            "PORT": env["PG_DB_PORT"],
+            "CONN_MAX_AGE": 900,  # Must be 15 minutes, to match password expiry
+            "CONN_HEALTH_CHECKS": True,
+            "OPTIONS": {"use_iam_auth": True, "sslmode": "require"},
+        }
+    }
 
+    # Additionally configure a read-replica if one is available
+    if "PG_DB_READ_ADDR" in env:
+        DATABASES["read_replica"] = {**DATABASES["default"], "HOST": env["PG_DB_READ_ADDR"]}
+
+else:
+    # This setting will use DATABASE_URL environment variable.
+    DATABASES = {
+        "default": dj_database_url.config(conn_max_age=900, conn_health_checks=True, default="postgres:///ons_alpha")
+    }
+
+if "read_replica" in DATABASES:
+    DATABASE_ROUTERS = ["ons_alpha.utils.db_router.ReadReplicaRouter"]
 
 # Server-side cache settings. Do not confuse with front-end cache.
 # https://docs.djangoproject.com/en/stable/topics/cache/
@@ -215,32 +241,41 @@ DATABASES = {"default": dj_database_url.config(conn_max_age=600, default="postgr
 #
 # Do not use the same Redis instance for other things like Celery!
 
-# Prefer the TLS connection URL over non
-REDIS_URL = env.get("REDIS_TLS_URL", env.get("REDIS_URL"))
+redis_options = {
+    "IGNORE_EXCEPTIONS": True,
+    "SOCKET_CONNECT_TIMEOUT": 2,  # seconds
+    "SOCKET_TIMEOUT": 2,  # seconds
+}
+DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 
-if REDIS_URL:
+# Prefer the TLS connection URL over non for Heroku
+if redis_url := env.get("REDIS_TLS_URL", env.get("REDIS_URL")):
     connection_pool_kwargs = {}
 
-    if REDIS_URL.startswith("rediss"):
+    if redis_url.startswith("rediss"):
         # Heroku Redis uses self-signed certificates for secure redis conections. https://stackoverflow.com/a/66286068
         # When using TLS, we need to disable certificate validation checks.
         connection_pool_kwargs["ssl_cert_reqs"] = None
 
-    redis_options = {
-        "IGNORE_EXCEPTIONS": True,
-        "SOCKET_CONNECT_TIMEOUT": 2,  # seconds
-        "SOCKET_TIMEOUT": 2,  # seconds
-        "CONNECTION_POOL_KWARGS": connection_pool_kwargs,
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": redis_url,
+            "OPTIONS": {**redis_options, "CONNECTION_POOL_KWARGS": connection_pool_kwargs},
+        }
     }
+elif elasticache_addr := env.get("ELASTICACHE_ADDR"):
+    user_name = env["ELASTICACHE_USER_NAME"]
+    password = env["ELASTICACHE_USER_PASSWORD"]
+    port = env["ELASTICACHE_PORT"]
 
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": REDIS_URL,
+            "LOCATION": f"rediss://{user_name}:{password}@{elasticache_addr}:{port}",
             "OPTIONS": redis_options,
         }
     }
-    DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 else:
     CACHES = {
         "default": {
@@ -252,7 +287,7 @@ else:
 # Search
 # https://docs.wagtail.io/en/latest/topics/search/backends.html
 
-WAGTAILSEARCH_BACKENDS = {"default": {"BACKEND": "wagtail.search.backends.database"}}
+WAGTAILSEARCH_BACKENDS = {"default": {"BACKEND": "ons_alpha.utils.search.ONSPostgresSearchBackend"}}
 
 
 # Password validation
@@ -607,9 +642,9 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = int(env.get("DATA_UPLOAD_MAX_NUMBER_FIELDS", 100
 # Custom view to handle CSRF failures.
 CSRF_FAILURE_VIEW = "ons_alpha.utils.views.csrf_failure"
 
-# Force HTTPS redirect (enabled by default!)
+# Force HTTPS redirect
 # https://docs.djangoproject.com/en/stable/ref/settings/#secure-ssl-redirect
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = env.get("SECURE_SSL_REDIRECT", "true").lower().strip() == "true"
 
 
 # This will allow the cache to swallow the fact that the website is behind TLS
@@ -699,7 +734,10 @@ AUTH_USER_MODEL = "users.User"
 # django-defender
 # Records failed login attempts and blocks access by username and IP
 # https://django-defender.readthedocs.io/en/latest/
-ENABLE_DJANGO_DEFENDER = REDIS_URL and env.get("ENABLE_DJANGO_DEFENDER", "True").lower().strip() == "true"
+ENABLE_DJANGO_DEFENDER = (
+    "redis" in CACHES["default"]["BACKEND"].lower()
+    and env.get("ENABLE_DJANGO_DEFENDER", "True").lower().strip() == "true"
+)
 
 if ENABLE_DJANGO_DEFENDER:
     INSTALLED_APPS += ["defender"]

@@ -18,6 +18,7 @@ from ons_alpha.utils.cache import get_default_cache_control_decorator
 # Private URLs are not meant to be cached.
 private_urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
+    path("-/health/", include("health_check.urls")),
 ]
 
 # `wagtail.admin` must always be installed,

@@ -30,7 +30,7 @@ format-py:  ## 🎨️   - Format the Python code
 format-html:  ## 🎨️   - Format the HTML code
 	find ons_alpha/ -name '*.html' | xargs poetry run djhtml
 
-build-docker:
+build-docker-dev:
 	docker build -t ons_alpha .
 
 messages:  ## 🌍   - Make strings available for translation
