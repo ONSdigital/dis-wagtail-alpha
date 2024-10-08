@@ -1,0 +1,12 @@
+// overrides to ons breadcrumb styles
+.ons-breadcrumbs {
+    padding: 16px 0; // 16px not 1 rem (18px)
+
+    &__items {
+        margin-bottom: -8px;
+    }
+
+    &__item {
+        padding-bottom: 8px;
+    }
+}
