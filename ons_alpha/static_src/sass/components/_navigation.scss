@@ -1,0 +1,57 @@
+/* New navigation styling for November protoype */
+
+.navigation {
+    background-color: var(--ons-color-branded-tint);
+    width: 100%;
+    margin-bottom: 16px;
+    padding-top: 40px;
+
+    &__key-links {
+        border-bottom: 1px solid var(--ons-color-ocean-blue);
+        row-gap: 16px;
+        padding-bottom: 16px;
+        margin-bottom: 20px;
+
+        @media (min-width: 980px) {
+            padding-bottom: 24px;
+        }
+    }
+
+    &__child-list {
+        margin-bottom: 32px;
+    }
+
+    &__link {
+        display: inline-block;
+
+        // override design system focus style
+        &:focus {
+            /* stylelint-disable declaration-no-important */
+            box-shadow: none !important;
+            text-decoration: underline !important;
+            color: var(--ons-color-text-link) !important;
+            /* stylelint-enable declaration-no-important */
+        }
+    }
+
+    &__heading,
+    &__paragraph {
+        line-height: 1.714;
+    }
+
+    &__heading {
+        margin-bottom: 16px;
+
+        &--key-link {
+            margin-bottom: 0;
+        }
+    }
+
+    &__paragraph {
+        margin-bottom: 8px;
+
+        &--key-link {
+            margin-bottom: 0;
+        }
+    }
+}

@@ -1,0 +1,23 @@
+// addition to ons grid to use 'gap' to set widths between columns
+$grid-gutters: 1rem;
+
+.ons-grid {
+    &--flex-gap {
+        display: flex;
+        flex-direction: column;
+        column-gap: 40px;
+        margin-left: 0;
+        flex-wrap: nowrap;
+
+        // will need updating to fit correctly with the ons grid system
+        @media (min-width: 980px) {
+            flex-direction: row;
+        }
+    }
+}
+
+.ons-grid__col {
+    .ons-grid--flex-gap & {
+        padding-left: 0;
+    }
+}
