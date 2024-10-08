@@ -109,6 +109,9 @@ INSTALLED_APPS = [
     "wagtailmath",
     "wagtailcharts",
     "wagtailfontawesomesvg",
+    "wagtail_2fa",
+    "django_otp",
+    "django_otp.plugins.otp_totp",
 ]
 
 if not IS_EXTERNAL_ENV:
@@ -144,7 +147,14 @@ MIDDLEWARE = [
 if not IS_EXTERNAL_ENV:
     common_middleware_index = MIDDLEWARE.index("django.middleware.common.CommonMiddleware")
     MIDDLEWARE.insert(common_middleware_index, "django.contrib.messages.middleware.MessageMiddleware")
-    MIDDLEWARE.insert(common_middleware_index, "django.contrib.auth.middleware.AuthenticationMiddleware")
+    MIDDLEWARE.insert(
+        common_middleware_index,
+        "wagtail_2fa.middleware.VerifyUserMiddleware",
+    )
+    MIDDLEWARE.insert(
+        common_middleware_index,
+        "django.contrib.auth.middleware.AuthenticationMiddleware",
+    )
     MIDDLEWARE.insert(common_middleware_index, "django.contrib.sessions.middleware.SessionMiddleware")
 
 ROOT_URLCONF = "ons_alpha.urls"
@@ -160,7 +170,10 @@ context_processors = [
 
 if not IS_EXTERNAL_ENV:
     context_processors.extend(
-        ["django.contrib.messages.context_processors.messages", "django.contrib.auth.context_processors.auth"]
+        [
+            "django.contrib.messages.context_processors.messages",
+            "django.contrib.auth.context_processors.auth",
+        ]
     )
 
 TEMPLATES = [
@@ -793,6 +806,12 @@ WAGTAILFORMS_HELP_TEXT_ALLOW_HTML = False
 CRISPY_ALLOWED_TEMPLATE_PACKS = ["tbx"]
 CRISPY_TEMPLATE_PACK = "tbx"
 CRISPY_FAIL_SILENTLY = False  # Default for local development. Gets overridden.
+
+# Wagtail-2FA
+# https://wagtail-2fa.readthedocs.io/en/latest/
+# -----------------------------------------------------------------------------
+WAGTAIL_2FA_REQUIRED = env.get("WAGTAIL_2FA_REQUIRED", "false").lower() == "true"
+WAGTAIL_2FA_OTP_TOTP_NAME = env.get("WAGTAIL_2FA_OTP_TOTP_NAME", "ONS Nov Prototype")
 
 # Isolates the browsing context exclusively to same-origin documents.
 # Cross-origin documents are not loaded in the same browsing context.
