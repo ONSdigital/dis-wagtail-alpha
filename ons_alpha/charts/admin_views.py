@@ -50,6 +50,10 @@ class ChartTypeKwargMixin:
 
 
 class SpecificObjectViewMixin:
+    draftstate_enabled = True
+    locking_enabled = False
+    preview_enabled = True
+    revision_enabled = True
 
     def setup(self, request, *args, **kwargs):
         self.request = request
@@ -86,15 +90,10 @@ class SpecificAddView(ChartTypeKwargMixin, CreateView):
 
 
 class SpecificEditView(SpecificObjectViewMixin, EditView):
-    draftstate_enabled = True
-    locking_enabled = False
-    preview_enabled = True
-    revision_enabled = True
     action = "edit"
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        # Convert the vanilla Chart object into a specific one
         self.model = type(self.object)
         self.panel = self.get_panel()
         self.locked_for_user = False
@@ -108,23 +107,14 @@ class SpecificEditView(SpecificObjectViewMixin, EditView):
         return reverse(self.preview_url_name, args=args)
 
 
-class SpecificDeleteView(SpecificObjectViewMixin, DeleteView):
-    def get_object(self):
-        if getattr(self, "object", None):
-            return self.object.specific
-        return super().get_object().specific
-
-
 class SpecificCopyView(SpecificObjectViewMixin, CopyView):
+    action = "copy"
+
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         self.model = type(self.object)
         self.panel = self.get_panel()
         self.form_class = self.panel.get_form_class()
-        self.preview_enabled = True
-        self.locking_enabled = False
-        self.revision_enabled = True
-        self.draftstate_enabled = True
         self.add_url_name = "wagtailsnippets_charts_chart:specific_add"
 
     def get_initial_form_instance(self):
@@ -155,6 +145,10 @@ class SpecificCopyView(SpecificObjectViewMixin, CopyView):
         return reverse(self.preview_url_name, args=args)
 
 
+class SpecificDeleteView(SpecificObjectViewMixin, DeleteView):
+    pass
+
+
 class SpecificPreviewOnCreateView(ChartTypeKwargMixin, PreviewOnCreateView):
     pass
 
@@ -164,14 +158,10 @@ class SpecificPreviewOnEditView(ChartTypeKwargMixin, PreviewOnEditView):
 
 
 class SpecificHistoryView(SpecificObjectViewMixin, HistoryView):
-    def get_object(self):
-        if getattr(self, "object", None):
-            return self.object.specific
-        return super().get_object().specific
+    pass
 
 
 class ChartViewSet(SnippetViewSet):
-
     add_to_admin_menu = True
     add_view_class = ChartTypeSelectView
     copy_view_class = SpecificCopyView
