@@ -20,7 +20,9 @@ from .models import Chart
 from .utils import get_chart_type_model_from_name
 
 
-class ChartTypeSelectView(LocaleMixin, PermissionCheckedMixin, WagtailAdminTemplateMixin, BaseFormView):
+class ChartTypeSelectView(
+    LocaleMixin, PermissionCheckedMixin, WagtailAdminTemplateMixin, BaseFormView
+):
     def get_form_class(self):
         """Return the form class to use."""
         return ChartTypeSelectForm
@@ -36,7 +38,10 @@ class ChartTypeSelectView(LocaleMixin, PermissionCheckedMixin, WagtailAdminTempl
     def get_success_url(self):
         """Return the URL to redirect to after processing a valid form."""
         chart_type = self.form.cleaned_data["chart_type"]
-        return reverse("wagtailsnippets_charts_chart:specific_add", kwargs={"chart_type": chart_type})
+        return reverse(
+            "wagtailsnippets_charts_chart:specific_add",
+            kwargs={"chart_type": chart_type},
+        )
 
 
 class ChartTypeKwargMixin:
@@ -56,15 +61,28 @@ class SpecificObjectViewMixin:
     revision_enabled = True
 
     def setup(self, request, *args, **kwargs):
+        # NOTE: These 3 attributes will be reset by the superclass implementation,
+        # but need to be set for the `get_object()` method to work
+        # correctly
         self.request = request
         self.args = args
         self.kwargs = kwargs
-        self.form_class = None
-        self.pk = kwargs.get("pk") or self.args[0]
-        self.object = self.get_object().specific
+
+        # Fetch the specific object and use the specific type to set
+        # self.model - allowing forms to be generated correctly. Our overrides
+        # to `get_object()` should rule out repeat queries when the superclass
+        # implementation calls `get_object()` again.
+        self.object = self.get_object()
         self.model = type(self.object)
 
+        super().setup(request, *args, **kwargs)
+
     def get_object(self):
+        """
+        Overrides the default implementation to return the specific object.
+        Because views often make their own requests to `get_object()` in
+        `setup()`, there is some caching in place to avoid repeat queries.
+        """
         if getattr(self, "object", None):
             return self.object.specific
         return super().get_object().specific
@@ -75,10 +93,12 @@ class SpecificObjectViewMixin:
 
 
 class SpecificAddView(ChartTypeKwargMixin, CreateView):
-
     def get_add_url(self):
         # This override is required so that the form posts back to this view
-        return reverse("wagtailsnippets_charts_chart:specific_add", kwargs={"chart_type": self.kwargs["chart_type"]})
+        return reverse(
+            "wagtailsnippets_charts_chart:specific_add",
+            kwargs={"chart_type": self.kwargs["chart_type"]},
+        )
 
     def get_preview_url(self):
         """
@@ -92,12 +112,6 @@ class SpecificAddView(ChartTypeKwargMixin, CreateView):
 class SpecificEditView(SpecificObjectViewMixin, EditView):
     action = "edit"
 
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.model = type(self.object)
-        self.panel = self.get_panel()
-        self.locked_for_user = False
-
     def get_preview_url(self):
         """
         Overrides the default implementation to pass include the chart-type
@@ -109,13 +123,6 @@ class SpecificEditView(SpecificObjectViewMixin, EditView):
 
 class SpecificCopyView(SpecificObjectViewMixin, CopyView):
     action = "copy"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.model = type(self.object)
-        self.panel = self.get_panel()
-        self.form_class = self.panel.get_form_class()
-        self.add_url_name = "wagtailsnippets_charts_chart:specific_add"
 
     def get_initial_form_instance(self):
         """
@@ -134,11 +141,14 @@ class SpecificCopyView(SpecificObjectViewMixin, CopyView):
         to the 'specific_add' view - which has a chart-type-specific form
         for validating/saving the new object.
         """
-        return reverse(self.add_url_name, kwargs={"chart_type": self.model._meta.label_lower})
+        return reverse(
+            "wagtailsnippets_charts_chart:specific_add",
+            kwargs={"chart_type": self.model._meta.label_lower},
+        )
 
     def get_preview_url(self):
         """
-        Overrides the default implementation to pass include the chart-type
+        Overrides the default implementation to include the chart-type
         in the preview URL, allowing it to identify the specific model.
         """
         args = [self.model._meta.label_lower]
@@ -146,7 +156,15 @@ class SpecificCopyView(SpecificObjectViewMixin, CopyView):
 
 
 class SpecificDeleteView(SpecificObjectViewMixin, DeleteView):
-    pass
+    def get_form(self, *args, **kwargs):
+        """
+        Overrides the default implementation to ensure 'instance' is set on
+        the form. It's unclear why Wagtail doesn't do this by default, but
+        `self.get_bound_panel()` raises an AttributeError without this.
+        """
+        form = super().get_form(*args, **kwargs)
+        form.instance = self.object
+        return form
 
 
 class SpecificPreviewOnCreateView(ChartTypeKwargMixin, PreviewOnCreateView):
@@ -175,7 +193,9 @@ class ChartViewSet(SnippetViewSet):
 
     @property
     def specific_add_view(self):
-        return self.construct_view(self.specific_add_view_class, **self.get_add_view_kwargs())
+        return self.construct_view(
+            self.specific_add_view_class, **self.get_add_view_kwargs()
+        )
 
     def get_urlpatterns(self):
         urlpatterns = [
@@ -185,9 +205,19 @@ class ChartViewSet(SnippetViewSet):
         ]
         urlpatterns.extend(
             [
-                path("new/<str:chart_type>/", self.specific_add_view, name="specific_add"),
-                path("preview/<str:chart_type>/", self.preview_on_add_view, name="preview_on_add"),
-                path("preview/<str:chart_type>/<str:pk>/", self.preview_on_edit_view, name="preview_on_edit"),
+                path(
+                    "new/<str:chart_type>/", self.specific_add_view, name="specific_add"
+                ),
+                path(
+                    "preview/<str:chart_type>/",
+                    self.preview_on_add_view,
+                    name="preview_on_add",
+                ),
+                path(
+                    "preview/<str:chart_type>/<str:pk>/",
+                    self.preview_on_edit_view,
+                    name="preview_on_edit",
+                ),
             ]
         )
         return urlpatterns
