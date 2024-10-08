@@ -65,7 +65,7 @@ class Chart(
     content_type.wagtail_reference_index_ignore = True
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -77,17 +77,17 @@ class Chart(
             # that this was created as
             self.content_type = ContentType.objects.get_for_model(self)
 
-    def get_template(self, request, **kwargs) -> str:
+    def get_template(self, request, **kwargs) -> str:  # pylint: disable=unused-argument
         if self.template is None:
             raise ValueError(
                 f"{type(self).__name__}.template is None and the get_template() method has not been overridden."
             )
         return self.template
 
-    def get_preview_template(self, request, preview_mode: str, **kwargs):
-        return self.get_template(request, preview_mode=preview_mode, **kwargs)
+    def get_preview_template(self, request, mode_name: str, **kwargs):
+        return self.get_template(request, preview_mode=mode_name, **kwargs)
 
-    def get_context(self, request, **kwargs):
+    def get_context(self, request, **kwargs):  # pylint: disable=unused-argument
         context = {
             "chart": self.specific,
             "chart_type": self.specific_class,
@@ -95,8 +95,8 @@ class Chart(
         context.update(kwargs)
         return context
 
-    def get_preview_context(self, request, preview_mode: str, **kwargs):
-        return self.get_context(request, preview_mode=preview_mode, **kwargs)
+    def get_preview_context(self, request, mode_name: str, **kwargs):
+        return self.get_context(request, preview_mode=mode_name, **kwargs)
 
     def get_privacy_controlled_files(self):
         return []
@@ -188,7 +188,10 @@ class BaseHighchartsChart(Chart):
             self.data_source == DataSource.CSV and self.data_file.size <= 1572864
         )
 
-    def get_data_json(self, request: HttpRequest) -> dict[str, list]:
+    def get_data_json(
+        self,
+        request: HttpRequest,  # pylint: disable=unused-argument
+    ) -> dict[str, list]:
         """
         Return a JSON-serializable representation of the chart's data. Used by both:
 
@@ -204,10 +207,10 @@ class BaseHighchartsChart(Chart):
         columns = []
         rows = []
         if self.data_source == DataSource.CSV and self.data_file:
-            with self.data_file.open("r") as csvfile:
-                textfile = io.TextIOWrapper(csvfile, newline="")
-                textfile.seek(0)
-                reader = csv.reader(textfile)
+            with self.data_file.open("r", encoding="utf-8") as csvfile:
+                textwrapper = io.TextIOWrapper(csvfile, newline="")
+                textwrapper.seek(0)
+                reader = csv.reader(textwrapper)
                 for i, row in enumerate(reader):
                     if not i:
                         columns = row
@@ -222,8 +225,10 @@ class BaseHighchartsChart(Chart):
     @cached_property
     def data_headers(self) -> Sequence[str]:
         if self.data_source == DataSource.CSV and self.data_file:
-            with open(self.data_file, "+r", newline="") as csvfile:
-                reader = csv.DictReader(csvfile)
+            with self.data_file.open("r", encoding="utf-8") as csvfile:
+                textwrapper = io.TextIOWrapper(csvfile, newline="")
+                textwrapper.seek(0)
+                reader = csv.reader(textwrapper)
                 return reader.fieldnames or []
         if self.data_source == DataSource.MANUAL and self.data_manual:
             return [col["heading"] for col in self.manual_data_table.columns]
@@ -284,7 +289,7 @@ class BaseHighchartsChart(Chart):
         raise NotImplementedError
 
     @classproperty
-    def edit_handler(cls):
+    def edit_handler(cls):  # pylint: disable=no-self-argument
         return TabbedInterface(
             [
                 ObjectList(cls.general_panels, heading=_("Common")),

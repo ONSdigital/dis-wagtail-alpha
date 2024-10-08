@@ -27,10 +27,14 @@ class ChartAPIViewSet(ReadOnlyModelViewSet):
     lookup_field = "uuid"
 
     @action(detail=True, methods=["get"])
-    def data_csv(self, request: HttpRequest, uuid: str):
+    def data_csv(
+        self,
+        request: HttpRequest,  # pylint: disable=unused-argument
+        uuid: str,
+    ):
         chart = get_object_or_404(Chart, uuid=uuid).specific
         if chart.data_source == DataSource.CSV and chart.data_file:
-            with open(chart.data_file) as csvfile:
+            with open(chart.data_file, encoding="utf-8") as csvfile:
                 return FileResponse(csvfile, filename="data.csv")
         if chart.data_source == DataSource.MANUAL and chart.manual_data:
             with io.StringIO(newline="") as csvfile:

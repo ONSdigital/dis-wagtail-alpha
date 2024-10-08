@@ -10,13 +10,13 @@ if TYPE_CHECKING:
 
 
 def get_chart_type_models() -> list[type["Chart"]]:
-    from ons_alpha.charts.models import Chart  # bypassing circular import
+    from ons_alpha.charts.models import Chart  # pylint: disable=import-outside-toplevel
 
     return [model for model in apps.get_models() if issubclass(model, Chart) and model is not Chart]
 
 
 def get_chart_type_model_from_name(name) -> type["Chart"]:
-    from ons_alpha.charts.models import Chart  # bypassing circular import
+    from ons_alpha.charts.models import Chart  # pylint: disable=import-outside-toplevel
 
     model = apps.get_model(name)
     if not issubclass(model, Chart):
