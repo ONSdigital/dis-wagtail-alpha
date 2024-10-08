@@ -20,9 +20,7 @@ from .models import Chart
 from .utils import get_chart_type_model_from_name
 
 
-class ChartTypeSelectView(
-    LocaleMixin, PermissionCheckedMixin, WagtailAdminTemplateMixin, BaseFormView
-):
+class ChartTypeSelectView(LocaleMixin, PermissionCheckedMixin, WagtailAdminTemplateMixin, BaseFormView):
     def get_form_class(self):
         """Return the form class to use."""
         return ChartTypeSelectForm
@@ -32,7 +30,7 @@ class ChartTypeSelectView(
 
     def form_valid(self, form):
         """Process the valid form data."""
-        self.form = form  # Store the form instance
+        self.form = form  # pylint: disable=attribute-defined-outside-init
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -193,9 +191,7 @@ class ChartViewSet(SnippetViewSet):
 
     @property
     def specific_add_view(self):
-        return self.construct_view(
-            self.specific_add_view_class, **self.get_add_view_kwargs()
-        )
+        return self.construct_view(self.specific_add_view_class, **self.get_add_view_kwargs())
 
     def get_urlpatterns(self):
         urlpatterns = [
@@ -205,9 +201,7 @@ class ChartViewSet(SnippetViewSet):
         ]
         urlpatterns.extend(
             [
-                path(
-                    "new/<str:chart_type>/", self.specific_add_view, name="specific_add"
-                ),
+                path("new/<str:chart_type>/", self.specific_add_view, name="specific_add"),
                 path(
                     "preview/<str:chart_type>/",
                     self.preview_on_add_view,

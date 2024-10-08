@@ -1,9 +1,9 @@
 function togglePanelVisibility(dataSourceValue, csvField, manualField) {
-    if(dataSourceValue == 'csv') {
+    if(dataSourceValue === 'csv') {
         csvField.hidden = false;
         manualField.hidden = true;
     }
-    else if(dataSourceValue == 'manual') {
+    else if(dataSourceValue === 'manual') {
         csvField.hidden = true;
         manualField.hidden = false;
     }
