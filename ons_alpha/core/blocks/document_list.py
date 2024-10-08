@@ -17,9 +17,7 @@ from ons_alpha.core.constants import CONTENT_TYPE_LABEL_CHOICES
 class DocumentListItemBlock(StructBlock):
     title = CharBlock(label=_("Title"), max_length=200, required=True)
     release_date = DateBlock(label=_("Release date"), required=True)
-    content_type_label = ChoiceBlock(
-        label=_("Content type label"), choices=CONTENT_TYPE_LABEL_CHOICES, required=True
-    )
+    content_type_label = ChoiceBlock(label=_("Content type label"), choices=CONTENT_TYPE_LABEL_CHOICES, required=True)
     description = TextBlock(label=_("Description"), max_length=300, required=True)
     page = PageChooserBlock(label=_("Page"), required=False)
 

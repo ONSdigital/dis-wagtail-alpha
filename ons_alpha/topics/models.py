@@ -63,14 +63,8 @@ class BaseTopicPage(SubpageMixin, BasePage):
         for sub_page_type in BaseTopicPage.__subclasses__():
             # Find other pages (and translations) for this topic.
             # Translations of the same page are allowed, but other pages aren't.
-            if (
-                sub_page_type.objects.filter(topic=self.topic)
-                .exclude(translation_key=self.translation_key)
-                .exists()
-            ):
-                raise ValidationError(
-                    {"topic": "Topic Page (or Section) with this topic already exists."}
-                )
+            if sub_page_type.objects.filter(topic=self.topic).exclude(translation_key=self.translation_key).exists():
+                raise ValidationError({"topic": "Topic Page (or Section) with this topic already exists."})
 
 
 class TopicPage(BaseTopicPage):
@@ -107,27 +101,19 @@ class TopicPage(BaseTopicPage):
         index.SearchField("body"),
     ]
 
-    def latest_by_series(
-        self, model: Type[Page], series_model: Type[Page], topic: Topic = None
-    ) -> QuerySet:
+    def latest_by_series(self, model: Type[Page], series_model: Type[Page], topic: Topic = None) -> QuerySet:
         newest_qs = (
-            model.objects.live()
-            .public()
-            .filter(path__startswith=OuterRef("path"), depth__gte=OuterRef("depth"))
+            model.objects.live().public().filter(path__startswith=OuterRef("path"), depth__gte=OuterRef("depth"))
         )
         if topic:
             newest_qs = newest_qs.filter(topics__topic=topic)
         newest_qs = newest_qs.order_by("-release_date")
 
-        model_pk_qs = (
-            series_model.objects.not_child_of(self)
-            if topic
-            else series_model.objects.child_of(self)
-        )
+        model_pk_qs = series_model.objects.not_child_of(self) if topic else series_model.objects.child_of(self)
         return model.objects.filter(
-            pk__in=model_pk_qs.annotate(
-                latest_child_page=Subquery(newest_qs.values("pk")[:1])
-            ).values_list("latest_child_page", flat=True)
+            pk__in=model_pk_qs.annotate(latest_child_page=Subquery(newest_qs.values("pk")[:1])).values_list(
+                "latest_child_page", flat=True
+            )
         ).order_by("-release_date")
 
     @cached_property
@@ -140,24 +126,15 @@ class TopicPage(BaseTopicPage):
 
     @cached_property
     def latest_methodologies(self) -> QuerySet[MethodologyPage]:
-        return (
-            MethodologyPage.objects.live()
-            .public()
-            .child_of(self)
-            .order_by("-last_revised_date", "-pk")[:5]
-        )
+        return MethodologyPage.objects.live().public().child_of(self).order_by("-last_revised_date", "-pk")[:5]
 
     @cached_property
     def related_by_topic(self) -> dict[str, QuerySet]:
         related = {}
-        if bulletins := self.latest_by_series(
-            BulletinPage, BulletinSeriesPage, self.topic
-        ):
+        if bulletins := self.latest_by_series(BulletinPage, BulletinSeriesPage, self.topic):
             related[_("Bulletins")] = bulletins
 
-        if articles := self.latest_by_series(
-            ArticlePage, ArticleSeriesPage, self.topic
-        ):
+        if articles := self.latest_by_series(ArticlePage, ArticleSeriesPage, self.topic):
             related[_("Articles")] = articles
 
         methodologies_qs = (
