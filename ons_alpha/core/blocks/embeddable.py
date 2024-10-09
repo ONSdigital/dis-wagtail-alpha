@@ -57,7 +57,7 @@ class DocumentsBlock(blocks.StreamBlock):
         template = "templates/components/streamfield/documents_block.html"
 
 
-ONS_EMBED_PREFIX = "https://www.ons.gov.uk/visualisations/"
+ONS_EMBED_PREFIX = "https://www.ons.gov.uk/"
 
 
 class ONSEmbedBlock(blocks.StructBlock):
