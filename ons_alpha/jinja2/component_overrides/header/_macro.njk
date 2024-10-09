@@ -139,7 +139,7 @@
                 >
                     {% if params.navLinks.keyLinksList %}
                         <div class="ons-container">
-                            <ul class="ons-grid ons-grid--flex-gap navigation__key-links ons-list ons-list--bare">
+                            <ul class="ons-grid ons-grid--flex-gap ons-grid--gap-40  navigation__key-links ons-list ons-list--bare">
                                 {% for item in params.navLinks.keyLinksList %}
                                     {# for november prototype, nav items can have text and no link - later we would want to test that both are present before outputting an li #}
                                     {% if item.text %}
@@ -162,7 +162,7 @@
                     {% endif %}
                     {% if params.navLinks.itemsList %}
                         <div class="ons-container">
-                            <ul class="ons-grid ons-grid--flex-gap ons-list ons-list--bare">
+                            <ul class="ons-grid ons-grid--flex-gap ons-grid--gap-40 ons-list ons-list--bare">
                                 {% for item in params.navLinks.itemsList %}
                                     <li class="ons-grid__col ons-col-4@m ons-u-mb-no">
                                         {% for link in item.linksList %}

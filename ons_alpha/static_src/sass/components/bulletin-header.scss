@@ -1,0 +1,74 @@
+.bulletin-header {
+    // this colour is in figma but not in the design system
+    /* stylelint-disable */
+    background-color: #efeff0;
+    /* stylelint-enable */
+    position: relative;
+    padding-bottom: 64px;
+
+    &::before {
+        position: absolute;
+        inset: 0;
+        width: 150%;
+        height: 100%;
+        left: -40%;
+        border-radius: 0 0 50% 50%;
+        background-color: var(--ons-color-grey-5);
+        content: '';
+    }
+
+    &__content {
+        position: relative;
+    }
+
+    &__doc-type {
+        color: var(--ons-color-ocean-blue);
+        line-height: 1.38462;
+        margin-bottom: 0;
+    }
+
+    &__heading {
+        line-height: 1.375;
+        margin-bottom: 40px;
+
+        @media (min-width: 980px) {
+            line-height: 1.1667;
+            margin-bottom: 16px;
+        }
+    }
+
+    &__kitemark {
+        margin-bottom: 16px;
+
+        @media (min-width: 980px) {
+            text-align: right;
+        }
+    }
+
+    &__accreditation-link {
+        display: inline-block;
+    }
+
+    &__accreditation-logo {
+        // compensates for whitespace in logo
+        position: relative;
+        right: 10px;
+
+        @media (min-width: 980px) {
+            right: -10px;
+        }
+    }
+
+    &__summary {
+        margin-bottom: 16px;
+
+        @media screen and (min-width: 980px) {
+            margin-bottom: 40px;
+        }
+    }
+
+    &__releases {
+        row-gap: 8px;
+        margin-bottom: 8px;
+    }
+}
