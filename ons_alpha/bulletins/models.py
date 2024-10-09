@@ -181,8 +181,7 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
         latest = self.get_latest()
         if not latest:
             raise Http404
-
-        return self.render(request, context_overrides={"page": latest}, template="templates/pages/bulletin_page.html")
+        return latest.serve(request)
 
     @path("previous-releases/")
     def previous_releases(self, request):
