@@ -1,0 +1,10 @@
+.panel {
+    padding: 24px 24px 24px 39px;
+
+    // full width at mobile, with no left hand border
+    @media (max-width: 979px) {
+        border: 0;
+        margin: 0 -1rem;
+        padding: 24px;
+    }
+}
