@@ -46,7 +46,7 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
         related_name="+",
     )
     is_accredited = models.BooleanField(default=False)
-    headline_figures = StreamField([("figures", HeadlineFiguresBlock())], blank=True)
+    headline_figures = StreamField([("figures", HeadlineFiguresBlock())], blank=True, max_num=1)
     body = StreamField(CoreStoryBlock(), use_json_field=True)
     updates = StreamField(CorrectionsNoticesStoryBlock(), blank=True, use_json_field=True)
 
