@@ -1,9 +1,7 @@
 {% extends "templates/base.html" %}
 
 {% block meta %}
-    {% if SEO_NOINDEX %}
-        <meta name="robots" content="noindex">
-    {% endif %}
+    {{ super() }}
     {% with current_site=wagtail_site() %}
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@{{ settings.core.SocialMediaSettings.twitter_handle }}" />
