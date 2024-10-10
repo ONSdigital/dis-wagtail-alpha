@@ -1,10 +1,12 @@
 // New components created for the prototype
 @use 'components/bulletin-header';
 @use 'components/button-nav';
+@use 'components/footer';
 @use 'components/navigation';
 
 // ONS design system overrides
 @use 'components/design_system_overrides/breadcrumbs';
 @use 'components/design_system_overrides/button';
+@use 'components/design_system_overrides/container';
 @use 'components/design_system_overrides/grid';
 @use 'components/design_system_overrides/header';
