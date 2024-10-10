@@ -19,6 +19,10 @@
             display: flex;
             flex-direction: column;
         }
+
+        @media (forced-colors: active) {
+            border: 1px solid var(--ons-color-ocean-blue);
+        }
     }
 
     &__heading {
