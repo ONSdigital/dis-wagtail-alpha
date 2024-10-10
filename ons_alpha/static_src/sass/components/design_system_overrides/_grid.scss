@@ -22,6 +22,10 @@ $grid-gutters: 1rem;
     &--gap-32 {
         column-gap: 32px;
     }
+
+    &--gap-24 {
+        column-gap: 24px;
+    }
 }
 
 .ons-grid__col {

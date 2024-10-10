@@ -71,13 +71,12 @@
             {% endblock %}
         </div>
     </div>
-{% endblock %}
-
-{% block main %}
     {% if page.headline_figures %}
         {% include_block page.headline_figures %}
     {% endif %}
+{% endblock %}
 
+{% block main %}
     <div class="ons-container">
         <div class="ons-grid ons-grid--flex-gap ons-grid--gap-32">
             <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m">
