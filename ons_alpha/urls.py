@@ -10,6 +10,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.utils.urlpatterns import decorate_urlpatterns
 
+from ons_alpha.core import views as core_views
 from ons_alpha.search import views as search_views
 from ons_alpha.utils.cache import get_default_cache_control_decorator
 
@@ -18,6 +19,7 @@ from ons_alpha.utils.cache import get_default_cache_control_decorator
 private_urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
     path("-/health/", include("health_check.urls")),
+    path("-/ready/", core_views.ready),
 ]
 
 # `wagtail.admin` must always be installed,
