@@ -783,7 +783,7 @@ GOOGLE_TAG_MANAGER_ID = env.get("GOOGLE_TAG_MANAGER_ID")
 
 
 # Allows us to toggle search indexing via an environment variable.
-SEO_NOINDEX = env.get("SEO_NOINDEX", "false").lower() == "true"
+SEO_NOINDEX = env.get("SEO_NOINDEX", "true").lower() == "true"
 
 TESTING = "test" in sys.argv
 

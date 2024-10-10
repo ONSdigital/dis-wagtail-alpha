@@ -1,6 +1,7 @@
 {% extends "templates/base.html" %}
 
 {% block meta %}
+    {{ super() }}
     {% with current_site=wagtail_site() %}
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@{{ settings.core.SocialMediaSettings.twitter_handle }}" />

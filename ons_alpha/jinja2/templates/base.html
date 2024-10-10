@@ -2,6 +2,13 @@
 {% from "component_overrides/header/_macro.njk" import onsHeaderNew %}
 {% from "components/external-link/_macro.njk" import onsExternalLink %}
 
+{% block meta %}
+    {{ super() }}
+    {% if SEO_NOINDEX %}
+        <meta name="robots" content="noindex">
+    {% endif %}
+{% endblock meta %}
+
 {# fmt:off #}
 {% set languages = languages | default([
     {
