@@ -210,8 +210,7 @@ if "PG_DB_ADDR" in env:
             "USER": env["PG_DB_USER"],
             "HOST": env["PG_DB_ADDR"],
             "PORT": env["PG_DB_PORT"],
-            "CONN_MAX_AGE": 900,  # Must be 15 minutes, to match password expiry
-            "CONN_HEALTH_CHECKS": True,
+            "CONN_MAX_AGE": 870,  # Must be less than 15 minutes, to match password expiry
             "OPTIONS": {"use_iam_auth": True, "sslmode": "require"},
         }
     }
@@ -222,9 +221,7 @@ if "PG_DB_ADDR" in env:
 
 else:
     # This setting will use DATABASE_URL environment variable.
-    DATABASES = {
-        "default": dj_database_url.config(conn_max_age=900, conn_health_checks=True, default="postgres:///ons_alpha")
-    }
+    DATABASES = {"default": dj_database_url.config(conn_max_age=870, default="postgres:///ons_alpha")}
 
 if "read_replica" in DATABASES:
     DATABASE_ROUTERS = ["ons_alpha.utils.db_router.ReadReplicaRouter"]
