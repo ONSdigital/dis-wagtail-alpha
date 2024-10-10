@@ -1,11 +1,12 @@
-{% from "components/document-list/_macro.njk" import onsDocumentList %}
+{# Note: this is a list of links not documents - but it uses the design system document list component for styling #}
+{% from "component_overrides/document-list/_macro.njk" import onsDocumentListNew %}
 
-<section id="{{ slug }}">
-    <h2 >{{ heading }}</h2>
+<section id="{{ slug }}" class="document-list">
+    <h2 class="ons-u-fs-l document-list__title">{{ heading }}</h2>
 
     {# fmt:off #}
     {{-
-        onsDocumentList({
+        onsDocumentListNew({
             "documents": documents,
         })
     }}
