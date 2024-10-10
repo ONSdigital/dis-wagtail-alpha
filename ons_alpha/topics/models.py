@@ -77,7 +77,7 @@ class TopicPage(BaseTopicPage):
     ]
     page_description = "A specific topic page. e.g. Public sector finance or Inflation and price indices"
 
-    headline_figures = StreamField([("figures", HeadlineFiguresBlock())], blank=True)
+    headline_figures = StreamField([("figures", HeadlineFiguresBlock())], blank=True, max_num=1)
     body = StreamField(
         [
             ("featured_document", FeaturedDocumentBlock()),
