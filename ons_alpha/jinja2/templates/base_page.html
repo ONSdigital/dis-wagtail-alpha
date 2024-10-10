@@ -1,4 +1,5 @@
 {% extends "templates/base.html" %}
+{% from "components/panel/_macro.njk" import onsPanel %}
 
 {% block meta %}
     {{ super() }}
@@ -43,6 +44,14 @@
     <main id="main-content">
         {# This will contain the breadcrumbs on individual templates #}
         {% block header_area %}
+            <div class="ons-container">
+                {{
+                onsPanel({
+                "body": '<p>This page is part of a limited preview of the ONS website, focusing on our new design and navigation. We have intentionally made most links inactive for the purposes of this test.</p>',
+                "classes": 'panel'
+                })
+                }}
+            </div>
         {% endblock %}
         <div class="ons-page__container ons-container{{ containerClasses }}">
             <div class="ons-grid">
