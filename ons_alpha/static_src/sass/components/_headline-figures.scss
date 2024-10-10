@@ -1,0 +1,63 @@
+.headline-figures {
+    padding-top: 24px;
+    padding-bottom: 40px;
+
+    &__grid {
+        row-gap: 24px;
+    }
+
+    &__block {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: 100%;
+        column-gap: 40px;
+        background-color: var(--ons-color-ocean-blue);
+        color: var(--ons-color-white);
+        padding: 24px;
+
+        @media (min-width: 500px) {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+    &__heading {
+        line-height: 1.333;
+        margin-bottom: 16px;
+
+        @media (min-width: 980px) {
+            line-height: 1.385;
+        }
+    }
+
+    &__title {
+        line-height: 1.333;
+
+        @media (min-width: 980px) {
+            line-height: 1.385;
+        }
+    }
+
+    &__figure {
+        // font-sizes don't match design system type scale in the figma file
+        font-size: 1.7rem;
+        font-weight: 700;
+        line-height: 1.46;
+        margin-bottom: 0;
+
+        @media (min-width: 980px) {
+            margin-top: auto;
+        }
+
+        @media (min-width: 980px) {
+            font-size: 2rem;
+            line-height: 1.27;
+        }
+    }
+
+    &__supporting-text {
+        line-height: 1.555;
+        margin-bottom: 0;
+        grid-column: 1 / span 2;
+    }
+}
