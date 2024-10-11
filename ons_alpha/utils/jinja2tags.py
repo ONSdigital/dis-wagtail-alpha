@@ -55,7 +55,7 @@ def get_translation_urls(context) -> list[dict[str, str | bool]]:
         urls.append(
             {
                 "url": url,
-                "ISOCode": locale.language_code.split("-", 1)[0],
+                "isoCode": locale.language_code.split("-", 1)[0],
                 "text": locale.language_name_local,
                 "current": locale.is_active,
             }
