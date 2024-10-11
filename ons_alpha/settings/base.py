@@ -809,3 +809,7 @@ SHORT_DATETIME_FORMAT = "d/m/Y P"
 
 ONS_API_DATASET_BASE_URL = env.get("ONS_API_DATASET_BASE_URL", "https://api.beta.ons.gov.uk/v1/datasets")
 ONS_WEBSITE_DATASET_BASE_URL = env.get("ONS_WEBSITE_DATASET_BASE_URL", "https://www.ons.gov.uk/datasets")
+
+# Disable new version check and "what's new" banner
+WAGTAIL_ENABLE_UPDATE_CHECK = False
+WAGTAIL_ENABLE_WHATS_NEW_BANNER = False
