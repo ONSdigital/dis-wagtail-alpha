@@ -72,7 +72,7 @@
             <div
                 class="ons-container{{ ' ons-container--full-width' if params.fullWidth else "" }}{{ ' ons-container--wide' if params.wide else "" }}"
             >
-                <div class="ons-grid ons-grid--flex-gap ons-grid--gap-32">
+                <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--32">
                     {% if params.newTabWarning %}
                         <div class="ons-grid__col">
                             <p class="ons-u-fs-s ons-u-mb-l ons-footer__new-tab-warning">{{ params.newTabWarning | safe }}</p>
@@ -114,7 +114,7 @@
 
                 {% if (params.cols) or (params.rows) %}
                     {# todo: check change of utility class here #}
-                    <div class="ons-grid ons-grid--flex-gap ons-grid--gap-32">
+                    <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--32">
                         <div class="ons-grid__col">
                             <hr class="ons-footer__hr footer__hr" />
                         </div>
