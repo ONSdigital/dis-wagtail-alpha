@@ -49,11 +49,15 @@ class DocumentListBlock(StructBlock):
         documents = []
         for item in value["documents"]:
             document = {
-                "title": item["title"],
+                "title": {
+                    "text": item["title"],
+                },
                 "description": format_html("<p>{}</p>", item["description"]),
                 "metadata": {
-                    "type": {
-                        "text": item["content_type_label"],
+                    "object": {
+                        "type": {
+                            "text": item["content_type_label"],
+                        },
                     },
                     "date": {
                         "prefix": "Released",
@@ -64,7 +68,7 @@ class DocumentListBlock(StructBlock):
                 },
             }
             if page := item["page"]:
-                document["url"] = page.specific_deferred.get_url(
+                document["title"]["url"] = page.specific_deferred.get_url(
                     parent_context.get("request") if parent_context else None
                 )
             documents.append(document)

@@ -20,8 +20,10 @@ class DocumentBlockStructValue(blocks.StructValue):
     def as_macro_data(self):
         return {
             "thumbnail": True,
-            "url": self["document"].url,
-            "title": self["title"] or self["document"].title,
+            "title": {
+                "text": self["title"] or self["document"].title,
+                "url": self["document"].url,
+            },
             "description": self["description"],
             "metadata": {
                 "file": {
