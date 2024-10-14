@@ -5,22 +5,22 @@
 .navigation {
     background-color: var(--ons-color-branded-tint);
     width: 100%;
-    margin-bottom: rem-spacing(16);
-    padding-top: rem-spacing(40);
+    margin-bottom: rem-sizing(16);
+    padding-top: rem-sizing(40);
 
     &__key-links {
         border-bottom: 1px solid var(--ons-color-ocean-blue);
-        row-gap: rem-spacing(16);
-        padding-bottom: rem-spacing(16);
-        margin-bottom: rem-spacing(20);
+        row-gap: rem-sizing(16);
+        padding-bottom: rem-sizing(16);
+        margin-bottom: rem-sizing(20);
 
         @include media-query('l') {
-            padding-bottom: rem-spacing(24);
+            padding-bottom: rem-sizing(24);
         }
     }
 
     &__child-list {
-        margin-bottom: rem-spacing(32);
+        margin-bottom: rem-sizing(32);
     }
 
     &__link {
@@ -42,7 +42,7 @@
     }
 
     &__heading {
-        margin-bottom: rem-spacing(16);
+        margin-bottom: rem-sizing(16);
 
         &--key-link {
             margin-bottom: 0;
@@ -50,7 +50,7 @@
     }
 
     &__paragraph {
-        margin-bottom: rem-spacing(8);
+        margin-bottom: rem-sizing(8);
 
         &--key-link {
             margin-bottom: 0;

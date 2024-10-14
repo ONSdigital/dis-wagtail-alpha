@@ -2,6 +2,6 @@
 
 .panel {
     @include media-query('l') {
-        padding: rem-spacing(24) rem-spacing(24) rem-spacing(24) rem-spacing(39);
+        padding: rem-sizing(24) rem-sizing(24) rem-sizing(24) rem-sizing(39);
     }
 }

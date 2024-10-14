@@ -7,10 +7,10 @@
     }
 
     &__org-logo {
-        padding: rem-spacing(20) 0;
+        padding: rem-sizing(20) 0;
 
         @include media-query('l') {
-            padding: rem-spacing(24) 0;
+            padding: rem-sizing(24) 0;
         }
     }
 }

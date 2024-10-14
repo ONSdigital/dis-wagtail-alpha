@@ -2,14 +2,14 @@
 
 // overrides to ons breadcrumb styles
 .ons-breadcrumbs {
-    padding: rem-spacing(16) 0;
+    padding: rem-sizing(16) 0;
 
     &__items {
-        margin-bottom: rem-spacing(-8);
+        margin-bottom: rem-sizing(-8);
     }
 
     &__item {
-        padding-bottom: rem-spacing(8);
+        padding-bottom: rem-sizing(8);
         line-height: 1.714;
     }
 }
