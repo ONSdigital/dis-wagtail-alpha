@@ -1,0 +1,7 @@
+@use 'config' as *;
+
+// overrides to ons text-indent styles
+.ons-text-indent {
+    margin: 0;
+    padding: rem-sizing(8) rem-sizing(24);
+}

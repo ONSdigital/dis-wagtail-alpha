@@ -2,6 +2,7 @@
 @use 'components/bulletin-header';
 @use 'components/button-nav';
 @use 'components/document-list-block';
+@use 'components/contact-details';
 @use 'components/footer';
 @use 'components/headline-figures';
 @use 'components/navigation';
@@ -14,3 +15,4 @@
 @use 'components/design_system_overrides/document-list';
 @use 'components/design_system_overrides/grid';
 @use 'components/design_system_overrides/header';
+@use 'components/design_system_overrides/text-indent';
