@@ -9,7 +9,7 @@
     margin-left: 0;
     flex-wrap: nowrap;
 
-    @include media-query('l') {
+    @include media-query('m') {
         flex-direction: row;
     }
 
