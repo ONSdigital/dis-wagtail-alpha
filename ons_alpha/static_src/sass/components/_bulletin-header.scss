@@ -26,15 +26,19 @@
 
     &__doc-type {
         color: var(--ons-color-ocean-blue);
-        line-height: 1.38462;
+        line-height: 1.333;
         margin-bottom: 0;
+
+        @include media-query('m') {
+            line-height: 1.384;
+        }
     }
 
     &__heading {
         line-height: 1.375;
         margin-bottom: rem-spacing(40);
 
-        @include media-query('l') {
+        @include media-query('m') {
             line-height: 1.1667;
             margin-bottom: rem-spacing(16);
         }

@@ -14,11 +14,11 @@
     }
 
     &__heading {
-        line-height: 1.777;
+        line-height: 1.333;
         margin-bottom: rem-spacing(8);
 
-        @include media-query('l') {
-            line-height: 2;
+        @include media-query('m') {
+            line-height: 1.385;
         }
     }
 
@@ -39,7 +39,8 @@
     }
 
     &__licence {
-        font-size: 1rem;
+        font-size: rem-spacing(18);
+        line-height: 1.555;
         display: flex;
         flex-direction: column;
         row-gap: rem-spacing(24);

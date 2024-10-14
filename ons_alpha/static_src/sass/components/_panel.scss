@@ -1,8 +1,6 @@
 @use 'config' as *;
 
 .panel {
-    padding: rem-spacing(24);
-
     @include media-query('l') {
         padding: rem-spacing(24) rem-spacing(24) rem-spacing(24) rem-spacing(39);
     }
