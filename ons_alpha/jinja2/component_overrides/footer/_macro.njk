@@ -84,7 +84,6 @@
                             <!-- Full footer columns -->
                             <div class="ons-grid__col ons-col-4@m{{ ' ons-u-mt-l@2xs@m' if loop.index > 1 }}">
                                 {% if col.title %}
-                                    {# todo: check change in utility class here #}
                                     <h2 class="footer__heading ons-footer__heading ons-u-fs-l">{{ col.title }}</h2>
                                 {% endif %}
                                 {{
@@ -137,8 +136,7 @@
 
                         {% if params.oglLink %}
                             <!-- OGL -->
-                            {# todo: check utility class here - previously removed when it was mb-m #}
-                            <div class="ons-footer__license footer__licence ons-u-mb-l">
+                            <div class="ons-footer__license footer__licence">
                                 {# hard-code the ogl icon in order to override the inline fill to set the colour #}
                                 <svg
                                     class="ons-footer__ogl-img footer__ogl-img{{ iconClasses }}"
