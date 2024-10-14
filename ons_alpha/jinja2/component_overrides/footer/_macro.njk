@@ -185,35 +185,37 @@
                                 {% endif %}
                             </div>
                         {% endif %}
-                        {% if not params.footerLogo.logos.logo1 %}
-                            {%
-                                set logo1 = {
-                                    'logoUrl': 'https://cy.ons.gov.uk/' if lang == 'cy' else 'https://www.ons.gov.uk/',
-                                    'logoImage': onsLogo | safe
-                                }
-                            %}
-                            {% set logos = [logo1, params.footerLogo.logos.logo2] %}
-                        {% else %}
-                            {% set logos = [params.footerLogo.logos.logo1, params.footerLogo.logos.logo2] %}
-                        {% endif %}
+                        {% if params.footerLogo %}
+                            {% if not params.footerLogo.logos.logo1 %}
+                                {%
+                                    set logo1 = {
+                                        'logoUrl': 'https://cy.ons.gov.uk/' if lang == 'cy' else 'https://www.ons.gov.uk/',
+                                        'logoImage': onsLogo | safe
+                                    }
+                                %}
+                                {% set logos = [logo1, params.footerLogo.logos.logo2] %}
+                            {% else %}
+                                {% set logos = [params.footerLogo.logos.logo1, params.footerLogo.logos.logo2] %}
+                            {% endif %}
 
-                        <div
-                            class="ons-footer__logo-container ons-u-mb-l ons-grid-flex ons-grid-flex--vertical-top{{ ' ons-grid-flex--between' if params.footerLogo.display == 'split' else "" }}"
-                        >
-                            {% for logo in logos %}
-                                {%- if logo.logoUrl -%}
-                                    <a
-                                        class="ons-footer__logo-link{{ ' ons-u-mr-s' if extraLogo and loop.index == 1 else "" }}"
-                                        href="{{ logo.logoUrl }}"
-                                        >{{ logo.logoImage | safe }}</a
-                                    >
-                                {%- else -%}
+                            <div
+                                class="ons-footer__logo-container ons-u-mb-l ons-grid-flex ons-grid-flex--vertical-top{{ ' ons-grid-flex--between' if params.footerLogo.display == 'split' else "" }}"
+                            >
+                                {% for logo in logos %}
+                                    {%- if logo.logoUrl -%}
+                                        <a
+                                            class="ons-footer__logo-link{{ ' ons-u-mr-s' if extraLogo and loop.index == 1 else "" }}"
+                                            href="{{ logo.logoUrl }}"
+                                            >{{ logo.logoImage | safe }}</a
+                                        >
+                                    {%- else -%}
 
-                                    {{ logo.logoImage | safe }}
-                                {% endif %}
-                            {% endfor %}
+                                        {{ logo.logoImage | safe }}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                     {% if params.crest %}
                         <!-- Crest -->
                         <div class="ons-grid__col ons-footer__crest ons-u-mb-l@2xs@l">
