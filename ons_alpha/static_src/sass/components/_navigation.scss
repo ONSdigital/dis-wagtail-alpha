@@ -1,24 +1,26 @@
+@use 'config' as *;
+
 /* New navigation styling for November protoype */
 
 .navigation {
     background-color: var(--ons-color-branded-tint);
     width: 100%;
-    margin-bottom: 16px;
-    padding-top: 40px;
+    margin-bottom: rem-spacing(16);
+    padding-top: rem-spacing(40);
 
     &__key-links {
         border-bottom: 1px solid var(--ons-color-ocean-blue);
-        row-gap: 16px;
-        padding-bottom: 16px;
-        margin-bottom: 20px;
+        row-gap: rem-spacing(16);
+        padding-bottom: rem-spacing(16);
+        margin-bottom: rem-spacing(20);
 
-        @media (min-width: 980px) {
-            padding-bottom: 24px;
+        @include media-query('l') {
+            padding-bottom: rem-spacing(24);
         }
     }
 
     &__child-list {
-        margin-bottom: 32px;
+        margin-bottom: rem-spacing(32);
     }
 
     &__link {
@@ -40,7 +42,7 @@
     }
 
     &__heading {
-        margin-bottom: 16px;
+        margin-bottom: rem-spacing(16);
 
         &--key-link {
             margin-bottom: 0;
@@ -48,7 +50,7 @@
     }
 
     &__paragraph {
-        margin-bottom: 8px;
+        margin-bottom: rem-spacing(8);
 
         &--key-link {
             margin-bottom: 0;

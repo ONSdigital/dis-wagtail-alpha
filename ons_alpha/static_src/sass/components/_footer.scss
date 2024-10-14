@@ -1,8 +1,10 @@
+@use 'config' as *;
+
 .footer {
     &__body {
         background-color: var(--ons-color-grey-100);
         color: var(--ons-color-grey-5);
-        padding: 32px 0 40px;
+        padding: rem-spacing(32) 0 rem-spacing(40);
     }
 
     a,
@@ -13,38 +15,38 @@
 
     &__heading {
         line-height: 1.777;
-        margin-bottom: 8px;
+        margin-bottom: rem-spacing(8);
 
-        @media (min-width: 980px) {
+        @include media-query('l') {
             line-height: 2;
         }
     }
 
     &__list {
         line-height: 1.555;
-        margin-bottom: -8px;
+        margin-bottom: rem-spacing(-8);
 
         li {
             margin-top: 0;
-            padding-bottom: 8px;
+            padding-bottom: rem-spacing(8);
             margin-bottom: 0;
         }
     }
 
     &__hr {
-        margin-top: 40px;
-        margin-bottom: 32px;
+        margin-top: rem-spacing(40);
+        margin-bottom: rem-spacing(32);
     }
 
     &__licence {
         font-size: 1rem;
         display: flex;
         flex-direction: column;
-        row-gap: 24px;
-        column-gap: 16px;
+        row-gap: rem-spacing(24);
+        column-gap: rem-spacing(16);
         margin-bottom: 0;
 
-        @media (min-width: 980px) {
+        @include media-query('l') {
             flex-direction: row;
             align-items: center;
         }

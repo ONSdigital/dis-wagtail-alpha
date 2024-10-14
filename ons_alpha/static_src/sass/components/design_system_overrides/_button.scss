@@ -1,7 +1,9 @@
+@use 'config' as *;
+
 // overrides the ons button styles
 .ons-btn {
     &--text-link {
-        @media (min-width: 980px) {
+        @include media-query('l') {
             display: inline-block;
         }
 
@@ -10,8 +12,8 @@
         }
 
         .ons-icon {
-            width: 16px;
-            height: 16px;
+            width: rem-spacing(16);
+            height: rem-spacing(16);
             margin-top: 0;
         }
     }

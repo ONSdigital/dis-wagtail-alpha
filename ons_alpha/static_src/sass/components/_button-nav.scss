@@ -1,6 +1,11 @@
+@use 'config' as *;
+
 .button-nav {
-    padding: 0 24px;
-    height: 72px;
+    padding: rem-spacing(20) rem-spacing(24);
+
+    @include media-query('l') {
+        padding: rem-spacing(24);
+    }
 
     &:focus {
         background-color: var(--ons-color-focus);
