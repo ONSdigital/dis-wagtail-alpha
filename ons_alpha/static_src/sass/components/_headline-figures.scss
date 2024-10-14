@@ -46,9 +46,9 @@
 
     &__figure {
         // font-sizes don't match design system type scale in the figma file
-        font-size: 1.7rem;
+        font-size: rem-sizing(32);
         font-weight: 700;
-        line-height: 1.46;
+        line-height: 1.375;
         margin-bottom: 0;
 
         @include media-query('m') {
