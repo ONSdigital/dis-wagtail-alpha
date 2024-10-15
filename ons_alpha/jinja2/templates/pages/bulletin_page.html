@@ -2,6 +2,7 @@
 
 {% from "components/panel/_macro.njk" import onsPanel %}
 {% from "components/table-of-contents/_macro.njk" import onsTableOfContents %}
+{% from "components/text-indent/_macro.njk" import onsTextIndent %}
 
 {% block header_area %}
     <div class="bulletin-header">
@@ -114,22 +115,29 @@
 
                 {% if page.contact_details %}
                     <section id="contact-details">
-                        <h2>{{ _("Contact details") }}</h2>
+                        <h2 class="contact-details__heading">{{ _("Contact details") }}</h2>
 
-                        <div>
-                            <h3 class="ons-u-mb-no ons-u-fs-r--b">Name</h3>
-                            <p>{{ page.contact_details.name }}</p>
-                            <h3 class="ons-u-mb-no ons-u-fs-r--b">Email</h3>
-                            <p>
-                                <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.email }}</a>
+                        {% set contactDetailsMarkup %}
+                            <p class="contact-details__line">
+                                <strong>Name</strong>: {{ page.contact_details.name }}
+                            </p>
+                            <p class="contact-details__line">
+                                <strong>Email</strong>: {{ page.contact_details.email }}
                             </p>
                             {% if page.contact_details.phone %}
-                                <h3 class="ons-u-mb-no ons-u-fs-r--b">Phone</h3>
-                                <p>
-                                    <a href="tel:{{ page.contact_details.phone|urlencode() }}">{{ page.contact_details.phone }}</a>
+                                <p class="contact-details__line">
+                                    <strong>Telephone</strong>: {{ page.contact_details.phone }}
+
                                 </p>
                             {% endif %}
-                        </div>
+                        {% endset %}
+                        {# fmt:off #}
+                        {{-
+                            onsTextIndent({
+                                "text": contactDetailsMarkup
+                            })
+                        -}}
+                        {# fmt:on #}
                     </section>
                 {% endif %}
             </div>
