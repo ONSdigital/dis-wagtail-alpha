@@ -55,9 +55,7 @@ class DocumentListBlock(StructBlock):
                 "description": format_html("<p>{}</p>", item["description"]),
                 "metadata": {
                     "object": {
-                        "type": {
-                            "text": item["content_type_label"],
-                        },
+                        "text": item["content_type_label"],
                     },
                     "date": {
                         "prefix": "Released",
