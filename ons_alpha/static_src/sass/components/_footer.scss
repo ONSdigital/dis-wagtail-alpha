@@ -1,8 +1,10 @@
+@use 'config' as *;
+
 .footer {
     &__body {
         background-color: var(--ons-color-grey-100);
         color: var(--ons-color-grey-5);
-        padding: 32px 0 40px;
+        padding: rem-sizing(32) 0 rem-sizing(40);
     }
 
     a,
@@ -12,39 +14,40 @@
     }
 
     &__heading {
-        line-height: 1.777;
-        margin-bottom: 8px;
+        line-height: 1.333;
+        margin-bottom: rem-sizing(8);
 
-        @media (min-width: 980px) {
-            line-height: 2;
+        @include media-query('m') {
+            line-height: 1.385;
         }
     }
 
     &__list {
         line-height: 1.555;
-        margin-bottom: -8px;
+        margin-bottom: rem-sizing(-8);
 
         li {
             margin-top: 0;
-            padding-bottom: 8px;
+            padding-bottom: rem-sizing(8);
             margin-bottom: 0;
         }
     }
 
     &__hr {
-        margin-top: 40px;
-        margin-bottom: 32px;
+        margin-top: rem-sizing(40);
+        margin-bottom: rem-sizing(32);
     }
 
     &__licence {
-        font-size: 1rem;
+        font-size: rem-sizing(18);
+        line-height: 1.555;
         display: flex;
         flex-direction: column;
-        row-gap: 24px;
-        column-gap: 16px;
+        row-gap: rem-sizing(24);
+        column-gap: rem-sizing(16);
         margin-bottom: 0;
 
-        @media (min-width: 980px) {
+        @include media-query('l') {
             flex-direction: row;
             align-items: center;
         }

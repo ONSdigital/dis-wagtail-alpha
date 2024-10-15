@@ -1,11 +1,13 @@
+@use 'config' as *;
+
 .bulletin-header {
     // this colour is in figma but not in the design system
     /* stylelint-disable */
     background-color: #efeff0;
     /* stylelint-enable */
     position: relative;
-    padding-bottom: 64px;
-    margin-bottom: 24px;
+    padding-bottom: rem-sizing(64);
+    margin-bottom: rem-sizing(24);
 
     &::before {
         position: absolute;
@@ -24,24 +26,28 @@
 
     &__doc-type {
         color: var(--ons-color-ocean-blue);
-        line-height: 1.38462;
+        line-height: 1.333;
         margin-bottom: 0;
+
+        @include media-query('m') {
+            line-height: 1.384;
+        }
     }
 
     &__heading {
         line-height: 1.375;
-        margin-bottom: 40px;
+        margin-bottom: rem-sizing(40);
 
-        @media (min-width: 980px) {
+        @include media-query('m') {
             line-height: 1.1667;
-            margin-bottom: 16px;
+            margin-bottom: rem-sizing(16);
         }
     }
 
     &__kitemark {
-        margin-bottom: 16px;
+        margin-bottom: rem-sizing(16);
 
-        @media (min-width: 980px) {
+        @include media-query('l') {
             text-align: right;
         }
     }
@@ -53,23 +59,23 @@
     &__accreditation-logo {
         // compensates for whitespace in logo
         position: relative;
-        right: 10px;
+        right: rem-sizing(10);
 
-        @media (min-width: 980px) {
-            right: -10px;
+        @include media-query('l') {
+            right: rem-sizing(-10);
         }
     }
 
     &__summary {
-        margin-bottom: 16px;
+        margin-bottom: rem-sizing(16);
 
-        @media screen and (min-width: 980px) {
-            margin-bottom: 40px;
+        @include media-query('l') {
+            margin-bottom: rem-sizing(40);
         }
     }
 
     &__releases {
-        row-gap: 8px;
-        margin-bottom: 8px;
+        row-gap: rem-sizing(8);
+        margin-bottom: rem-sizing(8);
     }
 }

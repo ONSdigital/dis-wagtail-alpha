@@ -1,6 +1,14 @@
+@use 'config' as *;
+
 .button-nav {
-    padding: 0 24px;
-    height: 72px;
+    padding: 0 rem-sizing(24);
+    height: 67px;
+    display: flex;
+    align-items: center;
+
+    @include media-query('l') {
+        height: 72px;
+    }
 
     &:focus {
         background-color: var(--ons-color-focus);

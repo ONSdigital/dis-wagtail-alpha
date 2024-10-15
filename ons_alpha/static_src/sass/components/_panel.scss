@@ -1,8 +1,7 @@
-.panel {
-    padding: 24px 24px 24px 39px;
+@use 'config' as *;
 
-    // full width at mobile, with no left hand border
-    @media (max-width: 979px) {
-        padding: 24px;
+.panel {
+    @include media-query('l') {
+        padding: rem-sizing(24) rem-sizing(24) rem-sizing(24) rem-sizing(39);
     }
 }

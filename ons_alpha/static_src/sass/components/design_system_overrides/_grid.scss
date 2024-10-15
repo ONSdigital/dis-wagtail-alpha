@@ -1,41 +1,39 @@
+@use 'config' as *;
+
 // addition to ons grid to use 'gap' to set widths between columns
-$grid-gutters: 1rem;
+// Adds custom gap values to match the designs
 
-.ons-grid {
-    &--flex-gap {
-        display: flex;
-        flex-direction: column;
-        margin-left: 0;
-        flex-wrap: nowrap;
+.ons-grid-flex-gap {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0;
+    flex-wrap: nowrap;
 
-        // will need updating to fit correctly with the ons grid system
-        @media (min-width: 980px) {
-            flex-direction: row;
-        }
+    @include media-query('m') {
+        flex-direction: row;
     }
 
-    // designed to be used with ons-grid--flex-gap
-    &--gap-40 {
-        column-gap: 40px;
+    &--40 {
+        column-gap: rem-sizing(40);
     }
 
-    &--gap-32 {
-        column-gap: 32px;
+    &--32 {
+        column-gap: rem-sizing(32);
     }
 
-    &--gap-24 {
-        column-gap: 24px;
+    &--24 {
+        column-gap: rem-sizing(24);
     }
 }
 
 .ons-grid__col {
-    .ons-grid--flex-gap & {
+    .ons-grid-flex-gap & {
         padding-left: 0;
     }
 
     /* stylelint-disable selector-class-pattern */
     &--sticky\@m {
-        .ons-grid--flex-gap & {
+        .ons-grid-flex-gap & {
             align-self: flex-start;
         }
     }

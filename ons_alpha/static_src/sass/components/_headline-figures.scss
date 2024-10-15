@@ -1,21 +1,23 @@
+@use 'config' as *;
+
 .headline-figures {
-    padding-top: 24px;
-    padding-bottom: 40px;
+    padding-top: rem-sizing(24);
+    padding-bottom: rem-sizing(40);
 
     &__grid {
-        row-gap: 24px;
+        row-gap: rem-sizing(24);
     }
 
     &__block {
         display: grid;
         grid-template-columns: 1fr 1fr;
         height: 100%;
-        column-gap: 40px;
+        column-gap: rem-sizing(40);
         background-color: var(--ons-color-ocean-blue);
         color: var(--ons-color-white);
-        padding: 24px;
+        padding: rem-sizing(24);
 
-        @media (min-width: 500px) {
+        @include media-query('s') {
             display: flex;
             flex-direction: column;
         }
@@ -27,9 +29,9 @@
 
     &__heading {
         line-height: 1.333;
-        margin-bottom: 16px;
+        margin-bottom: rem-sizing(16);
 
-        @media (min-width: 980px) {
+        @include media-query('m') {
             line-height: 1.385;
         }
     }
@@ -37,25 +39,25 @@
     &__title {
         line-height: 1.333;
 
-        @media (min-width: 980px) {
+        @include media-query('m') {
             line-height: 1.385;
         }
     }
 
     &__figure {
         // font-sizes don't match design system type scale in the figma file
-        font-size: 1.7rem;
+        font-size: rem-sizing(32);
         font-weight: 700;
-        line-height: 1.46;
+        line-height: 1.375;
         margin-bottom: 0;
 
-        @media (min-width: 980px) {
-            margin-top: auto;
+        @include media-query('m') {
+            font-size: rem-sizing(36);
+            line-height: 1.333;
         }
 
-        @media (min-width: 980px) {
-            font-size: 2rem;
-            line-height: 1.27;
+        @include media-query('l') {
+            margin-top: auto;
         }
     }
 

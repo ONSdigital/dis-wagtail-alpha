@@ -1,12 +1,15 @@
+@use 'config' as *;
+
 // overrides to ons breadcrumb styles
 .ons-breadcrumbs {
-    padding: 16px 0; // 16px not 1 rem (18px)
+    padding: rem-sizing(16) 0;
 
     &__items {
-        margin-bottom: -8px;
+        margin-bottom: rem-sizing(-8);
     }
 
     &__item {
-        padding-bottom: 8px;
+        padding-bottom: rem-sizing(8);
+        line-height: 1.714;
     }
 }
