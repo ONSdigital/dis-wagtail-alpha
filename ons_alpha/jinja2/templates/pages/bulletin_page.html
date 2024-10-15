@@ -114,7 +114,7 @@
                 {% endfor %}
 
                 {% if page.contact_details %}
-                    <div class="contact-details">
+                    <section id="contact-details">
                         <h2 class="contact-details__heading">{{ _("Contact details") }}</h2>
 
                         {% set contactDetailsMarkup %}
@@ -138,7 +138,7 @@
                             })
                         -}}
                         {# fmt:on #}
-                    </div>
+                    </section>
                 {% endif %}
             </div>
         </div>
