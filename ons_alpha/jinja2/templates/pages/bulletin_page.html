@@ -88,7 +88,7 @@
                 {# fmt:off #}
                 {{-
                     onsTableOfContents({
-                        "title": 'Table of contents',
+                        "title": 'Contents',
                         "ariaLabel": 'Sections in this page',
                         "itemsList": toc
                     })
@@ -107,15 +107,19 @@
                     </div>
                 {% endif %}
 
-                {% for content_block in page.body %}
-                    {% with block_id = content_block.id %}
-                        {% include_block content_block %}
-                    {% endwith %}
-                {% endfor %}
+                {# if there are no contact details on the page, we don't want the last
+                streamfield block to have a bottom margin. last_flush is used in stream_block.html #}
+                {% if page.contact_details %}
+                    {% set last_flush = False %}
+                {% else %}
+                    {% set last_flush = True %}
+                {% endif %}
+
+                {% include_block page.body %}
 
                 {% if page.contact_details %}
                     <section id="contact-details">
-                        <h2 class="contact-details__heading">{{ _("Contact details") }}</h2>
+                        <h2 class="heading-2">{{ _("Contact details") }}</h2>
 
                         {% set contactDetailsMarkup %}
                             <p class="contact-details__line">

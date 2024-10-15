@@ -40,6 +40,7 @@ class CoreStoryBlock(StreamBlock):
 
     class Meta:
         block_counts = {"related_links": {"max_num": 1}}
+        template = "templates/components/streamfield/stream_block.html"
 
 
 class CorrectionsNoticesStoryBlock(StreamBlock):
