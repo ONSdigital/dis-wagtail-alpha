@@ -1,0 +1,12 @@
+@use 'config' as *;
+
+.document-list-block {
+    margin-bottom: rem-spacing(64);
+
+    &__title {
+        margin-bottom: rem-sizing(16);
+        // font-sizes don't match design system type scale in the figma file
+        font-size: rem-sizing(26);
+        line-height: 1.385;
+    }
+}
