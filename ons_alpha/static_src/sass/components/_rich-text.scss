@@ -1,0 +1,7 @@
+@use 'config' as *;
+
+.rich-text {
+    h3 {
+        @include heading-3();
+    }
+}

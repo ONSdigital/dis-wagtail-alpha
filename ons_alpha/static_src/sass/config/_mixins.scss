@@ -25,3 +25,10 @@
     line-height: 1.385;
     margin-bottom: rem-sizing(16);
 }
+
+// Ditto for heading 3s which have a different font-size and line height at mobile
+
+@mixin heading-3 {
+    font-size: rem-sizing(22);
+    line-height: 1.455;
+}

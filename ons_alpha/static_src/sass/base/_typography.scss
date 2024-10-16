@@ -4,3 +4,8 @@
 .heading-2 {
     @include heading-2();
 }
+
+// Ditto for heading 3
+.heading-3 {
+    @include heading-3();
+}
