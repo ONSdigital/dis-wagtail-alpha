@@ -5,11 +5,13 @@
 @use 'components/bulletin-header';
 @use 'components/button-nav';
 @use 'components/document-list-block';
+@use 'components/chart-embed';
 @use 'components/contact-details';
 @use 'components/footer';
 @use 'components/headline-figures';
 @use 'components/navigation';
 @use 'components/panel';
+@use 'components/rich-text';
 @use 'components/streamfield';
 
 // ONS design system overrides
