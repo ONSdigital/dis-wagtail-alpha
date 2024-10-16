@@ -10,6 +10,7 @@ from ons_alpha.core.blocks import (
     DocumentsBlock,
     HeadingBlock,
     NoticeBlock,
+    ONSChartEmbedBlock,
     ONSEmbedBlock,
     ONSTableBlock,
     PanelBlock,
@@ -28,7 +29,8 @@ class CoreStoryBlock(StreamBlock):
     documents = DocumentsBlock()
     related_links = RelatedLinksBlock(RelatedContentBlock())
     ons_table = ONSTableBlock(group="DataVis")
-    ons_embed = ONSEmbedBlock(group="DataVis", label="ONS Embed")
+    ons_chart_embed = ONSChartEmbedBlock(group="DataVis", label="ONS Chart Embed")
+    ons_embed = ONSEmbedBlock(group="DataVis", label="ONS General Embed")
     chart = ChartChooserBlock(group="DataVis")
     equation = MathBlock(icon="decimal", group="DataVis")
     table = OldTableBlock(

@@ -1,0 +1,21 @@
+{# This is used to embed charts. If we want to use it for other embeds like video
+    in the future we might need a separate block for those.
+    pym.js handles the responsive aspect ratio for the iframe. #}
+
+    <h3 class="heading-3 chart-embed__heading">{{ value.title }}</h3>
+    <div class="chart-embed">
+        <div class="pym-interactive"
+             id="{{ block_id }}"
+             data-url="{{ value.url }}"
+             data-title="{{ value.title }}">
+            <iframe src="{{ value.url }}"
+                    title="{{ value.title }}">
+            </iframe>
+        </div>
+        <h4 class="heading-4 chart-embed__downloads-heading">{{ value.downloads_heading }}</h4>
+        {{ value.downloads_content }}
+        {% if value.footnotes %}
+            <h4 class="heading-4 chart-embed__footnotes-heading">Footnotes</h4>
+            {{ value.footnotes }}
+        {% endif %}
+    </div>
