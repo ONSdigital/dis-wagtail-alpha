@@ -175,8 +175,8 @@ class TopicPage(BaseTopicPage):
             for block in self.body:  # pylint: disable=not-an-iterable,useless-suppression
                 if hasattr(block.block, "to_table_of_contents_items"):
                     items += block.block.to_table_of_contents_items(block.value)
-                # Return the list to terminate here
-                return items
+            # Return the list to terminate here
+            return items
 
         # Generate the TOC automatically (via topic association)
         for title in self.sections:
