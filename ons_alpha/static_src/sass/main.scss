@@ -1,3 +1,6 @@
+// Base
+@use 'base/typography';
+
 // New components created for the prototype
 @use 'components/bulletin-header';
 @use 'components/button-nav';
@@ -7,6 +10,7 @@
 @use 'components/headline-figures';
 @use 'components/navigation';
 @use 'components/panel';
+@use 'components/streamfield';
 
 // ONS design system overrides
 @use 'components/design_system_overrides/breadcrumbs';
@@ -15,4 +19,6 @@
 @use 'components/design_system_overrides/document-list';
 @use 'components/design_system_overrides/grid';
 @use 'components/design_system_overrides/header';
+@use 'components/design_system_overrides/page';
 @use 'components/design_system_overrides/text-indent';
+@use 'components/design_system_overrides/toc';

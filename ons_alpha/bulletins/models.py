@@ -75,12 +75,12 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
                         "is_accredited",
                         help_text="If ticked, will show the official statistics accredited logo.",
                     ),
-                    FieldPanel("contact_details"),
                 ],
                 heading="Metadata",
             ),
             FieldPanel("headline_figures"),
             FieldPanel("body"),
+            FieldPanel("contact_details"),
         ]
     )
 
@@ -124,7 +124,7 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
 
     @cached_property
     def toc(self):
-        items = [{"url": "#summary", "text": "Summary"}]
+        items = []
         for block in self.body:  # pylint: disable=not-an-iterable,useless-suppression
             if hasattr(block.block, "to_table_of_contents_items"):
                 items += block.block.to_table_of_contents_items(block.value)

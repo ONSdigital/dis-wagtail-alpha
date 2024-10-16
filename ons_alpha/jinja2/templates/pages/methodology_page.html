@@ -23,7 +23,7 @@
             {# fmt:off #}
             {{-
                 onsTableOfContents({
-                    "title": 'Table of contents',
+                    "title": 'Contents',
                     "ariaLabel": 'Sections in this page',
                     "itemsList": toc
                 })
@@ -74,11 +74,7 @@
                         </section>
                     {% endif %}
 
-                    {% for content_block in page.body %}
-                        {% with block_id = content_block.id %}
-                            {% include_block content_block %}
-                        {% endwith %}
-                    {% endfor %}
+                    {% include_block page.body %}
 
                     {% if page.contact_details %}
                         <section id="contact-details">

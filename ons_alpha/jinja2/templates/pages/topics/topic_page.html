@@ -21,7 +21,7 @@
                 {# fmt:off #}
                 {{-
                     onsTableOfContents({
-                        "title": 'Table of contents',
+                        "title": 'Contents',
                         "ariaLabel": 'Sections in this page',
                         "itemsList": page.toc
                     })
@@ -31,11 +31,7 @@
 
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
                 {% if page.body %}
-                    {% for content_block in page.body %}
-                        {% with block_id = content_block.id %}
-                            {% include_block content_block %}
-                        {% endwith %}
-                    {% endfor %}
+                    {% include_block page.body %}
                 {% else %}
                     {% if page.sections %}
                         {# fmt:off #}

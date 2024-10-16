@@ -17,3 +17,11 @@
         }
     }
 }
+
+// The font-size and line height for heading twos in the design system don't match the prototype figma file
+// where the font-size is 26px at mobile as well as at desktop
+@mixin heading-2 {
+    font-size: rem-sizing(26);
+    line-height: 1.385;
+    margin-bottom: rem-sizing(16);
+}

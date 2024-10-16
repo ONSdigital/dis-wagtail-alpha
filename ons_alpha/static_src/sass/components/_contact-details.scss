@@ -1,11 +1,6 @@
 @use 'config' as *;
 
 .contact-details {
-    &__heading {
-        font-size: rem-sizing(26);
-        line-height: 1.385;
-    }
-
     &__line {
         margin-bottom: 0;
     }
