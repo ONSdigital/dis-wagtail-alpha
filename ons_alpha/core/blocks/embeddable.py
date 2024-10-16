@@ -63,7 +63,7 @@ ONS_EMBED_PREFIX = "https://www.ons.gov.uk/"
 
 
 class ONSEmbedBlock(blocks.StructBlock):
-    url = blocks.URLBlock(help_text=f"Must start with <code>{ ONS_EMBED_PREFIX }</code> to your URL.")
+    url = blocks.URLBlock(label="URL", help_text=f"Must start with <code>{ ONS_EMBED_PREFIX }</code> to your URL.")
     title = blocks.CharBlock(default="Interactive chart")
 
     def clean(self, value):
@@ -80,3 +80,13 @@ class ONSEmbedBlock(blocks.StructBlock):
     class Meta:
         icon = "code"
         template = "templates/components/streamfield/ons_embed_block.html"
+
+
+class ONSChartEmbedBlock(ONSEmbedBlock):
+    downloads_heading = blocks.CharBlock(default="Download Figure X data")
+    downloads_content = blocks.RichTextBlock(features=settings.RICH_TEXT_BASIC)
+    footnotes = blocks.RichTextBlock(features=settings.RICH_TEXT_BASIC, required=False)
+
+    class Meta:
+        icon = "code"
+        template = "templates/components/streamfield/ons_chart_embed_block.html"

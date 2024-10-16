@@ -1,9 +1,4 @@
-{# This is used to embed charts. If we want to use it for other embeds like video
-in the future we might need a separate block for those.
-pym.js handles the responsive aspect ratio for the iframe. #}
-
-<h3 class="heading-3 chart-embed__heading">{{ value.title }}</h3>
-<div class="chart-embed">
+<div class="ons-u-mb-s">
     <div class="pym-interactive"
          id="{{ block_id }}"
          data-url="{{ value.url }}"
