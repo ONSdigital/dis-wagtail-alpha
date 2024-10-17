@@ -1,6 +1,19 @@
+@use 'config' as *;
+
 // overrides to ons list styles
 .ons-document-list {
     &__item-attribute {
         line-height: 1.714;
+    }
+
+    &__item-title,
+    .ons-document-list__item--featured &__item-title {
+        font-size: rem-sizing(20);
+        line-height: 1.4;
+
+        @include media-query('m') {
+            font-size: rem-sizing(22);
+            line-height: 1.455;
+        }
     }
 }

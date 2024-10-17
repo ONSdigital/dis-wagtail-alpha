@@ -1,11 +1,6 @@
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
-from wagtail.blocks import (
-    ChoiceBlock,
-    PageChooserBlock,
-    RichTextBlock,
-    StructBlock,
-)
+from wagtail.blocks import ChoiceBlock, PageChooserBlock, RichTextBlock, StructBlock
 
 from ons_alpha.core.constants import CONTENT_TYPE_LABEL_CHOICES
 
@@ -33,13 +28,14 @@ class FeaturedDocumentBlock(StructBlock):
         # Prepare 'document' object for the context
         page = value["page"].specific
         document = {
-            "title": page.title,
+            "title": {
+                "text": page.title,
+                "url": page.get_url(parent_context.get("request") if parent_context else None),
+            },
             "featured": True,
-            "showMetadataFirst": True,
             "description": value["description"],
-            "url": page.get_url(parent_context.get("request") if parent_context else None),
             "metadata": {
-                "type": {"text": value["content_type_label"]},
+                "object": {"text": value["content_type_label"]},
             },
         }
         if release_date := getattr(page, "release_date", None):

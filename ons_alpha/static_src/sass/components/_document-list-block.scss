@@ -1,7 +1,7 @@
 @use 'config' as *;
 
 .document-list-block {
-    margin-bottom: rem-spacing(64);
+    margin-bottom: rem-sizing(64);
 
     &__title {
         @include heading-2();

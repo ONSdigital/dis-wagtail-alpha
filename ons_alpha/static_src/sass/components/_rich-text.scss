@@ -4,4 +4,12 @@
     h3 {
         @include heading-3();
     }
+
+    // In the document block list styling from ONS, we don't want list items inside rich-text to have circle styling
+
+    .ons-document-list & {
+        ul {
+            list-style-type: disc;
+        }
+    }
 }
