@@ -8,3 +8,10 @@ $breakpoints: (
     'xl' '(min-width: 1300px)',
     '2xl' '(min-width: 1600px)'
 );
+
+// These colour variables are set in the figma file but not in the design-system
+
+$color--buff: #e8bb9b;
+$color--pale-grey: #efeff0;
+$color--pale-blue: #e7eff4;
+$color--grey-blue: #dee7ee;
