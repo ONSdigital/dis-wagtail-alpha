@@ -6,71 +6,69 @@
 
 {% block header_area %}
     <div class="bulletin-header">
-        <div class="bulletin-header__content">
-            <div class="ons-container">
-                {% include "templates/components/navigation/breadcrumbs.html" %}
-                <p class="ons-u-fs-l bulletin-header__doc-type">{{ page.document_type|default("Analysis") }}</p>
+        <div class="ons-container">
+            {% include "templates/components/navigation/breadcrumbs.html" %}
+            <p class="bulletin-header__doc-type">{{ page.document_type|default("Analysis") }}</p>
 
-                <div class="ons-grid ons-grid-flex-gap">
-                    <div class="ons-grid__col ons-col-10@m ">
-                        <h1 class="ons-u-fs-3xl bulletin-header__heading">
-                            {{ page.full_title }}
-                        </h1>
+            <div class="ons-grid ons-grid-flex-gap">
+                <div class="ons-grid__col ons-col-10@m ">
+                    <h1 class="ons-u-fs-3xl bulletin-header__heading">
+                        {{ page.full_title }}
+                    </h1>
+                </div>
+                <div class="ons-grid__col ons-col-2@m bulletin-header__kitemark">
+                    {% if page.is_accredited %}
+                        <a href="https://uksa.statisticsauthority.gov.uk/about-the-authority/uk-statistical-system/types-of-official-statistics/" class="bulletin-header__accreditation-link">
+                            <img src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/v2/uksa-kitemark-en.svg" alt="UK Statistics Authority Kitemark" class="bulletin-header__accreditation-logo" width="90">
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="ons-container">
+            <p class="bulletin-header__summary">{{ page.summary }}</p>
+        </div>
+
+        {% block release_meta %}
+            <div class="ons-container">
+                <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--40 bulletin-header__releases">
+                    <div class="ons-grid__col ons-col-4@m">
+                        <span class="ons-u-fs-r--b">{{ _("Release date") }}:</span>
+                        <span class="ons-u-nowrap">{{ page.release_date|date("j F Y") }}</span>
                     </div>
-                    <div class="ons-grid__col ons-col-2@m bulletin-header__kitemark">
-                        {% if page.is_accredited %}
-                            <a href="https://uksa.statisticsauthority.gov.uk/about-the-authority/uk-statistical-system/types-of-official-statistics/" class="bulletin-header__accreditation-link">
-                                <img src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/v2/uksa-kitemark-en.svg" alt="UK Statistics Authority Kitemark" class="bulletin-header__accreditation-logo" width="90">
-                            </a>
+                    <div class="ons-grid__col ons-col-4@m">
+                        <span class="ons-u-fs-r--b">{{ _("Version") }}:</span>
+                        {% if latest_version_url %}
+                            <span>{{ _("This has been superseded.") }} <a href="{{ latest_version_url }}">{{ _("View corrected version") }}</a></span>
+                        {% else %}
+                            <span class="ons-u-nowrap">{{ _("Latest") }}</span>
                         {% endif %}
                     </div>
-                </div>
-            </div>
-
-            <div class="ons-container">
-                <p class="bulletin-header__summary">{{ page.summary }}</p>
-            </div>
-
-            {% block release_meta %}
-                <div class="ons-container">
-                    <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--40 bulletin-header__releases">
-                        <div class="ons-grid__col ons-col-4@m">
-                            <span class="ons-u-fs-r--b">{{ _("Release date") }}:</span>
-                            <span class="ons-u-nowrap">{{ page.release_date|date("j F Y") }}</span>
-                        </div>
-                        <div class="ons-grid__col ons-col-4@m">
-                            <span class="ons-u-fs-r--b">{{ _("Version") }}:</span>
-                            {% if latest_version_url %}
-                                <span>{{ _("This has been superseded.") }} <a href="{{ latest_version_url }}">{{ _("View corrected version") }}</a></span>
-                            {% else %}
-                                <span class="ons-u-nowrap">{{ _("Latest") }}</span>
-                            {% endif %}
-                        </div>
-                        <div class="ons-grid__col ons-col-4@m">
-                            <span class="ons-u-fs-r--b">{{ _("Contact") }}:</span>
-                            <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.name }}</a>
-                        </div>
-                    </div>
-                    <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--40 bulletin-header__releases">
-                        <div class="ons-grid__col ons-col-4@m">
-                            {% if page.next_release_date %}
-                                <span class="ons-u-fs-r--b">{{ _("Next release") }}:</span>
-                                <span class="ons-u-nowrap">{{ page.next_release_date|date("j F Y") }}</span>
-                            {% endif %}
-                        </div>
-                        <div class="ons-grid__col ons-col-4@m">
-                            <span class="ons-u-fs-r--b">{{ _("Releases") }}:</span>
-                            {% if page.is_latest %}
-                                <a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">{{ _("View previous releases") }}</a>
-                            {% else %}
-                                <a href="{{  routablepageurl(page.get_parent().specific, "latest_release") }}">{{ _("View latest release") }}</a>
-                            {% endif %}
-                        </div>
-                        <div class="ons-grid__col ons-col-4@m"></div>
+                    <div class="ons-grid__col ons-col-4@m">
+                        <span class="ons-u-fs-r--b">{{ _("Contact") }}:</span>
+                        <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.name }}</a>
                     </div>
                 </div>
-            {% endblock %}
-        </div>
+                <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--40 bulletin-header__releases">
+                    <div class="ons-grid__col ons-col-4@m">
+                        {% if page.next_release_date %}
+                            <span class="ons-u-fs-r--b">{{ _("Next release") }}:</span>
+                            <span class="ons-u-nowrap">{{ page.next_release_date|date("j F Y") }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="ons-grid__col ons-col-4@m">
+                        <span class="ons-u-fs-r--b">{{ _("Releases") }}:</span>
+                        {% if page.is_latest %}
+                            <a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">{{ _("View previous releases") }}</a>
+                        {% else %}
+                            <a href="{{  routablepageurl(page.get_parent().specific, "latest_release") }}">{{ _("View latest release") }}</a>
+                        {% endif %}
+                    </div>
+                    <div class="ons-grid__col ons-col-4@m"></div>
+                </div>
+            </div>
+        {% endblock %}
     </div>
 
     {% if page.headline_figures %}
