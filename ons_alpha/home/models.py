@@ -4,7 +4,7 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.models import Locale
 from wagtail.search import index
 
-from ons_alpha.core.blocks.stream_blocks import CoreStoryBlock
+from ons_alpha.core.blocks.stream_blocks import SimpleStoryBlock
 from ons_alpha.core.models import BasePage
 from ons_alpha.utils.fields import StreamField
 
@@ -15,9 +15,13 @@ class HomePage(BasePage):
     # Only allow creating HomePages at the root level
     parent_page_types = ["wagtailcore.Page"]
 
-    strapline = models.CharField(blank=True, max_length=255)
+    strapline = models.CharField(
+        blank=True,
+        max_length=255,
+        help_text="An alternative title to be used as the h1. If not specified, the page title will be used.",
+    )
     summary = models.TextField(blank=True)
-    body = StreamField(CoreStoryBlock, null=True)
+    body = StreamField(SimpleStoryBlock, null=True)
 
     search_fields = BasePage.search_fields + [
         index.SearchField("strapline"),
@@ -30,6 +34,10 @@ class HomePage(BasePage):
         FieldPanel("summary"),
         FieldPanel("body"),
     ]
+
+    @property
+    def h1(self) -> str:
+        return self.strapline or self.title
 
     def route(self, request, path_components):
         try:
