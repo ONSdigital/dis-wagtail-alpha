@@ -1,3 +1,4 @@
+from .button_link import ButtonLinkBlock
 from .document_list import DocumentListBlock
 from .embeddable import DocumentBlock, DocumentsBlock, ImageBlock, ONSChartEmbedBlock, ONSEmbedBlock
 from .featured_document import FeaturedDocumentBlock
@@ -9,6 +10,7 @@ from .snippets import ChartChooserBlock
 
 
 __all__ = [
+    "ButtonLinkBlock",
     "CorrectionBlock",
     "DocumentBlock",
     "DocumentListBlock",
