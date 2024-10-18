@@ -4,6 +4,7 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtailmath.blocks import MathBlock
 
 from ons_alpha.core.blocks import (
+    ButtonLinkBlock,
     ChartChooserBlock,
     CorrectionBlock,
     DocumentListBlock,
@@ -18,6 +19,14 @@ from ons_alpha.core.blocks import (
     RelatedLinksBlock,
 )
 from ons_alpha.core.blocks import TableBlock as OldTableBlock
+
+
+class SimpleStoryBlock(StreamBlock):
+    heading = HeadingBlock()
+    rich_text = RichTextBlock()
+    panel = PanelBlock()
+    document_list = DocumentListBlock()
+    button_link = ButtonLinkBlock()
 
 
 class CoreStoryBlock(StreamBlock):

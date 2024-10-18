@@ -1,25 +1,33 @@
 {% extends "templates/base_page.html" %}
 {% from "components/related-content/_macro.njk" import onsRelatedContent %}
 
+{% block header_area %}
+    <div class="generic-header">
+        <div class="ons-container">
+            {% block breadcrumbs %}
+                {% include "templates/components/navigation/breadcrumbs.html" %}
+            {% endblock %}
+            <div class="ons-grid">
+                <div class="ons-grid__col ons-col-8@m ">
+                    <h1 class="ons-u-fs-3xl generic-header__heading">{{ page.h1 }}</h1>
+                    {% if page.summary %}
+                        <p class="generic-header__summary">{{ page.summary }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ super() }}
+
+{% endblock %}
+
 {% block main %}
-    <h1>{{ page.title }}</h1>
-
-    {% if page.introduction %}
-        <p>{{ page.introduction }}</p>
-    {% endif %}
-
-    {% include_block page.body %}
-
-    {% if related_pages %}
-        {{ onsRelatedContent({
-        "ariaLabel": 'Related content',
-        "rows": [
-        {
-        "id": 'related-content',
-        "title": 'Related content',
-        "itemsList": related_pages
-        }
-        ]
-        }) }}
-    {% endif %}
+    <div class="ons-container">
+        <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--32">
+            <div class="ons-grid__col ons-col-8@m">
+                {% include_block page.body %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

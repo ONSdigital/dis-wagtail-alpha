@@ -1,16 +1,2 @@
-{% extends "templates/base_page.html" %}
-
-{% from "components/panel/_macro.njk" import onsPanel %}
-
-{% block main %}
-    {% call onsPanel({"variant": 'announcement'}) %}
-        <h2 class="ons-u-mb-no">Welcome to the ONS Wagtail Alpha instance</h2>
-
-        <div class="ons-u-fs-r">
-            <p>Please note that this is not a finished product. It is a series of proofs of concept and explorations on how we may model things with Wagtail</p>
-            {% if not IS_EXTERNAL_ENV %}
-                <p>To access the administrative interface, please go to <a href="{{ url('wagtailadmin_home') }}"><code>/admin</code></a></p>
-            {% endif %}
-        </div>
-    {% endcall %}
-{% endblock %}
+{% extends "templates/pages/information_page.html" %}
+{% block breadcrumbs %}{% endblock%}

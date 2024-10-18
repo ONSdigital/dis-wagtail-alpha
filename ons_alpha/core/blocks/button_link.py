@@ -1,0 +1,22 @@
+from django.utils.translation import gettext as _
+from wagtail.blocks import (
+    CharBlock,
+    PageChooserBlock,
+    StructBlock,
+)
+
+
+class ButtonLinkBlock(StructBlock):
+    text = CharBlock(label=_("Text"), default="Get started", max_length=100, required=True)
+    target_page = PageChooserBlock(label=_("Target page"), required=True)
+
+    class Meta:
+        template = "templates/components/streamfield/button_link_block.html"
+        icon = "link"
+        label = _("Button link")
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["text"] = self.text
+        context["url"] = self.target_page.get_url(parent_context.get("request") if parent_context is not None else None)
+        return context
