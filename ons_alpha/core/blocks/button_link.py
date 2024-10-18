@@ -17,6 +17,7 @@ class ButtonLinkBlock(StructBlock):
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
-        context["text"] = self.text
-        context["url"] = self.target_page.get_url(parent_context.get("request") if parent_context is not None else None)
+        request = parent_context.get("request") if parent_context else None
+        context["text"] = value["text"]
+        context["url"] = value["target_page"].get_url(request)
         return context
