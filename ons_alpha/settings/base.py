@@ -751,7 +751,7 @@ WAGTAILIMAGES_MAX_IMAGE_PIXELS = int(pixel_limit) if pixel_limit else 10_000_000
 # in the rich text editor, for example.
 # They should use the image stream block instead
 RICH_TEXT_BASIC = ["bold", "italic", "link", "ol", "ul", "document-link"]
-RICH_TEXT_FULL = ["h3", "h4"] + RICH_TEXT_BASIC
+RICH_TEXT_FULL = ["h3", "h4", "hr"] + RICH_TEXT_BASIC
 
 WAGTAILADMIN_RICH_TEXT_EDITORS = {
     "default": {
