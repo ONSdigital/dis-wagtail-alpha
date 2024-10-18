@@ -1,10 +1,10 @@
 <div class="ons-container headline-figures">
-    <h2 class="headline-figures__heading ons-u-fs-l">Headline figures</h2>
+    <h2 class="headline-figures__heading ons-u-fs-l">Headline facts and figures</h2>
     <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--24 headline-figures__grid">
         {% for figure in value %}
             <div class="ons-grid__col">
                 <div class="headline-figures__block">
-                    <h3 class="headline-figures__title ons-u-fs-l">{{ figure.title }}</h3>
+                    <h3 class="headline-figures__title">{{ figure.title }}</h3>
                     <p class="headline-figures__figure">{{ figure.figure }}</p>
 
                     {% if figure.supporting_text %}
