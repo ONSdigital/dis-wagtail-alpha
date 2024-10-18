@@ -15,6 +15,8 @@
                     <h1 class="ons-u-fs-3xl bulletin-header__heading">
                         {{ page.full_title }}
                     </h1>
+
+                    <p class="bulletin-header__summary">{{ page.summary }}</p>
                 </div>
                 <div class="ons-grid__col ons-col-2@m bulletin-header__kitemark">
                     {% if page.is_accredited %}
@@ -26,19 +28,15 @@
             </div>
         </div>
 
-        <div class="ons-container">
-            <p class="bulletin-header__summary">{{ page.summary }}</p>
-        </div>
-
         {% block release_meta %}
             <div class="ons-container">
                 <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--40 bulletin-header__releases">
                     <div class="ons-grid__col ons-col-4@m">
-                        <span class="ons-u-fs-r--b">{{ _("Release date") }}:</span>
+                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Release date") }}:</span>
                         <span class="ons-u-nowrap">{{ page.release_date|date("j F Y") }}</span>
                     </div>
                     <div class="ons-grid__col ons-col-4@m">
-                        <span class="ons-u-fs-r--b">{{ _("Version") }}:</span>
+                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Version") }}:</span>
                         {% if latest_version_url %}
                             <span>{{ _("This has been superseded.") }} <a href="{{ latest_version_url }}">{{ _("View corrected version") }}</a></span>
                         {% else %}
@@ -46,19 +44,19 @@
                         {% endif %}
                     </div>
                     <div class="ons-grid__col ons-col-4@m">
-                        <span class="ons-u-fs-r--b">{{ _("Contact") }}:</span>
+                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Contact") }}:</span>
                         <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.name }}</a>
                     </div>
                 </div>
                 <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--40 bulletin-header__releases">
                     <div class="ons-grid__col ons-col-4@m">
                         {% if page.next_release_date %}
-                            <span class="ons-u-fs-r--b">{{ _("Next release") }}:</span>
+                            <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Next release") }}:</span>
                             <span class="ons-u-nowrap">{{ page.next_release_date|date("j F Y") }}</span>
                         {% endif %}
                     </div>
                     <div class="ons-grid__col ons-col-4@m">
-                        <span class="ons-u-fs-r--b">{{ _("Releases") }}:</span>
+                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Releases") }}:</span>
                         {% if page.is_latest %}
                             <a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">{{ _("View previous releases") }}</a>
                         {% else %}
