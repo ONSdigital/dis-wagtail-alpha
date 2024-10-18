@@ -4,7 +4,9 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.models import Locale
 from wagtail.search import index
 
+from ons_alpha.core.blocks.stream_blocks import CoreStoryBlock
 from ons_alpha.core.models import BasePage
+from ons_alpha.utils.fields import StreamField
 
 
 class HomePage(BasePage):
@@ -14,19 +16,19 @@ class HomePage(BasePage):
     parent_page_types = ["wagtailcore.Page"]
 
     strapline = models.CharField(blank=True, max_length=255)
-    call_to_action = models.ForeignKey(
-        "core.CallToActionSnippet",
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
+    summary = models.TextField(blank=True)
+    body = StreamField(CoreStoryBlock, null=True)
 
-    search_fields = BasePage.search_fields + [index.SearchField("strapline")]
+    search_fields = BasePage.search_fields + [
+        index.SearchField("strapline"),
+        index.SearchField("summary"),
+        index.SearchField("body"),
+    ]
 
     content_panels = BasePage.content_panels + [
         FieldPanel("strapline"),
-        FieldPanel("call_to_action"),
+        FieldPanel("summary"),
+        FieldPanel("body"),
     ]
 
     def route(self, request, path_components):
