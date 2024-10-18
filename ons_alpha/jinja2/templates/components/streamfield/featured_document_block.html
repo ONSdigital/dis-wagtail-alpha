@@ -1,12 +1,14 @@
-{% from "components/document-list/_macro.njk" import onsDocumentList %}
+{# Note: this is not actually a document - but it uses the design system document list component for styling #}
+{% from "component_overrides/document-list/_macro.njk" import onsDocumentListNew %}
 
-<section id="{{ slug }}">
-    <h2 >{{ heading }}</h2>
+<section id="{{ slug }}" class="document-list-block">
+    <h2 class="heading-2">{{ heading }}</h2>
 
     {# fmt:off #}
     {{-
-        onsDocumentList({
+        onsDocumentListNew({
             "documents": documents,
+            "headingLevel": 3,
         })
     }}
     {# fmt:on #}

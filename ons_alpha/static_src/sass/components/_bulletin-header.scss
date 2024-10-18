@@ -2,12 +2,14 @@
 
 .bulletin-header {
     // this colour is in figma but not in the design system
-    /* stylelint-disable */
-    background-color: #efeff0;
-    /* stylelint-enable */
+    background-color: $color--pale-grey;
     position: relative;
     padding-bottom: rem-sizing(64);
     margin-bottom: rem-sizing(24);
+
+    @include media-query('m') {
+        margin-bottom: rem-sizing(40);
+    }
 
     &::before {
         position: absolute;
@@ -18,18 +20,23 @@
         border-radius: 0 0 50% 50%;
         background-color: var(--ons-color-grey-5);
         content: '';
-    }
 
-    &__content {
-        position: relative;
+        @include media-query('l') {
+            border-radius: 0 0 80% 50%;
+            left: -25%;
+            width: 130%;
+        }
     }
 
     &__doc-type {
-        color: var(--ons-color-ocean-blue);
+        font-size: rem-sizing(24);
         line-height: 1.333;
+        font-weight: 700;
+        color: var(--ons-color-ocean-blue);
         margin-bottom: 0;
 
         @include media-query('m') {
+            font-size: rem-sizing(26);
             line-height: 1.384;
         }
     }
