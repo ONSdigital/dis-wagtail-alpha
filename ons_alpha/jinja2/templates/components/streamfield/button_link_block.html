@@ -1,7 +1,11 @@
 {% from "components/button/_macro.njk" import onsButton %}
+{# fmt:off #}
 {{
-onsButton({
-"text": text,
-"url": url,
-})
+    onsButton({
+        "text": text,
+        "url": url,
+        "iconType": "chevron",
+        "iconPosition": "after",
+    })
 }}
+{# fmt:on #}

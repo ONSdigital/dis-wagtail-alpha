@@ -12,4 +12,12 @@
             list-style-type: disc;
         }
     }
+
+    hr {
+        margin-bottom: rem-sizing(32);
+    }
+
+    p {
+        margin-bottom: rem-sizing(32);
+    }
 }

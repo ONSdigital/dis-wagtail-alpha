@@ -39,6 +39,8 @@
     <div class="ons-container">
         <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--32">
             <div class="ons-grid__col ons-col-8@m">
+                {# Remove bottom margin from last streamfield block. last_flush is used in stream_block.html #}
+                {% set last_flush = True %}
                 {% include_block page.body %}
             </div>
         </div>
