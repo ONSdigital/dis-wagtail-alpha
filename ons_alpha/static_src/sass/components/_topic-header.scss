@@ -4,7 +4,7 @@
     // this colour is in figma but not in the design system
     background-color: $color--grey-blue;
     position: relative;
-    padding-bottom: rem-sizing(64);
+    padding-bottom: rem-sizing(96);
     margin-bottom: rem-sizing(40);
     overflow: hidden;
 
@@ -24,6 +24,10 @@
             left: -25%;
             width: 130%;
         }
+    }
+
+    @include media-query('l') {
+        padding-bottom: rem-sizing(64);
     }
 
     &__circle-one {
@@ -47,7 +51,7 @@
         background-color: $color--buff;
         border-radius: 50%;
         // these are relative to the 'before' styled curve
-        bottom: 7%;
+        bottom: 4%;
         right: 15%;
 
         @include media-query('l') {
@@ -68,7 +72,7 @@
         height: 80px;
         background-color: var(--ons-color-ocean-blue);
         border-radius: 50%;
-        bottom: 10%;
+        bottom: 7%;
         right: -26px;
 
         @include media-query('l') {
@@ -105,10 +109,10 @@
     }
 
     &__summary {
-        margin-bottom: rem-sizing(96);
+        margin-bottom: rem-sizing(24);
 
         @include media-query('m') {
-            margin-bottom: rem-sizing(64);
+            margin-bottom: 0;
         }
     }
 }

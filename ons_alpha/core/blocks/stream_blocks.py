@@ -28,6 +28,9 @@ class SimpleStoryBlock(StreamBlock):
     document_list = DocumentListBlock()
     button_link = ButtonLinkBlock()
 
+    class Meta:
+        template = "templates/components/streamfield/stream_block.html"
+
 
 class CoreStoryBlock(StreamBlock):
     heading = HeadingBlock()

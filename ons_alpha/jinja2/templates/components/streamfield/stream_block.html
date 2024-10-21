@@ -1,8 +1,9 @@
 {% for content_block in value %}
     {% with block_id = content_block.id %}
         <div class="
-                    {% if content_block.block_type !='heading' %}streamfield{% endif %}
-                    {% if last_flush %}streamfield--last-flush{% endif %}
+                    {% if content_block.block_type !='heading' %}streamfield
+                        {% if last_flush %}streamfield--last-flush{% endif %}
+                    {% endif %}
                    ">
             {% include_block content_block %}
         </div>

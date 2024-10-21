@@ -2,17 +2,30 @@
 {% from "components/related-content/_macro.njk" import onsRelatedContent %}
 
 {% block header_area %}
-    <div class="generic-header">
+    <div class="landing-header">
+        <div class="landing-header__circles" aria-hidden="true">
+            <div class="landing-header__circle-one"></div>
+            <div class="landing-header__circle-two"></div>
+            <div class="landing-header__circle-three"></div>
+            <div class="landing-header__circle-four"></div>
+            <div class="landing-header__circle-five"></div>
+            <div class="landing-header__circle-six"></div>
+            <div class="landing-header__circle-seven"></div>
+            <div class="landing-header__circle-eight"></div>
+            <div class="landing-header__circle-nine"></div>
+            <div class="landing-header__circle-ten"></div>
+            <div class="landing-header__circle-eleven"></div>
+        </div>
         <div class="ons-container">
             {% block breadcrumbs %}
                 {% include "templates/components/navigation/breadcrumbs.html" %}
             {% endblock %}
             <div class="ons-grid">
                 <div class="ons-grid__col ons-col-8@m ">
-                    <h1 class="ons-u-fs-3xl generic-header__heading">{{ page.h1 }}</h1>
-                    {% if page.summary %}
-                        <p class="generic-header__summary">{{ page.summary }}</p>
-                    {% endif %}
+                    <h1 class="ons-u-fs-3xl landing-header__heading">
+                        {{ page.h1 }}
+                    </h1>
+                    <p class="landing-header__summary">{{ page.summary }}</p>
                 </div>
             </div>
         </div>
@@ -26,6 +39,8 @@
     <div class="ons-container">
         <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--32">
             <div class="ons-grid__col ons-col-8@m">
+                {# Remove bottom margin from last streamfield block. last_flush is used in stream_block.html #}
+                {% set last_flush = True %}
                 {% include_block page.body %}
             </div>
         </div>
