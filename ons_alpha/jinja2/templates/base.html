@@ -36,8 +36,11 @@
     }}
 {% endset %}
 
+{% set body_class = ["template-", page.get_verbose_name()| lower | replace(" ", "-")] | join %}
+
 {# navlinks are hard-code for the prototype #}
 {% set pageConfig = {
+    "bodyClasses": body_class,
     "header": {
         "title": page_title,
         "phase": {
