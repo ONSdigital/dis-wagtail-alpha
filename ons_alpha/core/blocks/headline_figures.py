@@ -1,13 +1,10 @@
 from django.utils.translation import gettext as _
-from wagtail.blocks import (
-    CharBlock,
-    ListBlock,
-    StructBlock,
-)
+from wagtail.blocks import CharBlock, ListBlock, PageChooserBlock, StructBlock
 
 
 class HeadlineFiguresItemBlock(StructBlock):
     title = CharBlock(label=_("Title"), max_length=60, required=True)
+    title_link = PageChooserBlock(required=False)
     figure = CharBlock(label=_("Figure"), max_length=10, required=True)
     supporting_text = CharBlock(label=_("Supporting text"), max_length=100, required=False)
 
