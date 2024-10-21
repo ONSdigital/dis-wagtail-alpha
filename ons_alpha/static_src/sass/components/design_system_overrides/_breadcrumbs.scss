@@ -12,4 +12,12 @@
         padding-bottom: rem-sizing(8);
         line-height: 1.714;
     }
+
+    // breadcrumbs need to be white on the dark blue background
+    &__link {
+        .template-information-page & {
+            color: var(--ons-color-white);
+            text-decoration-color: var(--ons-color-white);
+        }
+    }
 }
