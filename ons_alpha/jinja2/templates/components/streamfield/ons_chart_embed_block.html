@@ -17,6 +17,7 @@
     <h4 class="heading-4">{{ value.downloads_heading }}</h4>
     {{ value.downloads_content }}
     {% if value.footnotes %}
+        {% set unique_id = ["footnotes-", block_id] | join %}
         {# fmt:off #}
         {{
             onsDetails({
