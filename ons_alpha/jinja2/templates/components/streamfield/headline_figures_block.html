@@ -4,7 +4,15 @@
         {% for figure in value %}
             <div class="ons-grid__col">
                 <div class="headline-figures__block">
-                    <h3 class="headline-figures__title">{{ figure.title }}</h3>
+                    <h3 class="headline-figures__title">
+                        {% if figure.title_link %}
+                            <a href="{{ pageurl(figure.title_link) }}">
+                        {% endif %}
+                        {{ figure.title }}
+                        {% if figure.title_link %}
+                            </a>
+                        {% endif %}
+                    </h3>
                     <p class="headline-figures__figure">{{ figure.figure }}</p>
 
                     {% if figure.supporting_text %}
