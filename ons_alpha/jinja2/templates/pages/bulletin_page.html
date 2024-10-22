@@ -44,8 +44,10 @@
                         {% endif %}
                     </div>
                     <div class="ons-grid__col ons-col-4@m">
-                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Contact") }}:</span>
-                        <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.name }}</a>
+                        {% if page.contact_details.email %}
+                            <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Contact") }}:</span>
+                            <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.name }}</a>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--40 bulletin-header__releases">
@@ -122,11 +124,11 @@
                                 <strong>Name</strong>: {{ page.contact_details.name }}
                             </p>
                             <p class="contact-details__line">
-                                <strong>Email</strong>: {{ page.contact_details.email }}
+                                <strong>Email</strong>: <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.email }}</a>
                             </p>
                             {% if page.contact_details.phone %}
                                 <p class="contact-details__line">
-                                    <strong>Telephone</strong>: {{ page.contact_details.phone }}
+                                    <strong>Telephone</strong>: <a href="tel:{{ page.contact_details.phone }}">{{ page.contact_details.phone }}</a>
 
                                 </p>
                             {% endif %}
