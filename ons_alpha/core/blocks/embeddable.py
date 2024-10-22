@@ -64,7 +64,7 @@ ONS_EMBED_PREFIX = "https://www.ons.gov.uk/"
 
 class ONSEmbedBlock(blocks.StructBlock):
     url = blocks.URLBlock(label="URL", help_text=f"Must start with <code>{ ONS_EMBED_PREFIX }</code> to your URL.")
-    title = blocks.CharBlock(default="Interactive chart")
+    title = blocks.CharBlock(default="Embedded content")
 
     def clean(self, value):
         errors = {}
@@ -83,6 +83,16 @@ class ONSEmbedBlock(blocks.StructBlock):
 
 
 class ONSChartEmbedBlock(ONSEmbedBlock):
+    title = blocks.CharBlock(
+        default="Interactive chart",
+        help_text="Title for the embedded chart e.g. 'Online sales rose for most main sectors'",
+    )
+    chart_title = blocks.CharBlock(
+        help_text="""
+            Detailed chart title, e.g.
+            'Figure 3: Value sales, monthly percentage change, seasonally adjusted, Great Britain, July 2024'
+            """
+    )
     downloads_heading = blocks.CharBlock(default="Download Figure X data")
     downloads_content = blocks.RichTextBlock(features=settings.RICH_TEXT_BASIC)
     footnotes = blocks.RichTextBlock(features=settings.RICH_TEXT_BASIC, required=False)
