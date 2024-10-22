@@ -150,6 +150,6 @@
 {% block scripts %}
     {{ super() }}
     <script async src="{{ mathjax() }}"></script>
-    <script type="text/javascript" src="https://pym.nprapps.org/pym.v1.min.js"></script>
+    <script src="{{ static('js/third-party/pym.min.js') }}"></script>
 
 {% endblock %}
