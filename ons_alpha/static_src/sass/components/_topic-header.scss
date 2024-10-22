@@ -54,6 +54,11 @@
         bottom: 4%;
         right: 15%;
 
+        @include media-query('m') {
+            bottom: 8%;
+            right: 10%;
+        }
+
         @include media-query('l') {
             width: 72px;
             height: 72px;
@@ -74,6 +79,10 @@
         border-radius: 50%;
         bottom: 7%;
         right: -26px;
+
+        @include media-query('m') {
+            bottom: 9%;
+        }
 
         @include media-query('l') {
             width: 156px;
