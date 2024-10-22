@@ -826,6 +826,7 @@ SLACK_NOTIFICATIONS_WEBHOOK_URL = env.get("SLACK_NOTIFICATIONS_WEBHOOK_URL")
 
 SHORT_DATETIME_FORMAT = "d/m/Y P"
 
+ONS_TOPIC_PAGE_URL = env.get("ONS_TOPIC_PAGE_URL", "/business-industry-trade/retail-industry/")
 ONS_API_DATASET_BASE_URL = env.get("ONS_API_DATASET_BASE_URL", "https://api.beta.ons.gov.uk/v1/datasets")
 ONS_WEBSITE_DATASET_BASE_URL = env.get("ONS_WEBSITE_DATASET_BASE_URL", "https://www.ons.gov.uk/datasets")
 

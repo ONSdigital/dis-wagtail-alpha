@@ -10,4 +10,5 @@ def global_vars(request):
         "SEO_NOINDEX": settings.SEO_NOINDEX,
         "LANGUAGE_CODE": settings.LANGUAGE_CODE,
         "IS_EXTERNAL_ENV": settings.IS_EXTERNAL_ENV,
+        "TOPIC_PAGE_URL": settings.ONS_TOPIC_PAGE_URL,
     }
