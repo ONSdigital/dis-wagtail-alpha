@@ -44,7 +44,7 @@
                         {% endif %}
                     </div>
                     <div class="ons-grid__col ons-col-4@m">
-                        {% if page.contact_details.email %}
+                        {% if page.contact_details %}
                             <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Contact") }}:</span>
                             <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.name }}</a>
                         {% endif %}
@@ -128,7 +128,7 @@
                             </p>
                             {% if page.contact_details.phone %}
                                 <p class="contact-details__line">
-                                    <strong>Telephone</strong>: <a href="tel:{{ page.contact_details.phone }}">{{ page.contact_details.phone }}</a>
+                                    <strong>Telephone</strong>: <a href="tel:{{ page.contact_details.phone | replace(' ','')}}">{{ page.contact_details.phone }}</a>
 
                                 </p>
                             {% endif %}
