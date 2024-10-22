@@ -52,4 +52,4 @@ class FeaturedDocumentBlock(StructBlock):
         return context
 
     def to_table_of_contents_items(self, value):  # pylint: disable=unused-argument
-        return [{"url": "#" + slugify(self.heading), "text": self.slug}]
+        return [{"url": "#" + self.slug, "text": self.heading}]
