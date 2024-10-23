@@ -1,6 +1,9 @@
 @use 'config' as *;
 
 // overrides to ons header styles
+// padding is moved to the logo element in order to allow the menu button to fill the full
+// height of .ons-header__grid-top
+
 .ons-header {
     &__grid-top {
         padding: 0;

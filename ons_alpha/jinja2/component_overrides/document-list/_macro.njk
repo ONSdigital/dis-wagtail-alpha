@@ -1,4 +1,9 @@
-{% macro onsDocumentListNew(params) %} {# This is an override of ONS "components/document-list/_macro.njk" #}
+{% macro onsDocumentListNew(params) %}
+    {#
+        This is an override of ONS "components/document-list/_macro.njk"
+        The only overrides are to make the links optional - this will not need to be ported back to the design system as the links will not be optional in beta - only for the prototype
+        - See static_src/sass/compnents/design_system_overrides/_document-list.scss for styling customisations
+    #}
     <ul
         {% if params.id %}id="{{ params.id }}"{% endif %}class="ons-document-list{{ ' ' + params.classes if params.classes else '' }}"
         {% if params.attributes %}{% for attribute, value in (params.attributes.items() if params.attributes is mapping and params.attributes.items else params.attributes) %}{{ ' ' }}{{ attribute }}="{{ value }}"{% endfor %}{% endif %}
