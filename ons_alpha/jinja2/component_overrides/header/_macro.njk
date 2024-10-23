@@ -1,4 +1,14 @@
-{% macro onsHeaderNew(params) %}{# This is an override of ONS "components/header/_macro.njk" #}
+{% macro onsHeaderNew(params) %}
+    {#
+        This is an override of ONS "components/header/_macro.njk"
+        It is customised for the following reasons:
+        - Addition of custom classes to create a flex layout using 'gap' - see static_src/sass/components/design_system_overrides/_grid.scss
+        - Overrides to the button classes to accommodate a text button that is visible at desktop (for the new navigation menu button) - see static_src/sass/components/design_system_overrides/_button.scss
+        - Addition of custom styles for the new navigation menu button - see static_src/sass/components/_button-nav.scss
+        - Replace the serviceLinks option with a new navLinks option that creates the drop down menu - it may be possible in the design system to accommodate both
+        - See base.html for the structure needed for navLinks
+        - See static_src/sass/compnents/design_system_overrides/_header.scss for styling customisations
+    #}
     {% from "components/button/_macro.njk" import onsButton %}
     {% from "components/icon/_macro.njk" import onsIcon %}
     {% from "components/navigation/_macro.njk" import onsNavigation %}

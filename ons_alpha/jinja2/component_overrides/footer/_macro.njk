@@ -1,4 +1,13 @@
-{% macro onsFooterNew(params) %}{# This is an override of ONS "components/footer/_macro.njk" #}
+{% macro onsFooterNew(params) %}
+    {#
+        This is an override of ONS "components/footer/_macro.njk"
+        - Addition of custom classes to create a flex layout using 'gap' - see static_src/sass/components/design_system_overrides/_grid.scss
+        - Adds a new custom set of BEM classes with block 'footer' - see static_src/sass/components/_footer.scss
+        - Hard codes the OGL logo as the fill colour needs to be overridden
+        - Passes an alternative class to the onsList component
+        - Allow the footer logo to be skipped
+
+    #}
     {% from "components/list/_macro.njk" import onsList %}
     {% from "components/icon/_macro.njk" import onsIcon %}
 
@@ -86,6 +95,7 @@
                                 {% if col.title %}
                                     <h2 class="footer__heading ons-footer__heading ons-u-fs-l">{{ col.title }}</h2>
                                 {% endif %}
+                                {# alternative class passsed here to design system version #}
                                 {{
                                     onsList({
                                         "classes": 'footer__list',
@@ -112,6 +122,7 @@
                 </div>
 
                 {% if (params.cols) or (params.rows) %}
+                    {# an extra ons-grid__col div added here as well as adjusting the ons-grid classes #}
                     <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--32">
                         <div class="ons-grid__col">
                             <hr class="ons-footer__hr footer__hr" />
@@ -182,6 +193,7 @@
                                 {% endif %}
                             </div>
                         {% endif %}
+                        {# Add an extra option to check if footerLogo is present as we exclude it altogether in the prototype footer - couldn't find a way to do that with the current config #}
                         {% if params.footerLogo %}
                             {% if not params.footerLogo.logos.logo1 %}
                                 {%

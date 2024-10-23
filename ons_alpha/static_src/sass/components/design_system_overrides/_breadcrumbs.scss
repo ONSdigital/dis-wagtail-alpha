@@ -13,7 +13,7 @@
         line-height: 1.714;
     }
 
-    // breadcrumbs need to be white on the dark blue background
+    // breadcrumbs need to be white on the dark blue background in the blue hero component
     &__link {
         .template-information-page & {
             color: var(--ons-color-white);

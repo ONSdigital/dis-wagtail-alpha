@@ -1,6 +1,6 @@
 @use 'config' as *;
 
-// overrides to ons list styles
+// overrides to ons list styles to match the figma file - to be confirmed if these should be ported back to the design system
 .ons-document-list {
     &__item-attribute {
         line-height: 1.714;
