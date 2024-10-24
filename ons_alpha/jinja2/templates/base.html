@@ -288,15 +288,16 @@
     {% set currentLanguage = pageConfig.header.language.languages | selectattr("current") | first %}
     {% set currentLanguageIsoCode = currentLanguage.isoCode %}
 
-    {% if currentLanguageIsoCode == 'cy' %}
-        {{
+    {# fmt:off #}
+    {{
         onsCookiesBanner({
-        'lang': 'cy'
+            'lang': currentLanguageIsoCode,
+            'serviceName': request.get_host(),
+            'settingsLinkText': 'Manage cookie settings',
+            'settingsLinkUrl': url('manage-cookie-settings'),
         })
-        }}
-    {% else %}
-        {{ onsCookiesBanner() }}
-    {% endif %}
+    }}
+    {# fmt:on #}
 {% endblock %}
 
 
