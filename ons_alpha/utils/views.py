@@ -2,8 +2,10 @@ import logging
 
 from http import HTTPStatus
 
+from django.conf import settings
 from django.shortcuts import render
 from django.views import defaults
+from django.views.generic import TemplateView
 
 
 def page_not_found(request, exception, template_name="templates/pages/errors/404.html"):
@@ -23,3 +25,14 @@ def csrf_failure(
     csrf_logger.exception("CSRF Failure: %s", reason)
 
     return render(request, template_name, status=HTTPStatus.FORBIDDEN)
+
+
+class ManageCookieSettingsView(TemplateView):
+    template_name = "templates/pages/manage_cookie_settings.html"
+
+    def get_context_data(self, **kwargs):
+        from ons_alpha.standardpages.models import InformationPage
+
+        context = super().get_context_data(**kwargs)
+        context["page"] = InformationPage(id=0, title=f"Cookies on {self.request.get_host()}")
+        return context

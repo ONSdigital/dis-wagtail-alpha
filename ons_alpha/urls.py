@@ -13,6 +13,7 @@ from wagtail.utils.urlpatterns import decorate_urlpatterns
 from ons_alpha.images.views import ImageServeView
 from ons_alpha.search import views as search_views
 from ons_alpha.utils.cache import get_default_cache_control_decorator
+from ons_alpha.utils.views import ManageCookieSettingsView
 
 
 # Private URLs are not meant to be cached.
@@ -99,6 +100,11 @@ urlpatterns = (
         # Add Wagtail URLs at the end.
         # Wagtail cache-control is set on the page models' serve methods
         # and is handled conditionally on the search view
+        path(
+            "manage-cookie-settings/",
+            ManageCookieSettingsView.as_view(),
+            name="manage-cookie-settings",
+        ),
         path("search/", search_views.search, name="search"),
         path("", include(wagtail_urls)),
         prefix_default_language=False,
