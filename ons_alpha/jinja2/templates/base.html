@@ -11,6 +11,53 @@
     {% endif %}
 {% endblock meta %}
 
+
+{% block head %}
+    <link rel="stylesheet" href="{{ static('css/main.css') }}">
+    {% if GOOGLE_TAG_MANAGER_ID and not request.is_preview %}
+        <!-- Google Tag Manager -->
+        <script>
+            function loadGTM() {
+                (function (w, d, s, l, i) {
+                    w[l] = w[l] || [];
+                    w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+                    var f = d.getElementsByTagName(s)[0],
+                        j = d.createElement(s),
+                        dl = l != 'dataLayer' ? '&l=' + l : '';
+                    j.async = true;
+                    j.src =
+                        'https://www.googletagmanager.com/gtm.js?id=' +
+                    i +
+                    dl +
+                    '&gtm_preview=env-12&gtm_cookies_win=x';
+                    f.parentNode.insertBefore(j, f);
+                })(window, document, 'script', 'dataLayer', '{{ GOOGLE_TAG_MANAGER_ID|escapejs }}');
+            }
+
+            var a = /^(.*)?\s*'usage':true\s*[^;]+(.*)?$/;
+            if (document.cookie.match(a)) {
+                loadGTM();
+            }
+        </script>
+        <!-- End Google Tag Manager -->
+    {% endif %}
+{% endblock %}
+
+{% block bodyStart %}
+    {% if GOOGLE_TAG_MANAGER_ID and not request.is_preview %}
+        <!-- Google Tag Manager (noscript) -->
+        <noscript
+        ><iframe
+            src="https://www.googletagmanager.com/ns.html?id={{ GOOGLE_TAG_MANAGER_ID }}&amp;gtm_preview=env-12&amp;gtm_cookies_win=x"
+            height="0"
+            width="0"
+            style="display:none;visibility:hidden"
+        ></iframe
+            ></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+    {% endif %}
+{% endblock %}
+
 {# fmt:off #}
 {% set languages = languages | default([
     {
@@ -298,11 +345,6 @@
         })
     }}
     {# fmt:on #}
-{% endblock %}
-
-
-{% block head %}
-    <link rel="stylesheet" href="{{ static('css/main.css') }}">
 {% endblock %}
 
 {% block preMain %}
