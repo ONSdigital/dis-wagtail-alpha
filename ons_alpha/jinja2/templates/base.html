@@ -339,100 +339,100 @@
 
 {# Note that the footer links are hard-coded for the November prototype and do not link anywhere #}
 {% block footer %}
+    {# fmt:off #}
     {{
-    onsFooterNew({
-    "cols": [
-    {
-    "title": 'Help',
-    "itemsList": [
-    {
-    "text": 'Accessibility',
-    "url": False
-    },
-    {
-    "text": 'Cookies',
-    "url": False
-    },
-    {
-    "text": 'Privacy',
-    "url": False
-    },
-    {
-    "text": 'Terms and conditions',
-    "url": False
-    }
-    ]
-    },
-    {
-    "title": 'About ONS',
-    "itemsList": [
-    {
-    "text": 'What we do',
-    "url": False
-    },
-    {
-    "text": 'Careers',
-    "url": False
-    },
-    {
-    "text": 'Contact us',
-    "url": False
-    },
-    {
-    "text": 'News',
-    "url": False
-    },
-    {
-    "text": 'Freedom of information',
-    "url": False
-    }
-    ]
-    },
-    {
-    "title": 'Connect with us',
-    "itemsList": [
-    {
-    "text": 'Twitter',
-    "external": true,
-    "url": False
-    },
-    {
-    "text": 'Instagram',
-    "external": true,
-    "url": False
-    },
-    {
-    "text": 'Facebook',
-    "external": true,
-    "url": False
-    },
-    {
-    "text": 'Linkedin',
-    "external": true,
-    "url": False
-    },
-    {
-    "text": 'Consultations',
-    "url": False
-    },
-    {
-    "text": 'Discussion forums',
-    "url": False
-    },
-    {
-    "text": 'Email alerts',
-    "url": False
-    }
-    ]
-    }
-    ],
-    "legal": [
-    ],
-    "oglLink": True,
-    "footerLogo": {
-    },
-    })
+        onsFooterNew({
+            "cols": [
+                {
+                    "title": 'Help',
+                    "itemsList": [
+                        {
+                            "text": 'Accessibility',
+                            "url": 'https://www.ons.gov.uk/help/accessibility'
+                        },
+                        {
+                            "text": 'Cookies',
+                            "url": url('manage-cookie-settings')
+                        },
+                        {
+                            "text": 'Privacy',
+                            "url": 'https://www.ons.gov.uk/help/privacynotice'
+                        },
+                        {
+                            "text": 'Terms and conditions',
+                            "url": 'https://www.ons.gov.uk/help/termsandconditions'
+                        }
+                    ]
+                },
+                {
+                    "title": 'About ONS',
+                    "itemsList": [
+                        {
+                            "text": 'What we do',
+                            "url": False
+                        },
+                        {
+                            "text": 'Careers',
+                            "url": False
+                        },
+                        {
+                            "text": 'Contact us',
+                            "url": False
+                        },
+                        {
+                            "text": 'News',
+                            "url": False
+                        },
+                        {
+                            "text": 'Freedom of information',
+                            "url": False
+                        }
+                    ]
+                },
+                {
+                    "title": 'Connect with us',
+                    "itemsList": [
+                        {
+                            "text": 'Twitter',
+                            "external": true,
+                            "url": False
+                        },
+                        {
+                            "text": 'Instagram',
+                            "external": true,
+                            "url": False
+                        },
+                        {
+                            "text": 'Facebook',
+                            "external": true,
+                            "url": False
+                        },
+                        {
+                            "text": 'Linkedin',
+                            "external": true,
+                            "url": False
+                        },
+                        {
+                            "text": 'Consultations',
+                            "url": False
+                        },
+                        {
+                            "text": 'Discussion forums',
+                            "url": False
+                        },
+                        {
+                            "text": 'Email alerts',
+                            "url": False
+                        }
+                    ]
+                }
+            ],
+            "legal": [],
+            "oglLink": True,
+            "footerLogo": {},
+        })
     }}
+    {# fmt:on #}
 {% endblock %}
 
 {% block scripts %}
