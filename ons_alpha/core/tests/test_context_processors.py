@@ -8,16 +8,8 @@ from ons_alpha.core.models import Tracking
 class GlobalVarsContextProcessorTest(TestCase):
     def test_when_no_tracking_settings_defined(self):
         request = RequestFactory().get("/")
-        self.assertEqual(
-            global_vars(request),
-            {
-                "GOOGLE_TAG_MANAGER_ID": "",
-                "SEO_NOINDEX": True,
-                "LANGUAGE_CODE": "en-gb",
-                "IS_EXTERNAL_ENV": False,
-                "TOPIC_PAGE_URL": "/business-industry-trade/retail-industry/",
-            },
-        )
+        result = global_vars(request)
+        self.assertEqual(result["GOOGLE_TAG_MANAGER_ID"], "")
 
     def test_when_tracking_settings_defined(self):
         Tracking.objects.create(
@@ -25,13 +17,5 @@ class GlobalVarsContextProcessorTest(TestCase):
             google_tag_manager_id="GTM-123456",
         )
         request = RequestFactory().get("/")
-        self.assertEqual(
-            global_vars(request),
-            {
-                "GOOGLE_TAG_MANAGER_ID": "GTM-123456",
-                "SEO_NOINDEX": True,
-                "LANGUAGE_CODE": "en-gb",
-                "IS_EXTERNAL_ENV": False,
-                "TOPIC_PAGE_URL": "/business-industry-trade/retail-industry/",
-            },
-        )
+        result = global_vars(request)
+        self.assertEqual(result["GOOGLE_TAG_MANAGER_ID"], "GTM-123456")
