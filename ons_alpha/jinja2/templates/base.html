@@ -336,14 +336,16 @@
     {% set currentLanguageIsoCode = currentLanguage.isoCode %}
 
     {# fmt:off #}
-    {{
-        onsCookiesBanner({
-            'lang': currentLanguageIsoCode,
-            'serviceName': request.get_host(),
-            'settingsLinkText': 'Manage cookie settings',
-            'settingsLinkUrl': url('manage-cookie-settings'),
-        })
-    }}
+    {% if COOKIE_BANNER_ENABLED %}
+        {{
+            onsCookiesBanner({
+                'lang': currentLanguageIsoCode,
+                'serviceName': COOKIE_BANNER_SERVICE_NAME,
+                'settingsLinkText': 'Manage settings',
+                'settingsLinkUrl': MANAGE_COOKIE_SETTINGS_URL,
+            })
+        }}
+    {% endif %}
     {# fmt:on #}
 {% endblock %}
 
@@ -394,7 +396,7 @@
                         },
                         {
                             "text": 'Cookies',
-                            "url": url('manage-cookie-settings')
+                            "url": MANAGE_COOKIE_SETTINGS_URL
                         },
                         {
                             "text": 'Privacy',

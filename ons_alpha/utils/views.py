@@ -34,5 +34,6 @@ class ManageCookieSettingsView(TemplateView):
         from ons_alpha.standardpages.models import InformationPage
 
         context = super().get_context_data(**kwargs)
-        context["page"] = InformationPage(id=0, title=f"Cookies on {self.request.get_host()}")
+        title = "Cookies on " + (settings.ONS_COOKIE_BANNER_SERVICE_NAME or self.request.get_host())
+        context["page"] = InformationPage(id=0, title=title)
         return context
