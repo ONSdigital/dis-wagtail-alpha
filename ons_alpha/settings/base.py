@@ -269,7 +269,7 @@ elif elasticache_addr := env.get("ELASTICACHE_ADDR"):
         "LOCATION": f"rediss://{elasticache_addr}:{port}",
         "OPTIONS": {
             **redis_options,
-            "REDIS_CLIENT_KWARGS": {
+            "CONNECTION_POOL_KWARGS": {
                 "credential_provider": import_string("ons_alpha.utils.elasticache.ElastiCacheIAMProvider")(
                     user=env["ELASTICACHE_USER_NAME"],
                     cluster_name=env["ELASTICACHE_CLUSTER_NAME"],
