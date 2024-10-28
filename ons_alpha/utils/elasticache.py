@@ -12,9 +12,10 @@ from django.core.cache import caches
 class ElastiCacheIAMProvider(redis.CredentialProvider):
     TOKEN_TTL = 900
 
-    def __init__(self, user, cluster_name):
+    def __init__(self, user, cluster_name, region):
         self.user = user
         self.cluster_name = cluster_name
+        self.region = region
 
         session = botocore.session.get_session()
         self.request_signer = RequestSigner(
@@ -26,7 +27,7 @@ class ElastiCacheIAMProvider(redis.CredentialProvider):
             session.get_component("event_emitter"),
         )
 
-        self.cache_key = f"elasticache_{user}_{cluster_name}"
+        self.cache_key = f"elasticache_{user}_{cluster_name}_{region}"
 
         self.cache = caches["memory"]
 

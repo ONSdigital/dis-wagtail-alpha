@@ -271,8 +271,9 @@ elif elasticache_addr := env.get("ELASTICACHE_ADDR"):
             **redis_options,
             "REDIS_CLIENT_KWARGS": {
                 "credential_provider": import_string("ons_alpha.utils.elasticache.ElastiCacheIAMProvider")(
-                    username=env["ELASTICACHE_USER_NAME"],
+                    user=env["ELASTICACHE_USER_NAME"],
                     cluster_name=env["ELASTICACHE_CLUSTER_NAME"],
+                    region=env["ELASTICACHE_CLUSTER_REGION"],
                 )
             },
         },
