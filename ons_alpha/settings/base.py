@@ -10,6 +10,7 @@ from pathlib import Path
 import dj_database_url
 
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from django_jinja.builtins import DEFAULT_EXTENSIONS
 
@@ -236,6 +237,8 @@ if "read_replica" in DATABASES:
 #
 # Do not use the same Redis instance for other things like Celery!
 
+CACHES = {"memory": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "memory"}}
+
 redis_options = {
     "IGNORE_EXCEPTIONS": True,
     "SOCKET_CONNECT_TIMEOUT": 2,  # seconds
@@ -252,31 +255,32 @@ if redis_url := env.get("REDIS_TLS_URL", env.get("REDIS_URL")):
         # When using TLS, we need to disable certificate validation checks.
         connection_pool_kwargs["ssl_cert_reqs"] = None
 
-    CACHES = {
-        "default": {
-            "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": redis_url,
-            "OPTIONS": {**redis_options, "CONNECTION_POOL_KWARGS": connection_pool_kwargs},
-        }
+    CACHES["default"] = {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": redis_url,
+        "OPTIONS": {**redis_options, "CONNECTION_POOL_KWARGS": connection_pool_kwargs},
     }
+
 elif elasticache_addr := env.get("ELASTICACHE_ADDR"):
-    user_name = env["ELASTICACHE_USER_NAME"]
-    password = env["ELASTICACHE_USER_PASSWORD"]
     port = env["ELASTICACHE_PORT"]
 
-    CACHES = {
-        "default": {
-            "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": f"rediss://{user_name}:{password}@{elasticache_addr}:{port}",
-            "OPTIONS": redis_options,
-        }
+    CACHES["default"] = {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"rediss://{elasticache_addr}:{port}",
+        "OPTIONS": {
+            **redis_options,
+            "REDIS_CLIENT_KWARGS": {
+                "credential_provider": import_string("ons_alpha.utils.elasticache.ElastiCacheIAMProvider")(
+                    username=env["ELASTICACHE_USER_NAME"],
+                    cluster_name=env["ELASTICACHE_CLUSTER_NAME"],
+                )
+            },
+        },
     }
 else:
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.db.DatabaseCache",
-            "LOCATION": "database_cache",
-        }
+    CACHES["default"] = {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "database_cache",
     }
 
 # Search
