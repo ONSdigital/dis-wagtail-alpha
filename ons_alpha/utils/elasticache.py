@@ -29,10 +29,8 @@ class ElastiCacheIAMProvider(redis.CredentialProvider):
 
         self.cache_key = f"elasticache_{user}_{cluster_name}_{region}"
 
-        self.cache = caches["memory"]
-
     def get_credentials(self) -> Union[Tuple[str], Tuple[str, str]]:
-        if (signed_url := self.cache.get(self.cache_key)) is None:
+        if (signed_url := caches["memory"].get(self.cache_key)) is None:
             query_params = {"Action": "connect", "User": self.user}
             url = urlunparse(
                 ParseResult(
@@ -57,6 +55,6 @@ class ElastiCacheIAMProvider(redis.CredentialProvider):
 
             # Reduce cache TTL a few seconds to ensure the token is still valid
             # by the time it's used
-            self.cache.set(self.cache_key, signed_url, self.TOKEN_TTL - 5)
+            caches["memory"].set(self.cache_key, signed_url, self.TOKEN_TTL - 5)
 
         return self.user, signed_url
