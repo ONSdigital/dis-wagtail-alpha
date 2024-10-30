@@ -1,11 +1,13 @@
-from django.db.models import FileField
 from django.urls import path, reverse
+from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import BaseFormView
+from wagtail.admin.ui.components import MediaContainer
 from wagtail.admin.views.generic.base import WagtailAdminTemplateMixin
 from wagtail.admin.views.generic.mixins import LocaleMixin
 from wagtail.admin.views.generic.permissions import PermissionCheckedMixin
+from wagtail.log_actions import log
+from wagtail.snippets.action_menu import DeleteMenuItem, PublishMenuItem, UnpublishMenuItem
 from wagtail.snippets.views.snippets import (
-    CopyView,
     CreateView,
     DeleteView,
     EditView,
@@ -15,9 +17,9 @@ from wagtail.snippets.views.snippets import (
     SnippetViewSet,
 )
 
-from .admin_forms import ChartTypeSelectForm
-from .models import Chart
-from .utils import get_chart_type_model_from_name
+from ons_alpha.charts.admin.forms import ChartCopyForm, ChartTypeSelectForm
+from ons_alpha.charts.models import Chart
+from ons_alpha.charts.utils import get_chart_type_model_from_name
 
 
 class ChartTypeSelectView(LocaleMixin, PermissionCheckedMixin, WagtailAdminTemplateMixin, BaseFormView):
@@ -75,7 +77,7 @@ class SpecificObjectViewMixin:
 
         super().setup(request, *args, **kwargs)
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         """
         Overrides the default implementation to return the specific object.
         Because views often make their own requests to `get_object()` in
@@ -83,7 +85,7 @@ class SpecificObjectViewMixin:
         """
         if getattr(self, "object", None):
             return self.object.specific
-        return super().get_object().specific
+        return super().get_object(queryset).specific
 
     def get_panel(self):
         edit_handler = self.model.edit_handler
@@ -119,38 +121,70 @@ class SpecificEditView(SpecificObjectViewMixin, EditView):
         return reverse(self.preview_url_name, args=args)
 
 
-class SpecificCopyView(SpecificObjectViewMixin, CopyView):
+class ChartCopyView(SpecificObjectViewMixin, EditView):
     action = "copy"
+    permission_required = "add"
+    success_message = _("%(model_name)s '%(object)s' created successfully.")
 
-    def get_initial_form_instance(self):
-        """
-        Overrides the default implementation to ensure file field values
-        are set to None, so that the editor is forced to upload new files.
-        """
-        instance = super().get_initial_form_instance()
-        for field in self.model._meta.get_fields():
-            if isinstance(field, FileField):
-                setattr(instance, field.name, None)
-        return instance
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.revision_enabled = False
+        self.locking_enabled = False
 
-    def get_add_url(self):
+    def get_header_title(self):
+        return f"Copy chart: {self.object}"
+
+    def get_page_subtitle(self):
+        return f"Copy: {self.object}"
+
+    def get_form(self):
+        form = ChartCopyForm(
+            data=self.request.POST or None, instance=self.object, initial={"name": self.object.name + " copy"}
+        )
+        return form
+
+    def run_before_hook(self):
+        return self.run_hook("before_create_snippet", self.request, self.object)
+
+    def run_after_hook(self):
+        return self.run_hook("after_create_snippet", self.request, self.object)
+
+    def get_side_panels(self):
+        return MediaContainer()
+
+    def _get_action_menu(self):
+        menu = super()._get_action_menu()
+        menu.menu_items = [
+            item
+            for item in menu.menu_items
+            if not isinstance(item, (DeleteMenuItem, PublishMenuItem, UnpublishMenuItem))
+        ]
+        return menu
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["action_url"] = self.request.path
+        return context
+
+    def save_instance(self):
         """
-        Overrides the default implementation to ensure the form is posted
-        to the 'specific_add' view - which has a chart-type-specific form
-        for validating/saving the new object.
+        Called after the form is successfully validated - saves the object to the db
+        and returns the new object. Override this to implement custom save logic.
         """
-        return reverse(
-            "wagtailsnippets_charts_chart:specific_add",
-            kwargs={"chart_type": self.model._meta.label_lower},
+        instance = self.form.save()
+        instance.save_revision(user=self.request.user)
+
+        log(
+            instance=instance,
+            action="wagtail.create",
+            revision=None,
+            content_changed=False,
         )
 
-    def get_preview_url(self):
-        """
-        Overrides the default implementation to include the chart-type
-        in the preview URL, allowing it to identify the specific model.
-        """
-        args = [self.model._meta.label_lower]
-        return reverse(self.preview_url_name, args=args)
+        return instance
+
+    def get_success_url(self):
+        return reverse(self.index_url_name)
 
 
 class SpecificDeleteView(SpecificObjectViewMixin, DeleteView):
@@ -180,7 +214,7 @@ class SpecificHistoryView(SpecificObjectViewMixin, HistoryView):
 class ChartViewSet(SnippetViewSet):
     add_to_admin_menu = True
     add_view_class = ChartTypeSelectView
-    copy_view_class = SpecificCopyView
+    copy_view_class = ChartCopyView
     delete_view_class = SpecificDeleteView
     edit_view_class = SpecificEditView
     history_view_class = SpecificHistoryView
