@@ -129,6 +129,7 @@ if not IS_EXTERNAL_ENV:
 # https://docs.djangoproject.com/en/stable/topics/http/middleware/
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "enforce_host.EnforceHostMiddleware",
     # Whitenoise middleware is used to server static files (CSS, JS, etc.).
     # According to the official documentation it should be listed underneath
     # SecurityMiddleware.
@@ -684,9 +685,7 @@ if "CSP_DEFAULT_SRC" in env:
 # These are settings to configure the third-party library:
 # https://gitlab.com/tmkn/django-basic-auth-ip-whitelist
 if env.get("BASIC_AUTH_ENABLED", "false").lower().strip() == "true":
-    # Insert basic auth as a first middleware to be checked first, before
-    # anything else.
-    MIDDLEWARE.insert(0, "baipw.middleware.BasicAuthIPWhitelistMiddleware")
+    MIDDLEWARE.insert(2, "baipw.middleware.BasicAuthIPWhitelistMiddleware")
 
     # This is the credentials users will have to use to access the site.
     BASIC_AUTH_LOGIN = env.get("BASIC_AUTH_LOGIN", "tbx")
@@ -725,6 +724,10 @@ if ENABLE_DJANGO_DEFENDER:
     DEFENDER_LOGIN_FAILURE_LIMIT_USERNAME = 5
     DEFENDER_COOLOFF_TIME = int(env.get("DJANGO_DEFENDER_COOLOFF_TIME", 600))  # default to 10 minutes
     DEFENDER_LOCKOUT_TEMPLATE = "pages/defender/lockout.html"
+
+# enforce-host
+if "ENFORCE_HOST" in env:
+    ENFORCE_HOST = env.get("ENFORCE_HOST", "").split(",")
 
 # Wagtail settings
 
