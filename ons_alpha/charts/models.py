@@ -29,11 +29,12 @@ from wagtail.models import (
     RevisionMixin,
     SpecificMixin,
 )
+from wagtail.permission_policies.collections import CollectionPermissionPolicy
 
-from ons_alpha.charts.constants import BarChartType, DataSource, LegendPosition
+from ons_alpha.charts.constants import AxisValueType, BarChartType, DataSource, LegendPosition
 from ons_alpha.charts.validators import csv_file_validator
 from ons_alpha.private_media.models import PrivateMediaCollectionMember
-
+from ons_alpha.utils.fields import NonStrippingCharField
 
 class Chart(
     PreviewableMixin,
@@ -62,7 +63,13 @@ class Chart(
         related_name="charts",
         on_delete=models.CASCADE,
     )
+    title = models.CharField(verbose_name=_("title"), max_length=255, blank=True)
+    subtitle = models.CharField(verbose_name=_("subtitle"), max_length=255, blank=True)
     content_type.wagtail_reference_index_ignore = True
+
+    @classproperty
+    def permission_policy(cls):
+        return CollectionPermissionPolicy(cls)
 
     def __str__(self):
         return str(self.name)
@@ -96,6 +103,7 @@ class Chart(
         return context
 
     def get_preview_context(self, request, mode_name: str, **kwargs):
+        kwargs["import_js"] = True
         return self.get_context(request, preview_mode=mode_name, **kwargs)
 
     def get_privacy_controlled_files(self):
@@ -103,20 +111,25 @@ class Chart(
 
 
 class BaseHighchartsChart(Chart):
-    title = models.CharField(verbose_name=_("title"), max_length=255)
-    subtitle = models.CharField(verbose_name=_("subtitle"), max_length=255, blank=True)
-    show_legend = models.BooleanField(default=False)
-    legend_position = models.CharField(max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP)
+    show_legend = models.BooleanField(verbose_name=_("show legend?"), default=False)
+    legend_position = models.CharField(verbose_name=_("label position"), max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP)
+    show_value_labels = models.BooleanField(verbose_name=_("show value labels?"), default=False)
 
-    x_label = models.CharField(verbose_name=_("label"), max_length=255)
+    x_label = models.CharField(verbose_name=_("label"), max_length=255, blank=True)
+    x_type = models.CharField(verbose_name=_("value type"), max_length=10, choices=AxisValueType.choices, default=AxisValueType.TEXT)
     x_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
     x_min = models.FloatField(verbose_name=_("scale cap (min)"), blank=True, null=True)
+    x_reversed = models.BooleanField(verbose_name=_("reverse axis?"), default=False)
 
-    y_label = models.CharField(verbose_name=_("label"), max_length=255)
+    y_label = models.CharField(verbose_name=_("label"), max_length=255, blank=True)
+    y_type = models.CharField(verbose_name=_("value type"), max_length=10, choices=AxisValueType.choices, default=AxisValueType.NUMBER)
     y_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
     y_min = models.FloatField(verbose_name=_("scale cap (min)"), blank=True, null=True)
+    y_value_suffix = NonStrippingCharField(verbose_name=_("value suffix (optional)"), max_length=30, blank=True)
+    y_tooltip_suffix = NonStrippingCharField(verbose_name=_("tooltip value suffix (optional)"), max_length=30, blank=True)
+    y_reversed = models.BooleanField(verbose_name=_("reverse axis?"), default=False)
 
-    data_source = models.CharField(max_length=10, choices=DataSource.choices, default=DataSource.CSV)
+    data_source = models.CharField(verbose_name=_("data source"), max_length=10, choices=DataSource.choices, default=DataSource.CSV)
     data_file = models.FileField(
         verbose_name=_("CSV file"),
         upload_to="charts",
@@ -160,13 +173,11 @@ class BaseHighchartsChart(Chart):
             raise ValidationError({"data_manual": _("This field is required")})
 
     def get_context(self, request, **kwargs) -> dict[str, Any]:
-        context = {}
         if self.include_data_in_context(request):
-            context["data"] = self.get_data_json(request)
+            data_json = self.get_data_json(request)
         else:
-            context["data_url"] = self.get_data_url()
-        context.update(**kwargs)
-        return super().get_context(request, **context)
+            data_json = None
+        return super().get_context(request, config=self.get_config(data_json), **kwargs)
 
     def include_data_in_context(self, request) -> bool:
         """
@@ -180,6 +191,7 @@ class BaseHighchartsChart(Chart):
         around the fact that the 'retrieve_data' API endpoint only works for published charts, and
         only surfaces the most recently-published data.
         """
+        return False
         if not self.live or getattr(request, "is_preview", False):
             return True
         # Only use the data API for published charts, where the data was added manually,
@@ -201,13 +213,13 @@ class BaseHighchartsChart(Chart):
         if self.data_source == DataSource.MANUAL and self.data_manual:
             return {
                 "columns": [col["heading"] for col in self.manual_data_table.columns],
-                "rows": self.manual_data_table.row_data,
+                "rows": [row["values"] for row in self.manual_data_table.row_data],
             }
 
         columns = []
         rows = []
         if self.data_source == DataSource.CSV and self.data_file:
-            with self.data_file.open("r", encoding="utf-8") as csvfile:
+            with self.data_file.open("r") as csvfile:
                 textwrapper = io.TextIOWrapper(csvfile, newline="")
                 textwrapper.seek(0)
                 reader = csv.reader(textwrapper)
@@ -223,9 +235,9 @@ class BaseHighchartsChart(Chart):
         return {}
 
     @cached_property
-    def data_headers(self) -> Sequence[str]:
+    def headers(self) -> Sequence[str]:
         if self.data_source == DataSource.CSV and self.data_file:
-            with self.data_file.open("r", encoding="utf-8") as csvfile:
+            with self.data_file.open("r") as csvfile:
                 textwrapper = io.TextIOWrapper(csvfile, newline="")
                 textwrapper.seek(0)
                 reader = csv.reader(textwrapper)
@@ -244,17 +256,24 @@ class BaseHighchartsChart(Chart):
     general_panels = [
         FieldPanel("name"),
         FieldPanel("collection"),
+        MultiFieldPanel(heading="Titles", children=[
+            FieldPanel("title"),
+            FieldPanel("subtitle"),
+        ]),
+
+    ]
+
+    data_panels = [
         FieldPanel("data_source"),
         FieldPanel("data_file"),
         FieldPanel("data_manual"),
     ]
 
-    settings_panels = [
-        FieldPanel("title"),
-        FieldPanel("subtitle"),
+    axis_panels = [
         MultiFieldPanel(
             heading=_("X axis"),
             children=[
+                FieldPanel("x_type"),
                 FieldPanel("x_label"),
                 FieldRowPanel(
                     [
@@ -262,20 +281,30 @@ class BaseHighchartsChart(Chart):
                         FieldPanel("x_max"),
                     ]
                 ),
+                FieldPanel("x_reversed"),
             ],
         ),
         MultiFieldPanel(
             heading=_("Y axis"),
             children=[
+                FieldPanel("y_type"),
                 FieldPanel("y_label"),
+                FieldPanel("y_value_suffix"),
+                FieldPanel("y_tooltip_suffix"),
                 FieldRowPanel(
                     [
                         FieldPanel("y_min"),
                         FieldPanel("y_max"),
                     ]
                 ),
+                FieldPanel("y_reversed"),
             ],
         ),
+    ]
+
+    settings_panels = [
+        FieldPanel("show_value_labels"),
+
         MultiFieldPanel(
             heading=_("Legend"),
             children=[
@@ -285,6 +314,7 @@ class BaseHighchartsChart(Chart):
         ),
     ]
 
+    @property
     def highcharts_chart_type(self):
         raise NotImplementedError
 
@@ -292,21 +322,107 @@ class BaseHighchartsChart(Chart):
     def edit_handler(cls):  # pylint: disable=no-self-argument
         return TabbedInterface(
             [
-                ObjectList(cls.general_panels, heading=_("Common")),
-                ObjectList(cls.settings_panels, heading=_("Chart configuration")),
+                ObjectList(cls.general_panels, heading=_("General")),
+                ObjectList(cls.data_panels, heading=_("Data")),
+                ObjectList(cls.axis_panels, heading=_("Axes")),
+                ObjectList(cls.settings_panels, heading=_("Other")),
             ]
         )
 
+    def get_config(self, data: dict[str, list] | None) -> dict[str, Any]:
+        config = {
+            "chart": {
+                "type": self.highcharts_chart_type,
+            },
+            "title": {
+                "text": self.title,
+                "align": "left",
+            },
+            "legend": {
+                "align": "left",
+                "enabled": self.show_legend,
+                "verticalAlign": self.legend_position,
+            },
+            "xAxis": self.get_x_axis_config(data),
+            "yAxis": self.get_y_axis_config(data),
+            "plotOptions": self.get_plot_options(),
+        }
+        if self.subtitle:
+            config["subtitle"] = {
+                "text": self.subtitle,
+                "align": "left",
+            }
+        if data:
+            config["series"] = self.get_series(data)
+        else:
+            config["data"] = {"csvURL": self.get_data_url()}
+        return config
+
+    def get_x_axis_config(self, data: dict[str, list] = None) -> dict[str, Any]:
+        config = {
+            "type": "linear" if data else "category",
+            "title": {
+                "enabled": True,
+                "text": self.x_label or self.headers[0],
+            },
+            "reversed": self.x_reversed,
+        }
+        if data:
+            config["categories"] = [row[0] for row in data.get("rows", [])]
+        if self.x_min is not None:
+            config["min"] = self.x_min
+        if self.x_max is not None:
+            config["max"] = self.x_max
+        return config
+
+    def get_y_axis_config(self, data: dict[str, list] = None) -> dict[str, Any]:
+        config = {
+            "title": {
+                "enabled": True,
+                "text": self.y_label or self.headers[1],
+            },
+            "reversed": self.y_reversed,
+        }
+        if self.y_value_suffix:
+            config["labels"] = {
+                "format": "{value} " + self.y_value_suffix,
+            }
+        if self.y_min is not None:
+            config["min"] = self.y_min
+        if self.y_max is not None:
+            config["max"] = self.y_max
+        return config
+
+    def get_plot_options(self) -> dict[str, Any]:
+        config = {}
+        if self.show_value_labels:
+            config["series"] = {"dataLabels": {"enabled": True}}
+        return config
+
+    def get_series(self, data: dict[str, list]) -> list[dict[str, Any]]:
+        series = []
+        rows = data.get("rows", [])
+        value_formatter = lambda value: float(value) if self.y_type in (AxisValueType.NUMBER, AxisValueType.DATETIME) else value
+        for i, column in enumerate(data["columns"][1:], start=1):
+            item = {
+                "name": column,
+                "data": [value_formatter(row[i]) for row in rows],
+            }
+            if self.y_tooltip_suffix:
+                item["tooltip"] = {
+                    "valueSuffix": self.y_tooltip_suffix,
+                }
+            series.append(item)
+        return series
+
 
 class LineChart(BaseHighchartsChart):
+    highcharts_chart_type = "line"
     template = "templates/components/charts/line_chart.html"
 
     class Meta:
         verbose_name = _("line chart")
         verbose_name_plural = _("line charts")
-
-    def highcharts_chart_type(self):
-        return "line"
 
 
 class BarChart(BaseHighchartsChart):
@@ -329,7 +445,14 @@ class BarChart(BaseHighchartsChart):
             BarChartType.STACKED_COLUMN.value,
         ]
 
+    @cached_property
     def highcharts_chart_type(self):
         return self.subtype.split("_")[-1]
 
-    settings_panels = [FieldPanel("subtype")] + BaseHighchartsChart.settings_panels
+    def get_plot_options(self) -> dict[str, Any]:
+        config = super().get_plot_options()
+        if self.is_stacked():
+            config[self.highcharts_chart_type] = {"stacking": "normal"}
+        return config
+
+    general_panels = [FieldPanel("subtype")] + BaseHighchartsChart.general_panels

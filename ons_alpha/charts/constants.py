@@ -2,6 +2,12 @@ from django.db.models import TextChoices
 from django.utils.translation import gettext_lazy as _
 
 
+class AxisValueType(TextChoices):
+    TEXT = "category", _("Text")
+    NUMBER = "linear", _("Number")
+    DATETIME = "datetime", _("Datetime")
+
+
 class AnnotationStyle(TextChoices):
     ABOVE_LINE = "above_line", _("Above line")
     BELOW_LINE = "below_line", _("Below line")
@@ -22,5 +28,3 @@ class BarChartType(TextChoices):
 class LegendPosition(TextChoices):
     TOP = "top", _("Top")
     BOTTOM = "bottom", _("Bottom")
-    LEFT = "left", _("Left")
-    RIGHT = "right", _("Right")
