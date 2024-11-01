@@ -31,7 +31,7 @@ from wagtail.models import (
 )
 from wagtail.permission_policies.collections import CollectionPermissionPolicy
 
-from ons_alpha.charts.constants import AxisValueType, BarChartType, DataSource, LegendPosition
+from ons_alpha.charts.constants import AxisValueType, BarChartType, DataSource, HighchartsTheme, LegendPosition
 from ons_alpha.charts.validators import csv_file_validator
 from ons_alpha.private_media.models import PrivateMediaCollectionMember
 from ons_alpha.utils.fields import NonStrippingCharField
@@ -118,6 +118,7 @@ class BaseHighchartsChart(Chart):
     show_legend = models.BooleanField(verbose_name=_("show legend?"), default=False)
     legend_position = models.CharField(verbose_name=_("label position"), max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP)
     show_value_labels = models.BooleanField(verbose_name=_("show value labels?"), default=False)
+    theme = models.CharField(verbose_name=_("theme"), max_length=10, choices=HighchartsTheme.choices, default=HighchartsTheme.PRIMARY)
 
     x_label = models.CharField(verbose_name=_("label"), max_length=255, blank=True)
     x_type = models.CharField(verbose_name=_("value type"), max_length=10, choices=AxisValueType.choices, default=AxisValueType.TEXT)
@@ -259,7 +260,7 @@ class BaseHighchartsChart(Chart):
     general_panels = [
         FieldPanel("name"),
         FieldPanel("collection"),
-        MultiFieldPanel(heading="Titles", children=[
+        MultiFieldPanel(heading="Descriptive text", children=[
             FieldPanel("title"),
             FieldPanel("subtitle"),
         ]),
@@ -306,8 +307,8 @@ class BaseHighchartsChart(Chart):
     ]
 
     settings_panels = [
+        FieldPanel("theme"),
         FieldPanel("show_value_labels"),
-
         MultiFieldPanel(
             heading=_("Legend"),
             children=[
@@ -338,7 +339,7 @@ class BaseHighchartsChart(Chart):
                 "type": self.highcharts_chart_type,
             },
             "title": {
-                "text": self.title,
+                "text": self.title or self.name,
                 "align": "left",
             },
             "legend": {

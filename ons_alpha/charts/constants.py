@@ -25,6 +25,11 @@ class BarChartType(TextChoices):
     STACKED_COLUMN = "stacked_column", _("Stacked column")
 
 
+class HighchartsTheme(TextChoices):
+    PRIMARY = "primary", _("Primary")
+    ALTERNATE = "alternate", _("Alternate")
+
+
 class LegendPosition(TextChoices):
     TOP = "top", _("Top")
     BOTTOM = "bottom", _("Bottom")
