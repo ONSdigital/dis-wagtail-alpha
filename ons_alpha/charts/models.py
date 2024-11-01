@@ -195,7 +195,6 @@ class BaseHighchartsChart(Chart):
         around the fact that the 'retrieve_data' API endpoint only works for published charts, and
         only surfaces the most recently-published data.
         """
-        return False
         if not self.live or getattr(request, "is_preview", False):
             return True
         # Only use the data API for published charts, where the data was added manually,
