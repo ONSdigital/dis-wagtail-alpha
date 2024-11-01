@@ -36,7 +36,7 @@ class ChartAPIViewSet(ReadOnlyModelViewSet):
         chart = get_object_or_404(Chart, uuid=uuid).specific
         user = request.user
         if (chart.is_private or not chart.live) and (
-            not user.is_authenticated()
+            not user.is_authenticated
             or not chart.permission_policy.user_has_any_permission_for_instance(
                 user, ["choose", "add", "change"], chart
             )
