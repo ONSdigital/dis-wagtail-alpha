@@ -44,7 +44,9 @@ class Chart(
     PrivateMediaCollectionMember,
     ClusterableModel,
 ):
+    preview_template = "templates/components/charts/preview.html"
     template: str | None = None
+
     uuid = models.UUIDField(
         verbose_name=_("UUID"),
         default=uuid.uuid4,
@@ -102,12 +104,14 @@ class Chart(
         context.update(kwargs)
         return context
 
-    def get_preview_context(self, request, mode_name: str, **kwargs):
-        kwargs["import_js"] = True
-        return self.get_context(request, preview_mode=mode_name, **kwargs)
-
     def get_privacy_controlled_files(self):
         return []
+
+    def get_preview_template(self, request, mode_name: str, **kwargs) -> str:
+        return self.preview_template
+
+    def get_preview_context(self, request, mode_name: str, **kwargs) -> dict[str, Any]:
+        return self.get_context(request, preview_mode=mode_name, **kwargs)
 
 
 class BaseHighchartsChart(Chart):
