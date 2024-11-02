@@ -489,7 +489,7 @@ class BarChart(BaseHighchartsChart):
     def get_plot_options(self) -> dict[str, Any]:
         config = super().get_plot_options()
         if self.is_stacked():
-            config[self.highcharts_chart_type]["stacking"] = "normal"
+            config[self.highcharts_chart_type] = {"stacking": "normal"}
         return config
 
     general_panels = [FieldPanel("subtype")] + BaseHighchartsChart.general_panels
