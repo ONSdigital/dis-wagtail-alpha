@@ -29,3 +29,14 @@ def get_chart_type_choices() -> list[tuple[str, str]]:
     for model in get_chart_type_models():
         choices.append((model._meta.label_lower, capfirst(model._meta.verbose_name)))
     return sorted(choices, key=itemgetter(1))
+
+
+def streamvalue_includes_highcharts_chart(stream_value):
+    from ons_alpha.charts.blocks import ChartEmbedBlock
+    from ons_alpha.charts.models import BaseHighchartsChart
+
+    for bound_block in stream_value:
+        if isinstance(bound_block.block, ChartEmbedBlock) and issubclass(bound_block.value["chart"].specific_class, BaseHighchartsChart):
+            return True
+
+    return False
