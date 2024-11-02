@@ -29,14 +29,13 @@ class ChartCopyForm(BaseCollectionMemberForm):
 
         # Create copies of files
         for field in self.instance._meta.get_fields():
-            if isinstance(field, FileField):
-                if original_file := getattr(self.instance, field.attname, None):
-                    storage = field.storage
-                    # Copy the file using the storage backend
-                    with original_file.open("rb") as source_file:
-                        new_name = storage.save(original_file.name, source_file)
-                    new_file = File(storage.open(new_name), name=new_name)
-                    setattr(self.instance, field.attname, new_file)
+            if isinstance(field, FileField) and (original_file := getattr(self.instance, field.attname, None)):
+                storage = field.storage
+                # Copy the file using the storage backend
+                with original_file.open("rb") as source_file:
+                    new_name = storage.save(original_file.name, source_file)
+                new_file = File(storage.open(new_name), name=new_name)
+                setattr(self.instance, field.attname, new_file)
         return super().save(commit)
 
 

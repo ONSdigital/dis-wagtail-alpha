@@ -3,6 +3,7 @@ from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmath.blocks import MathBlock
 
+from ons_alpha.charts.blocks import ChartEmbedBlock
 from ons_alpha.core.blocks import (
     ButtonLinkBlock,
     CorrectionBlock,
@@ -17,7 +18,6 @@ from ons_alpha.core.blocks import (
     RelatedContentBlock,
     RelatedLinksBlock,
 )
-from ons_alpha.charts.blocks import ChartEmbedBlock
 from ons_alpha.core.blocks import TableBlock as OldTableBlock
 
 

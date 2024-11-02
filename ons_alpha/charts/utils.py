@@ -36,7 +36,9 @@ def streamvalue_includes_highcharts_chart(stream_value):
     from ons_alpha.charts.models import BaseHighchartsChart
 
     for bound_block in stream_value:
-        if isinstance(bound_block.block, ChartEmbedBlock) and issubclass(bound_block.value["chart"].specific_class, BaseHighchartsChart):
+        if isinstance(bound_block.block, ChartEmbedBlock) and issubclass(
+            bound_block.value["chart"].specific_class, BaseHighchartsChart
+        ):
             return True
 
     return False

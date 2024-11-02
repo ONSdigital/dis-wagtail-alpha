@@ -37,21 +37,21 @@ class LegendPosition(TextChoices):
 
 HIGHCHARTS_THEMES = {
     "primary": (
-        '#206095', # ocean blue
-        '#27A0CC', # sky blue
-        '#003C57', # night blue
-        '#118C7B', # green
-        '#A8BD3A', # spring green
-        '#871A5B', # plum purple
-        '#F66068', # pink
-        '#746CB1', # light purple
-        '#22D0B6'  # turquoise
+        "#206095",  # ocean blue
+        "#27A0CC",  # sky blue
+        "#003C57",  # night blue
+        "#118C7B",  # green
+        "#A8BD3A",  # spring green
+        "#871A5B",  # plum purple
+        "#F66068",  # pink
+        "#746CB1",  # light purple
+        "#22D0B6",  # turquoise
     ),
     "alternate": (
-        '#206095', # ocean-blue
-        '#27A0CC', # sky blue
-        '#871A5B', # plum purple
-        '#A8BD3A', # spring green
-        '#F66068'  # pink
-    )
-};
+        "#206095",  # ocean-blue
+        "#27A0CC",  # sky blue
+        "#871A5B",  # plum purple
+        "#A8BD3A",  # spring green
+        "#F66068",  # pink
+    ),
+}

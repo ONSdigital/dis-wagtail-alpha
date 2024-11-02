@@ -33,10 +33,18 @@ from wagtail.models import (
 from wagtail.permission_policies.collections import CollectionPermissionPolicy
 from wagtail.rich_text import expand_db_html
 
-from ons_alpha.charts.constants import AxisValueType, BarChartType, DataSource, HighchartsTheme, HIGHCHARTS_THEMES, LegendPosition
+from ons_alpha.charts.constants import (
+    HIGHCHARTS_THEMES,
+    AxisValueType,
+    BarChartType,
+    DataSource,
+    HighchartsTheme,
+    LegendPosition,
+)
 from ons_alpha.charts.validators import csv_file_validator
 from ons_alpha.private_media.models import PrivateMediaCollectionMember
 from ons_alpha.utils.fields import NonStrippingCharField
+
 
 class Chart(
     PreviewableMixin,
@@ -71,7 +79,12 @@ class Chart(
 
     title = models.CharField(verbose_name=_("title"), max_length=255, blank=True)
     subtitle = models.CharField(verbose_name=_("subtitle"), max_length=255, blank=True)
-    caption = RichTextField(verbose_name=_("caption"), blank=True, features=settings.RICH_TEXT_BASIC, default="Source: Office for National Statistics")
+    caption = RichTextField(
+        verbose_name=_("caption"),
+        blank=True,
+        features=settings.RICH_TEXT_BASIC,
+        default="Source: Office for National Statistics",
+    )
 
     @classproperty
     def permission_policy(cls):
@@ -97,9 +110,6 @@ class Chart(
             )
         return self.template
 
-    def get_preview_template(self, request, mode_name: str, **kwargs):
-        return self.get_template(request, preview_mode=mode_name, **kwargs)
-
     def get_context(self, request, **kwargs):  # pylint: disable=unused-argument
         context = {
             "chart": self.specific,
@@ -120,28 +130,40 @@ class Chart(
 
 class BaseHighchartsChart(Chart):
     show_legend = models.BooleanField(verbose_name=_("show legend?"), default=False)
-    legend_position = models.CharField(verbose_name=_("label position"), max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP)
+    legend_position = models.CharField(
+        verbose_name=_("label position"), max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP
+    )
     show_value_labels = models.BooleanField(verbose_name=_("show value labels?"), default=False)
-    theme = models.CharField(verbose_name=_("theme"), max_length=10, choices=HighchartsTheme.choices, default=HighchartsTheme.PRIMARY)
+    theme = models.CharField(
+        verbose_name=_("theme"), max_length=10, choices=HighchartsTheme.choices, default=HighchartsTheme.PRIMARY
+    )
     height = models.IntegerField(verbose_name=_("height"), default=400)
 
     x_label = models.CharField(verbose_name=_("label"), max_length=255, blank=True)
-    x_type = models.CharField(verbose_name=_("value type"), max_length=10, choices=AxisValueType.choices, default=AxisValueType.TEXT)
+    x_type = models.CharField(
+        verbose_name=_("value type"), max_length=10, choices=AxisValueType.choices, default=AxisValueType.TEXT
+    )
     x_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
     x_min = models.FloatField(verbose_name=_("scale cap (min)"), blank=True, null=True)
     x_reversed = models.BooleanField(verbose_name=_("reverse axis?"), default=False)
     x_tick_interval = models.PositiveSmallIntegerField(verbose_name=_("tick interval"), default=0)
 
     y_label = models.CharField(verbose_name=_("label"), max_length=255, blank=True)
-    y_type = models.CharField(verbose_name=_("value type"), max_length=10, choices=AxisValueType.choices, default=AxisValueType.NUMBER)
+    y_type = models.CharField(
+        verbose_name=_("value type"), max_length=10, choices=AxisValueType.choices, default=AxisValueType.NUMBER
+    )
     y_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
     y_min = models.FloatField(verbose_name=_("scale cap (min)"), blank=True, null=True)
     y_value_suffix = NonStrippingCharField(verbose_name=_("value suffix (optional)"), max_length=30, blank=True)
-    y_tooltip_suffix = NonStrippingCharField(verbose_name=_("tooltip value suffix (optional)"), max_length=30, blank=True)
+    y_tooltip_suffix = NonStrippingCharField(
+        verbose_name=_("tooltip value suffix (optional)"), max_length=30, blank=True
+    )
     y_reversed = models.BooleanField(verbose_name=_("reverse axis?"), default=False)
     y_tick_interval = models.PositiveSmallIntegerField(verbose_name=_("tick interval"), default=0)
 
-    data_source = models.CharField(verbose_name=_("data source"), max_length=10, choices=DataSource.choices, default=DataSource.CSV)
+    data_source = models.CharField(
+        verbose_name=_("data source"), max_length=10, choices=DataSource.choices, default=DataSource.CSV
+    )
     data_file = models.FileField(
         verbose_name=_("CSV file"),
         upload_to="charts",
@@ -185,10 +207,7 @@ class BaseHighchartsChart(Chart):
             raise ValidationError({"data_manual": _("This field is required")})
 
     def get_context(self, request, **kwargs) -> dict[str, Any]:
-        if self.include_data_in_context(request):
-            data_json = self.get_data_json(request)
-        else:
-            data_json = None
+        data_json = self.get_data_json(request) if self.include_data_in_context(request) else None
         return super().get_context(request, highcharts_config=self.get_highcharts_config(data_json), **kwargs)
 
     def include_data_in_context(self, request) -> bool:
@@ -267,16 +286,22 @@ class BaseHighchartsChart(Chart):
     general_panels = [
         FieldPanel("name"),
         FieldPanel("collection"),
-        MultiFieldPanel(heading="Descriptive text", children=[
-            FieldPanel("title"),
-            FieldPanel("subtitle"),
-            FieldPanel("caption"),
-        ]),
-        MultiFieldPanel(heading="Style", children=[
-            FieldPanel("theme"),
-            FieldPanel("height"),
-            FieldPanel("show_value_labels"),
-        ]),
+        MultiFieldPanel(
+            heading="Descriptive text",
+            children=[
+                FieldPanel("title"),
+                FieldPanel("subtitle"),
+                FieldPanel("caption"),
+            ],
+        ),
+        MultiFieldPanel(
+            heading="Style",
+            children=[
+                FieldPanel("theme"),
+                FieldPanel("height"),
+                FieldPanel("show_value_labels"),
+            ],
+        ),
         MultiFieldPanel(
             heading=_("Legend"),
             children=[
@@ -381,7 +406,7 @@ class BaseHighchartsChart(Chart):
             config["data"] = {"csvURL": self.get_data_url()}
         return config
 
-    def get_x_axis_config(self, data: dict[str, list] = None) -> dict[str, Any]:
+    def get_x_axis_config(self, data: dict[str, list] | None = None) -> dict[str, Any]:
         config = {
             "type": "linear" if data else "category",
             "title": {
@@ -401,7 +426,7 @@ class BaseHighchartsChart(Chart):
             config["max"] = self.x_max
         return config
 
-    def get_y_axis_config(self, data: dict[str, list] = None) -> dict[str, Any]:
+    def get_y_axis_config(self, data: dict[str, list] | None = None) -> dict[str, Any]:
         config = {
             "title": {
                 "enabled": True,
@@ -426,10 +451,10 @@ class BaseHighchartsChart(Chart):
     def get_plot_options(self) -> dict[str, Any]:
         return {
             "series": {
-				"borderWidth": 0,
-				"animation": False,
-				"pointPadding": 0.1,
-				"groupPadding": 0.1,
+                "borderWidth": 0,
+                "animation": False,
+                "pointPadding": 0.1,
+                "groupPadding": 0.1,
                 "dataLabels": {
                     "enabled": self.show_value_labels,
                 },
@@ -439,11 +464,14 @@ class BaseHighchartsChart(Chart):
     def get_series(self, data: dict[str, list]) -> list[dict[str, Any]]:
         series = []
         rows = data.get("rows", [])
-        value_formatter = lambda value: float(value) if self.y_type in (AxisValueType.NUMBER, AxisValueType.DATETIME) else value
+
+        def format_value(value):
+            float(value) if self.y_type in (AxisValueType.NUMBER, AxisValueType.DATETIME) else value
+
         for i, column in enumerate(data["columns"][1:], start=1):
             item = {
                 "name": column,
-                "data": [value_formatter(row[i]) for row in rows],
+                "data": [format_value(row[i]) for row in rows],
             }
             if self.y_tooltip_suffix:
                 item["tooltip"] = {
