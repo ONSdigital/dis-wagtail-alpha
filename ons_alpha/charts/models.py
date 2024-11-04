@@ -141,7 +141,7 @@ class BaseHighchartsChart(Chart):
     x_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
     x_min = models.FloatField(verbose_name=_("scale cap (min)"), blank=True, null=True)
     x_reversed = models.BooleanField(verbose_name=_("reverse axis?"), default=False)
-    x_tick_interval = models.FloatField(verbose_name=_("tick interval"), default=0)
+    x_tick_interval = models.FloatField(verbose_name=_("tick interval"), blank=True, null=True)
 
     y_label = models.CharField(verbose_name=_("label"), max_length=255, blank=True)
     y_type = models.CharField(
@@ -154,7 +154,7 @@ class BaseHighchartsChart(Chart):
         verbose_name=_("tooltip value suffix (optional)"), max_length=30, blank=True
     )
     y_reversed = models.BooleanField(verbose_name=_("reverse axis?"), default=False)
-    y_tick_interval = models.FloatField(verbose_name=_("tick interval"), default=0)
+    y_tick_interval = models.FloatField(verbose_name=_("tick interval"), blank=True, null=True)
 
     data_source = models.CharField(
         verbose_name=_("data source"), max_length=10, choices=DataSource.choices, default=DataSource.CSV
@@ -404,8 +404,9 @@ class BaseHighchartsChart(Chart):
             "lineColor": "#929292",
             "lineWidth": 1,
             "reversed": self.x_reversed,
-            "tickInterval": self.x_tick_interval,
         }
+        if self.x_tick_interval is not None:
+            config["tickInterval"] = self.x_tick_interval
         if data:
             config["categories"] = [row[0] for row in data.get("rows", [])]
         if self.x_min is not None:
@@ -423,9 +424,10 @@ class BaseHighchartsChart(Chart):
             "reversed": self.y_reversed,
             "lineColor": "#929292",
             "lineWidth": 1,
-            "tickInterval": self.y_tick_interval,
             "endOnTick": False,
         }
+        if self.y_tick_interval is not None:
+            config["tickInterval"] = self.y_tick_interval
         if self.y_value_suffix:
             config["labels"] = {
                 "format": "{value} " + self.y_value_suffix,
