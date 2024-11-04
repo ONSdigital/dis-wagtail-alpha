@@ -4,17 +4,17 @@ from django import forms
 from django.core.files import File
 from django.db.models import FileField
 from django.utils.translation import gettext_lazy as _
-from wagtail.admin.forms.collections import BaseCollectionMemberForm
+from wagtail.admin.forms.models import WagtailAdminDraftStateFormMixin
 
 from ons_alpha.charts.models import Chart
 from ons_alpha.charts.utils import get_chart_type_choices
 
 
-class ChartCopyForm(BaseCollectionMemberForm):
+class ChartCopyForm(WagtailAdminDraftStateFormMixin):
 
     class Meta:
         model = Chart
-        fields = ["collection", "name"]
+        fields = ["name"]
         labels = {
             "name": _("New chart name"),
         }

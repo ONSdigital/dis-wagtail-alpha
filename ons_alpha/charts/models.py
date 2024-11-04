@@ -30,7 +30,7 @@ from wagtail.models import (
     RevisionMixin,
     SpecificMixin,
 )
-from wagtail.permission_policies.collections import CollectionPermissionPolicy
+from wagtail.permission_policies import ModelPermissionPolicy
 from wagtail.rich_text import expand_db_html
 
 from ons_alpha.charts.constants import (
@@ -42,7 +42,6 @@ from ons_alpha.charts.constants import (
     LegendPosition,
 )
 from ons_alpha.charts.validators import csv_file_validator
-from ons_alpha.private_media.models import PrivateMediaCollectionMember
 from ons_alpha.utils.fields import NonStrippingCharField
 
 
@@ -51,7 +50,6 @@ class Chart(
     DraftStateMixin,
     RevisionMixin,
     SpecificMixin,
-    PrivateMediaCollectionMember,
     ClusterableModel,
 ):
     preview_template = "templates/components/charts/preview.html"
@@ -88,7 +86,7 @@ class Chart(
 
     @classproperty
     def permission_policy(cls):
-        return CollectionPermissionPolicy(cls)
+        return ModelPermissionPolicy(cls)
 
     def __str__(self):
         return str(self.name)
@@ -117,9 +115,6 @@ class Chart(
         }
         context.update(kwargs)
         return context
-
-    def get_privacy_controlled_files(self):
-        return []
 
     def get_preview_template(self, request, mode_name: str, **kwargs) -> str:
         return self.preview_template
@@ -192,12 +187,6 @@ class BaseHighchartsChart(Chart):
 
     class Meta:
         abstract = True
-
-    def get_privacy_controlled_files(self):
-        files = []
-        if self.data_file:
-            files.append(self.data_file)
-        return files
 
     def clean(self):
         super().clean()
@@ -285,7 +274,6 @@ class BaseHighchartsChart(Chart):
 
     general_panels = [
         FieldPanel("name"),
-        FieldPanel("collection"),
         MultiFieldPanel(
             heading="Descriptive text",
             children=[
