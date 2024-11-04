@@ -466,7 +466,7 @@ class BaseHighchartsChart(Chart):
         rows = data.get("rows", [])
 
         def format_value(value):
-            float(value) if self.y_type in (AxisValueType.NUMBER, AxisValueType.DATETIME) else value
+            return float(value) if self.y_type in (AxisValueType.NUMBER, AxisValueType.DATETIME) else value
 
         for i, column in enumerate(data["columns"][1:], start=1):
             item = {
