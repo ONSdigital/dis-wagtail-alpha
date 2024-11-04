@@ -3,6 +3,7 @@ import io
 import uuid
 
 from collections.abc import Sequence
+from contextlib import contextmanager
 from typing import Any
 
 from django.conf import settings
@@ -196,8 +197,8 @@ class BaseHighchartsChart(Chart):
             raise ValidationError({"data_manual": _("This field is required")})
 
     def get_context(self, request, **kwargs) -> dict[str, Any]:
-        data_json = self.get_data_json(request) if self.include_data_in_context(request) else None
-        return super().get_context(request, highcharts_config=self.get_highcharts_config(data_json), **kwargs)
+        rows = self.rows if self.include_data_in_context(request) else None
+        return super().get_context(request, highcharts_config=self.get_highcharts_config(rows), **kwargs)
 
     def include_data_in_context(self, request) -> bool:
         """
@@ -219,47 +220,47 @@ class BaseHighchartsChart(Chart):
             self.data_source == DataSource.CSV and self.data_file.size <= 1572864
         )
 
-    def get_data_json(
-        self,
-        request: HttpRequest,  # pylint: disable=unused-argument
-    ) -> dict[str, list]:
+    @contextmanager
+    def read_csv(self) -> csv.reader:
+        try:
+            csvfile = self.data_file.open("rb")
+            textwrapper = io.TextIOWrapper(csvfile, encoding="utf-8", newline="")
+            textwrapper.seek(0)
+            reader = csv.reader(textwrapper)
+            yield reader
+        finally:
+            csvfile.close()
+
+    @cached_property
+    def rows(self) -> dict[str, list]:
         """
-        Return a JSON-serializable representation of the chart's data. Used by both:
+        Return a JSON-serializable representation of the chart's row data. Used by both:
 
         * `get_context()` (when including chart data directly in the template context)
         * `ChartAPIViewSet.retrieve_data()` (when serving live data via the API)
         """
         if self.data_source == DataSource.MANUAL and self.data_manual:
-            return {
-                "columns": [col["heading"] for col in self.manual_data_table.columns],
-                "rows": [row["values"] for row in self.manual_data_table.row_data],
-            }
+            return [row["values"] for row in self.manual_data_table.row_data]
 
-        columns = []
-        rows = []
         if self.data_source == DataSource.CSV and self.data_file:
-            with self.data_file.open("rb") as csvfile:
-                textwrapper = io.TextIOWrapper(csvfile, encoding="utf-8", newline="")
-                textwrapper.seek(0)
-                reader = csv.reader(textwrapper)
+            headers = []
+            rows = []
+            with self.read_csv() as reader:
                 for i, row in enumerate(reader):
                     if not i:
-                        columns = row
+                        headers = row
                     else:
                         rows.append(row)
-            return {
-                "columns": columns,
-                "rows": rows,
-            }
-        return {}
+                # Set the 'headers' cached_property whilst the file is open
+                self.headers = headers
+                return rows
+        return []
 
     @cached_property
     def headers(self) -> Sequence[str]:
         if self.data_source == DataSource.CSV and self.data_file:
-            with self.data_file.open("rb") as csvfile:
-                textwrapper = io.TextIOWrapper(csvfile, encoding="utf-8", newline="")
-                textwrapper.seek(0)
-                reader = csv.reader(textwrapper)
+            with self.read_csv() as reader:
+                # 'fieldnames' is only available after the first row has been read
                 next(reader)
                 return reader.fieldnames or []
         if self.data_source == DataSource.MANUAL and self.data_manual:
@@ -355,7 +356,7 @@ class BaseHighchartsChart(Chart):
             ]
         )
 
-    def get_highcharts_config(self, data: dict[str, list] | None) -> dict[str, Any]:
+    def get_highcharts_config(self, rows: list[dict[str, list]] | None) -> dict[str, Any]:
         config = {
             "chart": {
                 "type": self.highcharts_chart_type,
@@ -370,8 +371,8 @@ class BaseHighchartsChart(Chart):
                 "enabled": self.show_legend,
                 "verticalAlign": self.legend_position,
             },
-            "xAxis": self.get_x_axis_config(data),
-            "yAxis": self.get_y_axis_config(data),
+            "xAxis": self.get_x_axis_config(),
+            "yAxis": self.get_y_axis_config(rows),
             "plotOptions": self.get_plot_options(),
             "navigation": {
                 "enabled": False,
@@ -389,15 +390,15 @@ class BaseHighchartsChart(Chart):
                 "text": expand_db_html(self.caption),
                 "useHTML": True,
             }
-        if data:
-            config["series"] = self.get_series(data)
+        if rows is not None:
+            config["series"] = self.get_series_data(rows)
         else:
             config["data"] = {"csvURL": self.get_data_url()}
         return config
 
-    def get_x_axis_config(self, data: dict[str, list] | None = None) -> dict[str, Any]:
+    def get_x_axis_config(self, rows: list[dict[str, list]] | None = None) -> dict[str, Any]:
         config = {
-            "type": "linear" if data else "category",
+            "type": "linear" if rows else "category",
             "title": {
                 "enabled": True,
                 "text": self.x_label or self.headers[0],
@@ -408,15 +409,15 @@ class BaseHighchartsChart(Chart):
         }
         if self.x_tick_interval is not None:
             config["tickInterval"] = self.x_tick_interval
-        if data:
-            config["categories"] = [row[0] for row in data.get("rows", [])]
+        if rows is not None:
+            config["categories"] = [row[0] for row in rows]
         if self.x_min is not None:
             config["min"] = self.x_min
         if self.x_max is not None:
             config["max"] = self.x_max
         return config
 
-    def get_y_axis_config(self, data: dict[str, list] | None = None) -> dict[str, Any]:
+    def get_y_axis_config(self, rows: list[dict[str, list]] | None = None) -> dict[str, Any]:
         config = {
             "title": {
                 "enabled": True,
@@ -452,9 +453,8 @@ class BaseHighchartsChart(Chart):
             }
         }
 
-    def get_series(self, data: dict[str, list]) -> list[dict[str, Any]]:
+    def get_series_data(self, rows: list[dict[str, list]]) -> list[dict[str, Any]]:
         series = []
-        rows = data.get("rows", [])
 
         def format_value(value):
             try:
@@ -462,7 +462,7 @@ class BaseHighchartsChart(Chart):
             except ValueError:
                 return value
 
-        for i, column in enumerate(data["columns"][1:], start=1):
+        for i, column in enumerate(self.headers[1:], start=1):
             item = {
                 "name": column,
                 "data": [format_value(row[i]) for row in rows],
