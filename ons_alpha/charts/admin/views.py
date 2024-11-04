@@ -2,6 +2,7 @@ from django.urls import path, reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import BaseFormView
 from wagtail.admin.ui.components import MediaContainer
+from wagtail.admin.ui.side_panels import ChecksSidePanel
 from wagtail.admin.views.generic.base import WagtailAdminTemplateMixin
 from wagtail.admin.views.generic.mixins import LocaleMixin
 from wagtail.admin.views.generic.permissions import PermissionCheckedMixin
@@ -108,6 +109,9 @@ class SpecificAddView(ChartTypeKwargMixin, CreateView):
         args = [self.model._meta.label_lower]
         return reverse(self.preview_url_name, args=args)
 
+    def get_side_panels(self):
+        return MediaContainer([panel for panel in super().get_side_panels() if not isinstance(panel, ChecksSidePanel)])
+
 
 class SpecificEditView(SpecificObjectViewMixin, EditView):
     action = "edit"
@@ -119,6 +123,9 @@ class SpecificEditView(SpecificObjectViewMixin, EditView):
         """
         args = [self.model._meta.label_lower, self.object.pk]
         return reverse(self.preview_url_name, args=args)
+
+    def get_side_panels(self):
+        return MediaContainer([panel for panel in super().get_side_panels() if not isinstance(panel, ChecksSidePanel)])
 
 
 class ChartCopyView(SpecificObjectViewMixin, EditView):
