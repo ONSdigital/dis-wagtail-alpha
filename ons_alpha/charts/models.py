@@ -141,7 +141,7 @@ class BaseHighchartsChart(Chart):
     x_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
     x_min = models.FloatField(verbose_name=_("scale cap (min)"), blank=True, null=True)
     x_reversed = models.BooleanField(verbose_name=_("reverse axis?"), default=False)
-    x_tick_interval = models.PositiveSmallIntegerField(verbose_name=_("tick interval"), default=0)
+    x_tick_interval = models.FloatField(verbose_name=_("tick interval"), default=0)
 
     y_label = models.CharField(verbose_name=_("label"), max_length=255, blank=True)
     y_type = models.CharField(
@@ -154,7 +154,7 @@ class BaseHighchartsChart(Chart):
         verbose_name=_("tooltip value suffix (optional)"), max_length=30, blank=True
     )
     y_reversed = models.BooleanField(verbose_name=_("reverse axis?"), default=False)
-    y_tick_interval = models.PositiveSmallIntegerField(verbose_name=_("tick interval"), default=0)
+    y_tick_interval = models.FloatField(verbose_name=_("tick interval"), default=0)
 
     data_source = models.CharField(
         verbose_name=_("data source"), max_length=10, choices=DataSource.choices, default=DataSource.CSV
