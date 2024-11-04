@@ -238,8 +238,8 @@ class BaseHighchartsChart(Chart):
         columns = []
         rows = []
         if self.data_source == DataSource.CSV and self.data_file:
-            with self.data_file.open("r") as csvfile:
-                textwrapper = io.TextIOWrapper(csvfile, newline="")
+            with self.data_file.open("rb") as csvfile:
+                textwrapper = io.TextIOWrapper(csvfile, encoding="utf-8", newline="")
                 textwrapper.seek(0)
                 reader = csv.reader(textwrapper)
                 for i, row in enumerate(reader):
