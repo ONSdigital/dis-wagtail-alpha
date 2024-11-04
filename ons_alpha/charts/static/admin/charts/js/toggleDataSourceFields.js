@@ -11,8 +11,8 @@ function togglePanelVisibility(dataSourceValue, csvField, manualField) {
 
 function initializeToggleBehaviour() {
     const dataSourceSelect = document.getElementById("id_data_source");
-    const csvField = document.getElementById("panel-child-common-data_file-section");
-    const dataManualField = document.getElementById("panel-child-common-data_manual-section");
+    const csvField = document.getElementById("panel-child-data-data_file-section");
+    const dataManualField = document.getElementById("panel-child-data-data_manual-section");
     if(dataSourceSelect !== null) {
         togglePanelVisibility(dataSourceSelect.value, csvField, dataManualField);
         dataSourceSelect.onchange = () => {
