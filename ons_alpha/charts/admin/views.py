@@ -144,7 +144,7 @@ class ChartCopyView(SpecificObjectViewMixin, EditView):
     def get_page_subtitle(self):
         return f"Copy: {self.object}"
 
-    def get_form(self):
+    def get_form(self, *args, **kwargs):  # pylint: disable=unused-argument
         form = ChartCopyForm(
             data=self.request.POST or None, instance=self.object, initial={"name": self.object.name + " copy"}
         )

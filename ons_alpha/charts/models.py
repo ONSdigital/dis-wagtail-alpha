@@ -85,7 +85,7 @@ class Chart(
     )
 
     @classproperty
-    def permission_policy(cls):
+    def permission_policy(cls):  # pylint: disable=no-self-argument
         return ModelPermissionPolicy(cls)
 
     def __str__(self):
@@ -116,27 +116,36 @@ class Chart(
         context.update(kwargs)
         return context
 
-    def get_preview_template(self, request, mode_name: str, **kwargs) -> str:
+    def get_preview_template(self, request, mode_name: str, **kwargs) -> str:  # pylint: disable=unused-argument
         return self.preview_template
 
     def get_preview_context(self, request, mode_name: str, **kwargs) -> dict[str, Any]:
-        return self.get_context(request, preview_mode=mode_name, **kwargs)
+        return self.get_context(request, is_preview=True, **kwargs)
 
 
 class BaseHighchartsChart(Chart):
     show_legend = models.BooleanField(verbose_name=_("show legend?"), default=False)
     legend_position = models.CharField(
-        verbose_name=_("label position"), max_length=6, choices=LegendPosition.choices, default=LegendPosition.TOP
+        verbose_name=_("label position"),
+        max_length=6,
+        choices=LegendPosition.choices,
+        default=LegendPosition.TOP,
     )
     show_value_labels = models.BooleanField(verbose_name=_("show value labels?"), default=False)
     theme = models.CharField(
-        verbose_name=_("theme"), max_length=10, choices=HighchartsTheme.choices, default=HighchartsTheme.PRIMARY
+        verbose_name=_("theme"),
+        max_length=10,
+        choices=HighchartsTheme.choices,
+        default=HighchartsTheme.PRIMARY,
     )
     height = models.IntegerField(verbose_name=_("height"), default=400)
 
     x_label = models.CharField(verbose_name=_("label"), max_length=255, blank=True)
     x_type = models.CharField(
-        verbose_name=_("value type"), max_length=10, choices=AxisValueType.choices, default=AxisValueType.TEXT
+        verbose_name=_("value type"),
+        max_length=10,
+        choices=AxisValueType.choices,
+        default=AxisValueType.TEXT,
     )
     x_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
     x_min = models.FloatField(verbose_name=_("scale cap (min)"), blank=True, null=True)
@@ -145,7 +154,10 @@ class BaseHighchartsChart(Chart):
 
     y_label = models.CharField(verbose_name=_("label"), max_length=255, blank=True)
     y_type = models.CharField(
-        verbose_name=_("value type"), max_length=10, choices=AxisValueType.choices, default=AxisValueType.NUMBER
+        verbose_name=_("value type"),
+        max_length=10,
+        choices=AxisValueType.choices,
+        default=AxisValueType.NUMBER,
     )
     y_max = models.FloatField(verbose_name=_("scale cap (max)"), blank=True, null=True)
     y_min = models.FloatField(verbose_name=_("scale cap (min)"), blank=True, null=True)
@@ -157,7 +169,10 @@ class BaseHighchartsChart(Chart):
     y_tick_interval = models.FloatField(verbose_name=_("tick interval"), blank=True, null=True)
 
     data_source = models.CharField(
-        verbose_name=_("data source"), max_length=10, choices=DataSource.choices, default=DataSource.CSV
+        verbose_name=_("data source"),
+        max_length=10,
+        choices=DataSource.choices,
+        default=DataSource.CSV,
     )
     data_file = models.FileField(
         verbose_name=_("CSV file"),
@@ -190,11 +205,13 @@ class BaseHighchartsChart(Chart):
             raise ValidationError({"data_manual": _("This field is required")})
 
     def get_context(self, request, **kwargs) -> dict[str, Any]:
-        row_data = self.rows if self.include_data_in_context(request) else None
+        row_data = (
+            self.rows if self.include_data_in_context(request, is_preview=kwargs.get("is_preview", False)) else None
+        )
         highcharts_config = self.get_highcharts_config(row_data)
         return super().get_context(request, highcharts_config=highcharts_config, **kwargs)
 
-    def include_data_in_context(self, request) -> bool:
+    def include_data_in_context(self, request, *, is_preview: bool = False) -> bool:  # pylint: disable=unused-argument
         """
         Return a `bool` indicating whether the chart should be rendered with the data available
         in the template context. If `True` value indicates that data should be used to render the
@@ -206,7 +223,7 @@ class BaseHighchartsChart(Chart):
         around the fact that the 'retrieve_data' API endpoint only works for published charts, and
         only surfaces the most recently-published data.
         """
-        if not self.live or getattr(request, "is_preview", False):
+        if not self.live or is_preview:
             return True
         # Only use the data API for published charts, where the data was added manually,
         # or the uploaded CSV is below 1.5M.
@@ -257,7 +274,7 @@ class BaseHighchartsChart(Chart):
         return []
 
     @cached_property
-    def headers(self) -> Sequence[str]:
+    def headers(self) -> Sequence[str]:  # pylint: disable=method-hidden
         if self.data_source == DataSource.MANUAL and self.data_manual:
             return self.manual_data_rows[0]
 
@@ -420,7 +437,10 @@ class BaseHighchartsChart(Chart):
             config["max"] = self.x_max
         return config
 
-    def get_y_axis_config(self, row_data: list[dict[str, list]] | None = None) -> dict[str, Any]:
+    def get_y_axis_config(
+        self,
+        row_data: list[dict[str, list]] | None = None,  # pylint: disable=unused-argument
+    ) -> dict[str, Any]:
         config = {
             "reversed": self.y_reversed,
             "lineColor": "#929292",
@@ -510,7 +530,7 @@ class BarChart(BaseHighchartsChart):
             BarChartType.STACKED_COLUMN.value,
         ]
 
-    @cached_property
+    @property
     def highcharts_chart_type(self):
         return self.subtype.split("_")[-1]
 

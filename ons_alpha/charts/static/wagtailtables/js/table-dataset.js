@@ -4,7 +4,7 @@ class TableDefinition extends window.wagtailStreamField.blocks.StructBlockDefini
     /* Hide TextField and display table instead */
     const block = super.render(placeholder, prefix, initialState, initialError);
     const dataSetField = document.getElementById(prefix + '-table_data');
-    var table = document.createElement( 'div' );
+    const table = document.createElement('div');
     table.setAttribute("id", prefix + "-dataset-table")
     dataSetField.parentNode.insertBefore( table, dataSetField.nextSibling );
     dataSetField.style.display = 'none';
@@ -16,14 +16,14 @@ class TableDefinition extends window.wagtailStreamField.blocks.StructBlockDefini
     }
 
     /* Update TextField on changes */
-    var spread = null;
-    var changed = function(instance, cell, x, y, value) {
+    let spread = null;
+    const changed = function(instance, cell, x, y, value) {
       if(spread !== null){
         dataSetField.value = "{\"data\": "+JSON.stringify(spread.getData())+", \"style\": "+JSON.stringify(spread.getStyle())+"}";
       }
     }
 
-    var options = {
+    const options = {
       tableOverflow: true,
       tableWidth: "100%",
       columnSorting: false,
@@ -33,7 +33,7 @@ class TableDefinition extends window.wagtailStreamField.blocks.StructBlockDefini
       onevent: changed,
     }
 
-    var tdata = JSON.parse(dataSetField.value);
+    const tdata = JSON.parse(dataSetField.value);
     if(tdata.data && tdata.data.length > 0){
       options.data = tdata.data;
       options.style = tdata.style;

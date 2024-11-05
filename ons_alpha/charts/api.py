@@ -30,7 +30,7 @@ class ChartAPIViewSet(ReadOnlyModelViewSet):
     @action(detail=True, methods=["get"])
     def data_csv(
         self,
-        request: HttpRequest,  # pylint: disable=unused-argument
+        request: HttpRequest,
         uuid: str,
     ):
         chart = get_object_or_404(Chart, uuid=uuid).specific

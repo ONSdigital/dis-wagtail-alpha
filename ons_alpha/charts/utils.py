@@ -32,8 +32,8 @@ def get_chart_type_choices() -> list[tuple[str, str]]:
 
 
 def streamvalue_includes_highcharts_chart(stream_value):
-    from ons_alpha.charts.blocks import ChartEmbedBlock
-    from ons_alpha.charts.models import BaseHighchartsChart
+    from ons_alpha.charts.blocks import ChartEmbedBlock  # pylint: disable=import-outside-toplevel
+    from ons_alpha.charts.models import BaseHighchartsChart  # pylint: disable=import-outside-toplevel
 
     for bound_block in stream_value:
         if isinstance(bound_block.block, ChartEmbedBlock) and issubclass(
