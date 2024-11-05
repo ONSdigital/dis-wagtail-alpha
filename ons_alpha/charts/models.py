@@ -1,5 +1,6 @@
 import csv
 import io
+import json
 import uuid
 
 from collections.abc import Sequence
@@ -14,7 +15,6 @@ from django.urls import reverse
 from django.utils.functional import cached_property, classproperty
 from django.utils.translation import gettext_lazy as _
 from modelcluster.models import ClusterableModel
-from wagtail import blocks
 from wagtail.admin.panels import (
     FieldPanel,
     FieldRowPanel,
@@ -22,7 +22,6 @@ from wagtail.admin.panels import (
     ObjectList,
     TabbedInterface,
 )
-from wagtail.contrib.typed_table_block.blocks import TypedTable, TypedTableBlock
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import (
     DraftStateMixin,
@@ -33,6 +32,7 @@ from wagtail.models import (
 from wagtail.permission_policies import ModelPermissionPolicy
 from wagtail.rich_text import expand_db_html
 
+from ons_alpha.charts.blocks import SimpleTableBlock
 from ons_alpha.charts.constants import (
     HIGHCHARTS_THEMES,
     AxisValueType,
@@ -170,13 +170,7 @@ class BaseHighchartsChart(Chart):
         [
             (
                 "table",
-                TypedTableBlock(
-                    [
-                        ("text", blocks.CharBlock(max_length=200, label=_("Text"))),
-                        ("number", blocks.IntegerBlock(label=_("Whole number"))),
-                        ("float", blocks.FloatBlock(label=_("Floating point number"))),
-                    ]
-                ),
+                SimpleTableBlock(label=_("Table")),
             )
         ],
         verbose_name=_("data"),
@@ -232,6 +226,12 @@ class BaseHighchartsChart(Chart):
             csvfile.close()
 
     @cached_property
+    def manual_data_rows(self):
+        data_json = json.loads(self.data_manual[0].value["table_data"])
+        print(data_json)
+        return data_json["data"]
+
+    @cached_property
     def rows(self) -> dict[str, list]:
         """
         Return a JSON-serializable representation of the chart's row data. Used by both:
@@ -240,7 +240,7 @@ class BaseHighchartsChart(Chart):
         * `ChartAPIViewSet.retrieve_data()` (when serving live data via the API)
         """
         if self.data_source == DataSource.MANUAL and self.data_manual:
-            return [row["values"] for row in self.manual_data_table.row_data]
+            return self.manual_data_rows[1:]
 
         if self.data_source == DataSource.CSV and self.data_file:
             headers = []
@@ -258,18 +258,15 @@ class BaseHighchartsChart(Chart):
 
     @cached_property
     def headers(self) -> Sequence[str]:
+        if self.data_source == DataSource.MANUAL and self.data_manual:
+            return self.manual_data_rows[0]
+
         if self.data_source == DataSource.CSV and self.data_file:
             with self.read_csv() as reader:
                 # 'fieldnames' is only available after the first row has been read
                 next(reader)
                 return reader.fieldnames or []
-        if self.data_source == DataSource.MANUAL and self.data_manual:
-            return [col["heading"] for col in self.manual_data_table.columns]
         return []
-
-    @property
-    def manual_data_table(self) -> TypedTable:
-        return self.data_manual[0].value
 
     def get_data_url(self) -> str:
         return reverse("chart-data-csv", args=[self.uuid])

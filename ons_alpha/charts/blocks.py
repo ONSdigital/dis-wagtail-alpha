@@ -1,11 +1,39 @@
+from django.forms.widgets import Media
+from django.utils.functional import cached_property
+from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 from wagtail.snippets.blocks import SnippetChooserBlock
+from wagtail.telepath import register
+from wagtailtables.blocks import TableAdapter, TableBlock
 
-from ons_alpha.charts.models import Chart
+
+class SimpleTableBlock(TableBlock):
+    table_data = blocks.TextBlock(label=_("Data"), default="[]")
+    caption = None
+    header_row = None
+    header_col = None
+
+
+class SimpleTableBlockAdapter(TableAdapter):
+    def js_args(self, block):
+        result = super().js_args(block)
+        # We override wagtailtables js to remove the toolbar, as formatting
+        # options are irrelevant to our data-only tables.
+        result[2].pop("toolbar", None)
+        return result
+
+    @cached_property
+    def media(self):
+        # wagtailtables css doen't resize the widget container correctly, so we
+        # need to add custom css to fix it.
+        return super().media + Media(css={"all": ["wagtailtables/css/table-dataset.css"]})
+
+
+register(SimpleTableBlockAdapter(), SimpleTableBlock)
 
 
 class ChartEmbedBlock(blocks.StructBlock):
-    chart = SnippetChooserBlock(Chart)
+    chart = SnippetChooserBlock("charts.Chart")
 
     class Meta:
         template = "templates/components/streamfield/chart.html"

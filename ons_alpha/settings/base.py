@@ -108,6 +108,7 @@ INSTALLED_APPS = [
     "django.contrib.sitemaps",
     "django_jinja",
     "wagtailmath",
+    "wagtailtables",
     "wagtailfontawesomesvg",
     "wagtail_2fa",
     "django_otp",
