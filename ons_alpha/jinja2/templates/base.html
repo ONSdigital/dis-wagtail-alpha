@@ -28,11 +28,10 @@
                     j.src =
                         'https://www.googletagmanager.com/gtm.js?id=' +
                     i +
-                    dl +
-                    '&gtm_preview=env-12&gtm_cookies_win=x';
+                    dl;
                     f.parentNode.insertBefore(j, f);
-                })(window, document, 'script', 'dataLayer', '{{ GOOGLE_TAG_MANAGER_ID|escapejs }}');
-            }
+                })(window, document, 'script', 'dataLayer', '{{ GOOGLE_TAG_MANAGER_ID|escape }}');
+            };
 
             var a = /^(.*)?\s*'usage':true\s*[^;]+(.*)?$/;
             if (document.cookie.match(a)) {
@@ -48,7 +47,7 @@
         <!-- Google Tag Manager (noscript) -->
         <noscript
         ><iframe
-            src="https://www.googletagmanager.com/ns.html?id={{ GOOGLE_TAG_MANAGER_ID }}&amp;gtm_preview=env-12&amp;gtm_cookies_win=x"
+            src="https://www.googletagmanager.com/ns.html?id={{ GOOGLE_TAG_MANAGER_ID|escape }}"
             height="0"
             width="0"
             style="display:none;visibility:hidden"
