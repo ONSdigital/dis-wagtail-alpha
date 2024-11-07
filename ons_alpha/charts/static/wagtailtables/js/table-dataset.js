@@ -1,15 +1,16 @@
+/* global jspreadsheet */
 class TableDefinition extends window.wagtailStreamField.blocks.StructBlockDefinition {
   render(placeholder, prefix, initialState, initialError) {
 
     /* Hide TextField and display table instead */
     const block = super.render(placeholder, prefix, initialState, initialError);
-    const dataSetField = document.getElementById(prefix + '-table_data');
+    const dataSetField = document.getElementById(`${prefix}-table_data`);
     const table = document.createElement('div');
-    table.setAttribute("id", prefix + "-dataset-table")
+    table.setAttribute("id", `${prefix}-dataset-table`)
     dataSetField.parentNode.insertBefore( table, dataSetField.nextSibling );
     dataSetField.style.display = 'none';
 
-    const tableTypeField = document.getElementById(prefix + '-table_type');
+    const tableTypeField = document.getElementById(`${prefix}-table_type`);
     if(tableTypeField.options.length === 1){
       const typeField = tableTypeField.closest('[data-contentpath=table_type]');
       typeField.style.display = 'none';
@@ -17,9 +18,9 @@ class TableDefinition extends window.wagtailStreamField.blocks.StructBlockDefini
 
     /* Update TextField on changes */
     let spread = null;
-    const changed = function(instance, cell, x, y, value) {
-      if(spread !== null){
-        dataSetField.value = "{\"data\": "+JSON.stringify(spread.getData())+", \"style\": "+JSON.stringify(spread.getStyle())+"}";
+    const changed = () => {
+      if (spread !== null) {
+        dataSetField.value = `{"data": ${JSON.stringify(spread.getData())}, "style": ${JSON.stringify(spread.getStyle())}}`;
       }
     }
 
@@ -42,7 +43,7 @@ class TableDefinition extends window.wagtailStreamField.blocks.StructBlockDefini
       options.minDimensions = [2,5]
     }
 
-    spread = jspreadsheet(document.getElementById(prefix + "-dataset-table"), options);
+    spread = jspreadsheet(document.getElementById(`${prefix}-dataset-table`), options);
 
     return block;
   }
