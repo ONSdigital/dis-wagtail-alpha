@@ -6,7 +6,6 @@ from .headline_figures import HeadlineFiguresBlock
 from .markup import HeadingBlock, ONSTableBlock, QuoteBlock, TableBlock, TypedTableBlock
 from .panels import CorrectionBlock, NoticeBlock, PanelBlock
 from .related import RelatedContentBlock, RelatedLinksBlock
-from .snippets import ChartChooserBlock
 
 
 __all__ = [
@@ -28,6 +27,5 @@ __all__ = [
     "RelatedLinksBlock",
     "TableBlock",
     "TypedTableBlock",
-    "ChartChooserBlock",
     "DocumentsBlock",
 ]
