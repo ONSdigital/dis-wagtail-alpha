@@ -30,6 +30,7 @@ class ArticlePage(BundledPageMixin, RoutablePageMixin, BasePage):
     template = "templates/pages/article_page.html"
     parent_page_types = ["ArticleSeriesPage"]
     subpage_types = []
+    show_in_breadcrumbs = False
 
     headline = models.CharField(max_length=255, blank=True)
     summary = models.TextField()
@@ -162,6 +163,7 @@ class ArticleSeriesPage(RoutablePageMixin, Page):
     subpage_types = ["ArticlePage"]
     preview_modes = []  # Disabling the preview mode due to it being a container page.
     page_description = "A container for Article series"
+    show_in_breadcrumbs = True
 
     content_panels = Page.content_panels + [
         HelpPanel(
