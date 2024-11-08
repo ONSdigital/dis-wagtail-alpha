@@ -18,6 +18,8 @@ __all__ = [
 @method_decorator(get_default_cache_control_decorator(), name="serve")
 class BasePage(ListingFieldsMixin, SocialFieldsMixin, Page):
     show_in_menus_default = True
+    show_in_breadcrumbs = True
+    link_in_breadcrumbs = True
 
     class Meta:
         abstract = True
