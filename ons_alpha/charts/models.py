@@ -223,13 +223,8 @@ class BaseHighchartsChart(Chart):
         around the fact that the 'retrieve_data' API endpoint only works for published charts, and
         only surfaces the most recently-published data.
         """
-        if not self.live or is_preview:
-            return True
-        # Only use the data API for published charts, where the data was added manually,
-        # or the uploaded CSV is below 1.5M.
-        return self.data_source == DataSource.MANUAL or (
-            self.data_source == DataSource.CSV and self.data_file.size <= 1572864
-        )
+        # Only use the data API for published charts, where the data was added manually
+        return is_preview or self.data_source == DataSource.MANUAL
 
     @contextmanager
     def read_csv(self) -> csv.reader:
