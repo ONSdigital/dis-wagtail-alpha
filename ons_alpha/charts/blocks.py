@@ -34,6 +34,8 @@ register(SimpleTableBlockAdapter(), SimpleTableBlock)
 
 class ChartEmbedBlock(blocks.StructBlock):
     chart = SnippetChooserBlock("charts.Chart")
+    title = blocks.CharBlock(label=_("Title"))
+    subtitle = blocks.CharBlock(label=_("Subtitle"))
 
     class Meta:
         template = "templates/components/streamfield/chart.html"
@@ -42,6 +44,12 @@ class ChartEmbedBlock(blocks.StructBlock):
         context = super().get_context(value, parent_context)
         request = parent_context.get("request") if parent_context else None
         chart = value["chart"].specific
+
+        # Override the title and subtitle
+        chart.title = value["title"]
+        chart.subtitle = value["subtitle"]
+
+        # Add the chart context and template to allow the chart to be rendered
         context.update(chart.get_context(request))
         context["chart_template"] = chart.get_template(request)
         return context
