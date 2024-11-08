@@ -190,3 +190,4 @@ class TopicSectionPage(BaseTopicPage):
     template = "templates/pages/topics/topic_section_page.html"
     subpage_types = ["topics.TopicSectionPage", "topics.TopicPage"]
     page_description = "General topic page. e.g. Economy"
+    show_in_breadcrumbs = False
