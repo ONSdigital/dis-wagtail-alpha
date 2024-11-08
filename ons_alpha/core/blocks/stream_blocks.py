@@ -5,7 +5,6 @@ from wagtailmath.blocks import MathBlock
 
 from ons_alpha.core.blocks import (
     ButtonLinkBlock,
-    ChartChooserBlock,
     CorrectionBlock,
     DocumentListBlock,
     DocumentsBlock,
@@ -43,7 +42,6 @@ class CoreStoryBlock(StreamBlock):
     ons_table = ONSTableBlock(group="DataVis")
     ons_chart_embed = ONSChartEmbedBlock(group="DataVis", label="ONS Chart Embed")
     ons_embed = ONSEmbedBlock(group="DataVis", label="ONS General Embed")
-    chart = ChartChooserBlock(group="DataVis")
     equation = MathBlock(icon="decimal", group="DataVis")
     table = OldTableBlock(
         group="DataVis",

@@ -2297,13 +2297,13 @@ testing = ["black (==22.3.0)", "coverage (==5.0.3)", "factory_boy (==2.12.0)", "
 
 [[package]]
 name = "wagtailcharts"
-version = "0.5.0"
+version = "0.6.3"
 description = "Chart.js charts for Wagtail"
 optional = false
 python-versions = "*"
 files = [
-    {file = "wagtailcharts-0.5.0-py3-none-any.whl", hash = "sha256:b7b410681fd6ef3120a3a0f0f59ed205c63aba2ee292e3ad63fd4ccc7bc22548"},
-    {file = "wagtailcharts-0.5.0.tar.gz", hash = "sha256:bf770ed8979681417e05d6ba36a74d8363c5cede1a802a3aa87d1403679e4bfa"},
+    {file = "wagtailcharts-0.6.3-py3-none-any.whl", hash = "sha256:fc88c61214051ef5dadc626c8819ebdcef2851c489277f56a673a98f40844591"},
+    {file = "wagtailcharts-0.6.3.tar.gz", hash = "sha256:9ceb7deb7af7fba851bcb1092ca4915343715615060f713c4a937d352a269a80"},
 ]
 
 [package.dependencies]
@@ -2462,4 +2462,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "71a8023f06d635aa57711c9a31425a594b3d42b03dc2e2e4c7de16b487492785"
+content-hash = "78317179d1b48314cb8d3cee460a1f122780a373ad7ce860e797376af8a6df99"
