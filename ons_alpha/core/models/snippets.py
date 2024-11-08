@@ -1,12 +1,8 @@
 from django.db import models
 from wagtail import blocks
 from wagtail.admin.panels import FieldPanel
-from wagtail.admin.ui.tables import UpdatedAtColumn
 from wagtail.fields import RichTextField
-from wagtail.models import PreviewableMixin
-from wagtail.search import index
 from wagtail.snippets.models import register_snippet
-from wagtail.snippets.views.snippets import SnippetViewSet
 
 from ons_alpha.utils.fields import StreamField
 
