@@ -10,7 +10,7 @@
             {% if item.depth == 2 %}
                 {% do breadcrumbs.append({"url": "/", "text": _("Home")}) %}
             {% elif item.specific_class.show_in_breadcrumbs %}
-                {% do breadcrumbs.append({"text": item.title}) %}
+                {% do breadcrumbs.append({"url": pageurl(item), "text": item.title}) %}
             {% endif %}
         {% endfor %}
         {% if page.specific_class.show_in_breadcrumbs %}
