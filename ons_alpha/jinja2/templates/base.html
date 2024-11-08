@@ -77,8 +77,8 @@
 {% set feedbackLink %}
     {{
         onsExternalLink({
-            "url": "#0",
-            "linkText": "give feedback"
+            "url": PHASE_BANNER_FEEDBACK_URL,
+            "text": "give feedback"
         })
     }}
 {% endset %}
@@ -101,6 +101,7 @@
         "language": {
             "languages": languages
         },
+        "mastheadLogoUrl": "/",
         "navLinks": {
             "id": "nav-links-external",
             "ariaLabel": 'Main menu',

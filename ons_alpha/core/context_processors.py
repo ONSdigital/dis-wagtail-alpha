@@ -15,4 +15,5 @@ def global_vars(request):
         "COOKIE_BANNER_ENABLED": settings.ONS_COOKIE_BANNER_ENABLED,
         "COOKIE_BANNER_SERVICE_NAME": settings.ONS_COOKIE_BANNER_SERVICE_NAME or request.get_host(),
         "MANAGE_COOKIE_SETTINGS_URL": reverse("manage-cookie-settings"),
+        "PHASE_BANNER_FEEDBACK_URL": settings.ONS_PHASE_BANNER_FEEDBACK_URL,
     }

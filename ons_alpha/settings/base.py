@@ -834,6 +834,7 @@ ONS_API_DATASET_BASE_URL = env.get("ONS_API_DATASET_BASE_URL", "https://api.beta
 ONS_WEBSITE_DATASET_BASE_URL = env.get("ONS_WEBSITE_DATASET_BASE_URL", "https://www.ons.gov.uk/datasets")
 ONS_COOKIE_BANNER_ENABLED = env.get("ONS_COOKIE_BANNER_ENABLED", "false").lower() == "true"
 ONS_COOKIE_BANNER_SERVICE_NAME = env.get("ONS_COOKIE_BANNER_SERVICE_NAME")
+ONS_PHASE_BANNER_FEEDBACK_URL = env.get("ONS_PHASE_BANNER_FEEDBACK_URL", "#")
 
 # Disable new version check and "what's new" banner
 WAGTAIL_ENABLE_UPDATE_CHECK = False
