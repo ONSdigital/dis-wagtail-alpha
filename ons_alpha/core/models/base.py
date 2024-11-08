@@ -19,7 +19,6 @@ __all__ = [
 class BasePage(ListingFieldsMixin, SocialFieldsMixin, Page):
     show_in_menus_default = True
     show_in_breadcrumbs = True
-    link_in_breadcrumbs = True
 
     class Meta:
         abstract = True
