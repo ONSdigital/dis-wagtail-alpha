@@ -29,3 +29,4 @@ nav:
       - 'Migration-friendly StreamFields': 'custom-features/migration_friendly_streamfields.md'
   - 'Data protection': 'data_protection.md'
   - 'VSCode Dev container': 'vscode-dev-container.md'
+  - 'Design system and overrides': 'design-system-overrides.md'
