@@ -32,7 +32,6 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
     base_form_class = PageWithUpdatesAdminForm
     template = "templates/pages/bulletin_page.html"
     parent_page_types = ["BulletinSeriesPage"]
-    show_in_breadcrumbs = False
     subpage_types = []
 
     headline = models.CharField(max_length=255, blank=True)
@@ -171,7 +170,7 @@ class BulletinSeriesPage(RoutablePageMixin, Page):
     subpage_types = ["BulletinPage"]
     preview_modes = []  # Disabling the preview mode due to it being a container page.
     page_description = "A container for Bulletin series"
-    show_in_breadcrumbs = True
+    show_in_breadcrumbs = False
 
     content_panels = Page.content_panels + [
         HelpPanel(

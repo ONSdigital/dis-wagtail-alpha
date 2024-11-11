@@ -19,7 +19,10 @@ from wagtail.models import Page
 from wagtail.search import index
 
 from ons_alpha.bundles.models import BundledPageMixin
-from ons_alpha.core.blocks.stream_blocks import CoreStoryBlock, CorrectionsNoticesStoryBlock
+from ons_alpha.core.blocks.stream_blocks import (
+    CoreStoryBlock,
+    CorrectionsNoticesStoryBlock,
+)
 from ons_alpha.core.forms import PageWithUpdatesAdminForm
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.utils.fields import StreamField
@@ -30,7 +33,6 @@ class ArticlePage(BundledPageMixin, RoutablePageMixin, BasePage):
     template = "templates/pages/article_page.html"
     parent_page_types = ["ArticleSeriesPage"]
     subpage_types = []
-    show_in_breadcrumbs = False
 
     headline = models.CharField(max_length=255, blank=True)
     summary = models.TextField()
@@ -69,7 +71,8 @@ class ArticlePage(BundledPageMixin, RoutablePageMixin, BasePage):
                         ]
                     ),
                     FieldPanel(
-                        "is_accredited", help_text="If ticked, will show the official statistics accredited logo."
+                        "is_accredited",
+                        help_text="If ticked, will show the official statistics accredited logo.",
                     ),
                     FieldPanel("contact_details"),
                 ],
@@ -90,7 +93,8 @@ class ArticlePage(BundledPageMixin, RoutablePageMixin, BasePage):
                 heading="Taxonomy",
             ),
             ObjectList(
-                [FieldPanel("updates", help_text="Add any corrections or updates")], heading="Corrections & Updates"
+                [FieldPanel("updates", help_text="Add any corrections or updates")],
+                heading="Corrections & Updates",
             ),
             ObjectList(BasePage.promote_panels, heading="Promote"),
             ObjectList(BasePage.settings_panels, heading="Settings", classname="settings"),
@@ -154,7 +158,11 @@ class ArticlePage(BundledPageMixin, RoutablePageMixin, BasePage):
         revision = get_object_or_404(self.revisions, pk=correction.value["previous_version"])
 
         return self.render(
-            request, context_overrides={"page": revision.as_object(), "latest_version_url": self.get_url(request)}
+            request,
+            context_overrides={
+                "page": revision.as_object(),
+                "latest_version_url": self.get_url(request),
+            },
         )
 
 
@@ -163,7 +171,7 @@ class ArticleSeriesPage(RoutablePageMixin, Page):
     subpage_types = ["ArticlePage"]
     preview_modes = []  # Disabling the preview mode due to it being a container page.
     page_description = "A container for Article series"
-    show_in_breadcrumbs = True
+    show_in_breadcrumbs = False
 
     content_panels = Page.content_panels + [
         HelpPanel(
