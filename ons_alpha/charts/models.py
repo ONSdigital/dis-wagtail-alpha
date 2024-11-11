@@ -75,8 +75,18 @@ class Chart(
     )
     content_type.wagtail_reference_index_ignore = True
 
-    title = models.CharField(verbose_name=_("title"), max_length=255, blank=True)
-    subtitle = models.CharField(verbose_name=_("subtitle"), max_length=255, blank=True)
+    title = models.CharField(
+        verbose_name=_("title (default)"),
+        max_length=255,
+        blank=True,
+        help_text=_("This will usually be overridden for each individual 'chart placement' on a page."),
+    )
+    subtitle = models.CharField(
+        verbose_name=_("subtitle (default)"),
+        max_length=255,
+        blank=True,
+        help_text=_("This will usually be overridden for each individual 'chart placement' on a page."),
+    )
     caption = RichTextField(
         verbose_name=_("caption"),
         blank=True,
