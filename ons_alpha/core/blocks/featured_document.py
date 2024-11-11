@@ -1,14 +1,21 @@
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
-from wagtail.blocks import ChoiceBlock, PageChooserBlock, RichTextBlock, StructBlock
+from wagtail import blocks
 
 from ons_alpha.core.constants import CONTENT_TYPE_LABEL_CHOICES
 
 
-class FeaturedDocumentBlock(StructBlock):
-    page = PageChooserBlock(label=_("Page"), required=True)
-    content_type_label = ChoiceBlock(label=_("Content type label"), choices=CONTENT_TYPE_LABEL_CHOICES, required=True)
-    description = RichTextBlock(label=_("Description"), required=True, features=["ol", "ul"])
+class FeaturedDocumentBlock(blocks.StructBlock):
+    page = blocks.PageChooserBlock(label=_("Page"), required=True)
+    content_type_label = blocks.ChoiceBlock(
+        label=_("Content type label"), choices=CONTENT_TYPE_LABEL_CHOICES, required=True
+    )
+    chart_title = blocks.CharBlock(label=_("Chart title"), required=False)
+    chart_url = blocks.URLBlock(label=_("Chart URL"), required=False)
+    chart_image_url = blocks.URLBlock(
+        label=_("Chart image URL"), required=False, help_text=_("Displayed when JS is disabled")
+    )
+    description = blocks.RichTextBlock(label=_("Description"), required=True, features=["ol", "ul"])
 
     class Meta:
         icon = "list-ul"
@@ -38,6 +45,12 @@ class FeaturedDocumentBlock(StructBlock):
                 "object": {"text": value["content_type_label"]},
             },
         }
+        if value["chart_url"]:
+            document["chart"] = {
+                "title": value["chart_title"],
+                "embedUrl": value["chart_url"],
+                "imageUrl": value["chart_image_url"],
+            }
         if release_date := getattr(page, "release_date", None):
             document["metadata"]["date"] = {
                 "prefix": "Released",
