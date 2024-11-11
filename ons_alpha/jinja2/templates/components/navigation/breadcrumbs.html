@@ -13,10 +13,7 @@
                 {% do breadcrumbs.append({"url": pageurl(item), "text": item.title}) %}
             {% endif %}
         {% endfor %}
-        {% if page.specific_class.show_in_breadcrumbs %}
-            {% do breadcrumbs.append({"text": page.title}) %}
-        {% endif %}
-            {# fmt:off #}
+        {# fmt:off #}
             {{
                 onsBreadcrumbs({
                     "ariaLabel": 'Breadcrumbs',
