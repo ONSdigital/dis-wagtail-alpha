@@ -10,10 +10,10 @@ class FeaturedDocumentBlock(blocks.StructBlock):
     content_type_label = blocks.ChoiceBlock(
         label=_("Content type label"), choices=CONTENT_TYPE_LABEL_CHOICES, required=True
     )
-    chart_title = blocks.CharBlock(label=_("Chart title"), required=False)
-    chart_url = blocks.URLBlock(label=_("Chart URL"), required=False)
+    chart_title = blocks.CharBlock(label=_("Chart title"), required=True)
+    chart_url = blocks.URLBlock(label=_("Chart URL"), required=True)
     chart_image_url = blocks.URLBlock(
-        label=_("Chart image URL"), required=False, help_text=_("Displayed when JS is disabled")
+        label=_("Chart image URL"), required=True, help_text=_("Displayed when JS is disabled")
     )
     description = blocks.RichTextBlock(label=_("Description"), required=True, features=["ol", "ul"])
 
