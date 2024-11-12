@@ -1,5 +1,10 @@
-{{ value.when|date("DATETIME_FORMAT") }}
-
-{{ value.text|richtext }}
-
-<a href="{{ routablepageurl(page, 'previous_version', version_num) }}">{{ _("View superseded version") }}</a>
+<div class="corrections__item">
+    <div class="corrections__meta">
+        <h2 class="ons-u-fs-r--b corrections__heading">Correction</h2>
+        <time class="corrections__date">{{ value.when|date("DATETIME_FORMAT") }}</time>
+    </div>
+    <div class="corrections__detail">
+        {{ value.text|richtext }}
+        <a href="{{ routablepageurl(page, 'previous_version', version_num) }}">{{ _("View superseded version") }}</a>
+    </div>
+</div>

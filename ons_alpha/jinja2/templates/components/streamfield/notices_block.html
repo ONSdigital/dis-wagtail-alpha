@@ -1,3 +1,9 @@
-{{ value.when|date("DATETIME_FORMAT") }}
-
-{{ value.text|richtext }}
+<div class="corrections__item corrections__item--notice">
+    <div class="corrections__meta">
+        <h2 class="ons-u-fs-r--b corrections__heading">Notice</h2>
+        <time class="corrections__date">{{ value.when|date("DATETIME_FORMAT") }}</time>
+    </div>
+    <div class="corrections__detail">
+        {{ value.text|richtext }}
+    </div>
+</div>

@@ -4,22 +4,44 @@
 {% set notice_blocks = value.blocks_by_name("notice") %}
 
 {% if correction_blocks or notice_blocks %}
-    {% call onsDetails({"id": "corrections-and-notices", "title": _("Corrections and notices")}) %}
-        {% if correction_blocks %}
-            <h3>{{ _("Corrections") }}</h3>
+    <details class="corrections ons-u-mb-2xl">
+        <summary class="corrections__summary ons-u-pt-s ons-u-pb-s">
+            <span class="ons-container corrections__summary-contents">
+                <svg class="corrections__info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><g id="Artwork_32x32" data-name="Artwork 32x32"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,5.75A1.75,1.75,0,1,1,14.25,9.5,1.75,1.75,0,0,1,16,7.75Zm2.5,15.5a.5.5,0,0,1-.5.5H14a.5.5,0,0,1-.5-.5v-1a.5.5,0,0,1,.5-.5h.5v-7H14a.5.5,0,0,1-.5-.5v-1a.5.5,0,0,1,.5-.5h3a.5.5,0,0,1,.5.5v8.5H18a.5.5,0,0,1,.5.5Z" style="fill:currentColor"/></g></svg>
 
-            {% for block in correction_blocks %}
-                {% set version_num = loop.index %}
-                {% include_block block %}
-            {% endfor %}
-        {% endif %}
+                {% if correction_blocks and notice_blocks %}
+                    <span class="ons-u-fw-b">Corrections and notices</span>
+                    <span class="corrections__summary-details">
+                        A notice and correction is available for this analysis
+                    </span>
+                {% elif correction_blocks %}
+                    <span class="ons-u-fw-b">Corrections</span>
+                    <span class="corrections__summary-details">
+                        A correction has been made to this analysis
+                    </span>
+                {% else %}
+                    <span class="ons-u-fw-b">Notices</span>
+                    <span class="corrections__summary-details">
+                        A notice is associated with this analysis
+                    </span>
+                {% endif %}
+            </span>
+        </summary>
+        {# {% call onsDetails({"id": "corrections-and-notices", "title": _("Corrections and notices")}) #}
+        {# {% endcall %} #}
+        <div class="ons-container corrections__content ons-u-pt-xl ons-u-pb-3xl">
+            {% if correction_blocks %}
+                {% for block in correction_blocks %}
+                    {% set version_num = loop.index %}
+                    {% include_block block %}
+                {% endfor %}
+            {% endif %}
 
-        {% if notice_blocks %}
-            <h3>{{ _("Notices") }}</h3>
-
-            {% for block in notice_blocks %}
-                {% include_block block %}
-            {% endfor %}
-        {% endif %}
-    {% endcall %}
+            {% if notice_blocks %}
+                {% for block in notice_blocks %}
+                    {% include_block block %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </details>
 {% endif %}
