@@ -236,7 +236,10 @@ class BaseHighchartsChart(Chart):
 
     def clean(self):
         super().clean()
-        if self.data_source == DataSource.CSV and not self.data_file:
+        # The 'is_copy' attribute is set by ChartCopyForm, because it must
+        # be possible to copy existing charts without the associated CSV (
+        # without this, the save_revision() method triggers a ValidationEror)
+        if not getattr(self, "is_copy", False) and self.data_source == DataSource.CSV and not self.data_file:
             raise ValidationError({"data_file": _("This field is required")})
         if self.data_source == DataSource.MANUAL and not self.data_manual:
             raise ValidationError({"data_manual": _("This field is required")})

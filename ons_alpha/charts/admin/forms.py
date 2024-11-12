@@ -1,8 +1,6 @@
 import uuid
 
 from django import forms
-from django.core.files import File
-from django.db.models import FileField
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.forms.models import WagtailAdminDraftStateFormMixin
 
@@ -10,7 +8,7 @@ from ons_alpha.charts.models import Chart
 from ons_alpha.charts.utils import get_chart_type_choices
 
 
-class ChartCopyForm(WagtailAdminDraftStateFormMixin):
+class ChartCopyForm(WagtailAdminDraftStateFormMixin, forms.ModelForm):
 
     class Meta:
         model = Chart
@@ -26,16 +24,9 @@ class ChartCopyForm(WagtailAdminDraftStateFormMixin):
         self.instance.uuid = uuid.uuid4()
         self.instance.live = False
         self.instance._state.adding = True
-
-        # Create copies of files
-        for field in self.instance._meta.get_fields():
-            if isinstance(field, FileField) and (original_file := getattr(self.instance, field.attname, None)):
-                storage = field.storage
-                # Copy the file using the storage backend
-                with original_file.open("rb") as source_file:
-                    new_name = storage.save(original_file.name, source_file)
-                new_file = File(storage.open(new_name), name=new_name)
-                setattr(self.instance, field.attname, new_file)
+        # Bypass validation for missing 'data_file' values
+        self.instance.is_copy = True
+        self.instance.data_file = None
         return super().save(commit)
 
 
