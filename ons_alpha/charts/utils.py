@@ -2,6 +2,7 @@ from operator import itemgetter
 from typing import TYPE_CHECKING
 
 from django.apps import apps
+from django.contrib.contenttypes.models import ContentType
 from django.utils.text import capfirst
 
 
@@ -29,6 +30,16 @@ def get_chart_type_choices() -> list[tuple[str, str]]:
     for model in get_chart_type_models():
         choices.append((model._meta.label_lower, capfirst(model._meta.verbose_name)))
     return sorted(choices, key=itemgetter(1))
+
+
+def get_chart_content_types():
+    """
+    Returns a queryset of all ContentType objects corresponding to Chart model classes.
+    """
+    models = get_chart_type_models()
+
+    content_type_ids = [ct.pk for ct in ContentType.objects.get_for_models(*models).values()]
+    return ContentType.objects.filter(pk__in=content_type_ids).order_by("model")
 
 
 def streamvalue_includes_highcharts_chart(stream_value):

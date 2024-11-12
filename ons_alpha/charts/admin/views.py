@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import BaseFormView
 from wagtail.admin.ui.components import MediaContainer
 from wagtail.admin.ui.side_panels import ChecksSidePanel
+from wagtail.admin.ui.tables import LiveStatusTagColumn
 from wagtail.admin.views.generic.base import WagtailAdminTemplateMixin
 from wagtail.admin.views.generic.mixins import LocaleMixin
 from wagtail.admin.views.generic.permissions import PermissionCheckedMixin
@@ -18,6 +19,7 @@ from wagtail.snippets.views.snippets import (
     SnippetViewSet,
 )
 
+from ons_alpha.charts.admin.filters import ChartFilterSet
 from ons_alpha.charts.admin.forms import ChartCopyForm, ChartTypeSelectForm
 from ons_alpha.charts.models import Chart
 from ons_alpha.charts.utils import get_chart_type_model_from_name
@@ -229,6 +231,8 @@ class ChartViewSet(SnippetViewSet):
     preview_on_add_view_class = SpecificPreviewOnCreateView
     preview_on_edit_view_class = SpecificPreviewOnEditView
     specific_add_view_class = SpecificAddView
+    filterset_class = ChartFilterSet
+    list_display = ["name", LiveStatusTagColumn(), "chart_type", "first_published_at", "last_published_at"]
 
     @property
     def specific_add_view(self):
