@@ -13,6 +13,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property, classproperty
+from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import (
@@ -31,6 +32,7 @@ from wagtail.models import (
 )
 from wagtail.permission_policies import ModelPermissionPolicy
 from wagtail.rich_text import expand_db_html
+from wagtail.search import index
 
 from ons_alpha.charts.blocks import SimpleTableBlock
 from ons_alpha.charts.constants import (
@@ -50,6 +52,7 @@ class Chart(
     DraftStateMixin,
     RevisionMixin,
     SpecificMixin,
+    index.Indexed,
     ClusterableModel,
 ):
     preview_template = "templates/components/charts/preview.html"
@@ -94,6 +97,24 @@ class Chart(
         default="Source: Office for National Statistics",
     )
 
+    search_fields = [
+        index.AutocompleteField("name"),
+        index.AutocompleteField("title"),
+        index.AutocompleteField("subtitle"),
+        index.AutocompleteField("caption"),
+        index.AutocompleteField("chart_type"),
+        index.SearchField("name", boost=5),
+        index.SearchField("title", boost=1),
+        index.SearchField("subtitle"),
+        index.SearchField("caption"),
+        index.SearchField("chart_type"),
+        index.FilterField("content_type"),
+        index.FilterField("live"),
+        index.FilterField("first_published_at"),
+        index.FilterField("last_published_at"),
+        index.FilterField("latest_revision_created_at"),
+    ]
+
     @classproperty
     def permission_policy(cls):  # pylint: disable=no-self-argument
         return ModelPermissionPolicy(cls)
@@ -125,6 +146,12 @@ class Chart(
         }
         context.update(kwargs)
         return context
+
+    def chart_type(self) -> str:
+        return capfirst(self.specific_class._meta.verbose_name)
+
+    chart_type.short_description = _("Chart type")
+    chart_type.admin_order_field = "content_type__model"
 
     def get_preview_template(self, request, mode_name: str, **kwargs) -> str:  # pylint: disable=unused-argument
         return self.preview_template
