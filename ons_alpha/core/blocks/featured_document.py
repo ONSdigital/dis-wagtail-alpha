@@ -10,11 +10,6 @@ class FeaturedDocumentBlock(blocks.StructBlock):
     content_type_label = blocks.ChoiceBlock(
         label=_("Content type label"), choices=CONTENT_TYPE_LABEL_CHOICES, required=True
     )
-    chart_title = blocks.CharBlock(label=_("Chart title"), required=True)
-    chart_url = blocks.URLBlock(label=_("Chart URL"), required=True)
-    chart_image_url = blocks.URLBlock(
-        label=_("Chart image URL"), required=True, help_text=_("Displayed when JS is disabled")
-    )
     description = blocks.RichTextBlock(label=_("Description"), required=True, features=["ol", "ul"])
 
     class Meta:
@@ -45,12 +40,6 @@ class FeaturedDocumentBlock(blocks.StructBlock):
                 "object": {"text": value["content_type_label"]},
             },
         }
-        if value["chart_url"]:
-            document["chart"] = {
-                "title": value["chart_title"],
-                "embedUrl": value["chart_url"],
-                "imageUrl": value["chart_image_url"],
-            }
         if release_date := getattr(page, "release_date", None):
             document["metadata"]["date"] = {
                 "prefix": "Released",
@@ -66,3 +55,25 @@ class FeaturedDocumentBlock(blocks.StructBlock):
 
     def to_table_of_contents_items(self, value):  # pylint: disable=unused-argument
         return [{"url": "#" + self.slug, "text": self.heading}]
+
+
+class FeaturedDocumentWithChartBlock(FeaturedDocumentBlock):
+    chart_title = blocks.CharBlock(label=_("Chart title"), required=True)
+    chart_url = blocks.URLBlock(label=_("Chart URL"), required=True)
+    chart_image_url = blocks.URLBlock(
+        label=_("Chart image URL"), required=True, help_text=_("Displayed when JS is disabled")
+    )
+
+    class Meta:
+        icon = "list-ul"
+        label = _("Featured document (with chart)")
+        template = "templates/components/streamfield/featured_document_block.html"
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context["documents"][0]["chart"] = {
+            "title": value["chart_title"],
+            "embedUrl": value["chart_url"],
+            "imageUrl": value["chart_image_url"],
+        }
+        return context
