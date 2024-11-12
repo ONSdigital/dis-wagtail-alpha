@@ -35,7 +35,7 @@ class ChartAPIViewSet(ReadOnlyModelViewSet):
     ):
         chart = get_object_or_404(Chart, uuid=uuid).specific
         user = request.user
-        if (chart.is_private or not chart.live) and (
+        if not chart.live and (
             not user.is_authenticated
             or not chart.permission_policy.user_has_any_permission_for_instance(
                 user, ["choose", "add", "change"], chart
@@ -44,15 +44,15 @@ class ChartAPIViewSet(ReadOnlyModelViewSet):
             raise PermissionDenied
 
         if chart.data_source == DataSource.CSV and chart.data_file:
-            with open(chart.data_file, encoding="utf-8") as csvfile:
+            with chart.data_file.open("rb") as csvfile:
                 return FileResponse(csvfile, filename="data.csv")
 
-        if chart.data_source == DataSource.MANUAL and chart.data_manual:
+        if chart.data_source == DataSource.MANUAL and chart.rows:
             csvfile = io.StringIO()
             writer = csv.writer(csvfile)
             writer.writerow(chart.headers)
-            for row in chart.manual_data_table.row_data:
-                writer.writerow(row["values"])
+            for row in chart.rows:
+                writer.writerow(row)
             csvfile.seek(0)
             return FileResponse(csvfile.getvalue(), filename="data.csv", content_type="text/csv")
 
