@@ -1,7 +1,7 @@
 from .button_link import ButtonLinkBlock
 from .document_list import DocumentListBlock
 from .embeddable import DocumentBlock, DocumentsBlock, ImageBlock, ONSChartEmbedBlock, ONSEmbedBlock
-from .featured_document import FeaturedDocumentBlock
+from .featured_document import FeaturedDocumentBlock, FeaturedDocumentWithChartBlock
 from .headline_figures import HeadlineFiguresBlock
 from .markup import HeadingBlock, ONSTableBlock, QuoteBlock, TableBlock, TypedTableBlock
 from .panels import CorrectionBlock, NoticeBlock, PanelBlock
@@ -14,6 +14,7 @@ __all__ = [
     "DocumentBlock",
     "DocumentListBlock",
     "FeaturedDocumentBlock",
+    "FeaturedDocumentWithChartBlock",
     "HeadingBlock",
     "HeadlineFiguresBlock",
     "ImageBlock",
