@@ -70,6 +70,13 @@ class Chart(
         max_length=255,
         help_text=_("The editor-facing name that will appear in the listing and chooser interfaces."),
     )
+    is_template = models.BooleanField(
+        verbose_name=_("This is a 'template' chart"),
+        help_text=_(
+            "Template charts do not appear for selection in page content, but can be copied to create new charts that are."
+        ),
+        default=False,
+    )
     content_type = models.ForeignKey(
         ContentType,
         verbose_name=_("content type"),
@@ -322,6 +329,7 @@ class BaseHighchartsChart(Chart):
 
     general_panels = [
         FieldPanel("name"),
+        FieldPanel("is_template"),
         MultiFieldPanel(
             heading="Descriptive text",
             children=[
