@@ -280,7 +280,6 @@ class BaseHighchartsChart(Chart):
     @cached_property
     def manual_data_rows(self):
         data_json = json.loads(self.data_manual[0].value["table_data"])
-        print(data_json)
         return data_json["data"]
 
     @cached_property
@@ -315,9 +314,7 @@ class BaseHighchartsChart(Chart):
 
         if self.data_source == DataSource.CSV and self.data_file:
             with self.read_csv() as reader:
-                # 'fieldnames' is only available after the first row has been read
-                next(reader)
-                return reader.fieldnames or []
+                return next(reader)
         return []
 
     def get_data_url(self) -> str:
