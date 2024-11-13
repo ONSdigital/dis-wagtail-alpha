@@ -1,5 +1,6 @@
 {% extends "templates/base.html" %}
 {% from "components/panel/_macro.njk" import onsPanel %}
+{% from "components/back-to-top/_macro.njk" import onsBackToTop %}
 
 {% block meta %}
     {{ super() }}
@@ -59,6 +60,7 @@
                     {# This is the main tag in the base template in the design system #}
                     <div class="ons-page__main {{ mainColClasses }}">
                         {% block main %}{% endblock %}
+                        {{ onsBackToTop() }}
                     </div>
                 </div>
             </div>
