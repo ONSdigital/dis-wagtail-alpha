@@ -37,9 +37,7 @@ class DocumentBlockStructValue(blocks.StructValue):
 class DocumentBlock(blocks.StructBlock):
     document = DocumentChooserBlock()
     title = blocks.CharBlock(required=False)
-    description = blocks.RichTextBlock(
-        features=settings.RICH_TEXT_BASIC, required=False
-    )
+    description = blocks.RichTextBlock(features=settings.RICH_TEXT_BASIC, required=False)
 
     class Meta:
         icon = "doc-full-inverse"
@@ -83,9 +81,7 @@ class ONSEmbedBlock(blocks.StructBlock):
         errors = {}
 
         if not value["url"].startswith(ONS_EMBED_PREFIX):
-            errors["url"] = ValidationError(
-                f"The URL must start with {ONS_EMBED_PREFIX}"
-            )
+            errors["url"] = ValidationError(f"The URL must start with {ONS_EMBED_PREFIX}")
 
         if errors:
             raise StructBlockValidationError(errors)
