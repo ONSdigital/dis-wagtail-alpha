@@ -37,7 +37,9 @@ class DocumentBlockStructValue(blocks.StructValue):
 class DocumentBlock(blocks.StructBlock):
     document = DocumentChooserBlock()
     title = blocks.CharBlock(required=False)
-    description = blocks.RichTextBlock(features=settings.RICH_TEXT_BASIC, required=False)
+    description = blocks.RichTextBlock(
+        features=settings.RICH_TEXT_BASIC, required=False
+    )
 
     class Meta:
         icon = "doc-full-inverse"
@@ -63,14 +65,27 @@ ONS_EMBED_PREFIX = "https://www.ons.gov.uk/"
 
 
 class ONSEmbedBlock(blocks.StructBlock):
-    url = blocks.URLBlock(label="URL", help_text=f"Must start with <code>{ ONS_EMBED_PREFIX }</code> to your URL.")
+    url = blocks.URLBlock(
+        label="URL",
+        help_text=f"Must start with <code>{ ONS_EMBED_PREFIX }</code> to your URL.",
+    )
     title = blocks.CharBlock(default="Embedded content")
+    initial_height = blocks.IntegerBlock(
+        label="Initial height (px)",
+        help_text="NOTE: The embed will remain at this height when JS is disabled.",
+        required=True,
+        default=400,
+        min_value=100,
+        max_value=1000,
+    )
 
     def clean(self, value):
         errors = {}
 
         if not value["url"].startswith(ONS_EMBED_PREFIX):
-            errors["url"] = ValidationError(f"The URL must start with {ONS_EMBED_PREFIX}")
+            errors["url"] = ValidationError(
+                f"The URL must start with {ONS_EMBED_PREFIX}"
+            )
 
         if errors:
             raise StructBlockValidationError(errors)

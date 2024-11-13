@@ -60,8 +60,13 @@ class FeaturedDocumentBlock(blocks.StructBlock):
 class FeaturedDocumentWithChartBlock(FeaturedDocumentBlock):
     chart_title = blocks.CharBlock(label=_("Chart title"), required=True)
     chart_url = blocks.URLBlock(label=_("Chart URL"), required=True)
-    chart_image_url = blocks.URLBlock(
-        label=_("Chart image URL"), required=True, help_text=_("Displayed when JS is disabled")
+    chart_initial_height = blocks.IntegerBlock(
+        label="Initial chart height (px)",
+        help_text=("NOTE: The chart embed will remain at this height when JS is disabled."),
+        required=True,
+        default=360,
+        min_value=100,
+        max_value=1000,
     )
 
     class Meta:
