@@ -19,6 +19,10 @@
 
     p {
         margin-bottom: rem-sizing(32);
+
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
 
     // Reduce bottom margin on elements in the corrections block
