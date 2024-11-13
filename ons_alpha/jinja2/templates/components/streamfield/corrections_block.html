@@ -4,7 +4,7 @@
         <time class="corrections__date">{{ value.when|date("DATETIME_FORMAT") }}</time>
     </div>
     <div class="corrections__detail">
-        {{ value.text|richtext }}
+        {{ value.text }}
         <a href="{{ routablepageurl(page, 'previous_version', version_num) }}">{{ _("View superseded version") }}</a>
     </div>
 </div>
