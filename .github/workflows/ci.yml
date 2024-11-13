@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, stable, november-prototype]
+    branches: [main, stable, november-prototype, november-prototype-production]
   pull_request:
-    branches: [main, stable, november-prototype]
+    branches: [main, stable, november-prototype, november-prototype-production]
 
 concurrency:
   group: '${{ github.head_ref || github.ref }}-${{ github.workflow }}'
