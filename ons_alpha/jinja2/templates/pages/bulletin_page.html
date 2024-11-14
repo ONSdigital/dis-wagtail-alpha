@@ -29,44 +29,39 @@
         </div>
 
         {% block release_meta %}
-            <div class="ons-container">
-                <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--40 bulletin-header__releases">
-                    <div class="ons-grid__col ons-col-4@m">
-                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Release date") }}:</span>
-                        <span class="ons-u-nowrap">{{ page.release_date|date("j F Y") }}</span>
-                    </div>
-                    <div class="ons-grid__col ons-col-4@m">
-                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Version") }}:</span>
-                        {% if latest_version_url %}
-                            <span>{{ _("This has been superseded.") }} <a href="{{ latest_version_url }}">{{ _("View corrected version") }}</a></span>
-                        {% else %}
-                            <span class="ons-u-nowrap">{{ _("Latest") }}</span>
-                        {% endif %}
-                    </div>
-                    <div class="ons-grid__col ons-col-4@m">
-                        {% if page.contact_details %}
-                            <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Contact") }}:</span>
-                            <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.name }}</a>
-                        {% endif %}
-                    </div>
+            <div class="ons-container bulletin-header__releases">
+                <div>
+                    <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Release date") }}:</span>
+                    <span class="ons-u-nowrap">{{ page.release_date|date("j F Y") }}</span>
                 </div>
-                <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--40 bulletin-header__releases">
-                    <div class="ons-grid__col ons-col-4@m">
-                        {% if page.next_release_date %}
-                            <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Next release") }}:</span>
-                            <span class="ons-u-nowrap">{{ page.next_release_date|date("j F Y") }}</span>
-                        {% endif %}
+                {% if page.next_release_date %}
+                    <div>
+                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Next release") }}:</span>
+                        <span class="ons-u-nowrap">{{ page.next_release_date|date("j F Y") }}</span>
                     </div>
-                    <div class="ons-grid__col ons-col-4@m">
-                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Releases") }}:</span>
-                        {% if page.is_latest %}
-                            <a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">{{ _("View previous releases") }}</a>
-                        {% else %}
-                            <a href="{{  routablepageurl(page.get_parent().specific, "latest_release") }}">{{ _("View latest release") }}</a>
-                        {% endif %}
-                    </div>
-                    <div class="ons-grid__col ons-col-4@m"></div>
+                {% endif %}
+                <div>
+                    <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Version") }}:</span>
+                    {% if latest_version_url %}
+                        <span>{{ _("This has been superseded.") }} <a href="{{ latest_version_url }}">{{ _("View corrected version") }}</a></span>
+                    {% else %}
+                        <span class="ons-u-nowrap">{{ _("Latest") }}</span>
+                    {% endif %}
                 </div>
+                <div>
+                    <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Releases") }}:</span>
+                    {% if page.is_latest %}
+                        <a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">{{ _("View previous releases") }}</a>
+                    {% else %}
+                        <a href="{{  routablepageurl(page.get_parent().specific, "latest_release") }}">{{ _("View latest release") }}</a>
+                    {% endif %}
+                </div>
+                {% if page.contact_details %}
+                    <div>
+                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Contact") }}:</span>
+                        <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.name }}</a>
+                    </div>
+                {% endif %}
             </div>
         {% endblock %}
     </div>
@@ -85,59 +80,57 @@
 {% endblock %}
 
 {% block main %}
-    <div class="ons-container">
-        <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--32">
-            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m">
-                {# fmt:off #}
-                {{-
-                    onsTableOfContents({
-                        "title": 'Contents',
-                        "ariaLabel": 'Sections in this page',
-                        "itemsList": toc
-                    })
-                }}
-                {# fmt:on #}
-            </div>
+    <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--32">
+        <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m">
+            {# fmt:off #}
+            {{-
+                onsTableOfContents({
+                    "title": 'Contents',
+                    "ariaLabel": 'Sections in this page',
+                    "itemsList": toc
+                })
+            }}
+            {# fmt:on #}
+        </div>
 
-            <div class="ons-grid__col ons-col-8@m">
-                {# if there are no contact details on the page, we don't want the last
-                streamfield block to have a bottom margin. last_flush is used in stream_block.html #}
-                {% if page.contact_details %}
-                    {% set last_flush = False %}
-                {% else %}
-                    {% set last_flush = True %}
-                {% endif %}
+        <div class="ons-grid__col ons-col-8@m">
+            {# if there are no contact details on the page, we don't want the last
+            streamfield block to have a bottom margin. last_flush is used in stream_block.html #}
+            {% if page.contact_details %}
+                {% set last_flush = False %}
+            {% else %}
+                {% set last_flush = True %}
+            {% endif %}
 
-                {% include_block page.body %}
+            {% include_block page.body %}
 
-                {% if page.contact_details %}
-                    <section id="contact-details">
-                        <h2 class="heading-2">{{ _("Contact details") }}</h2>
+            {% if page.contact_details %}
+                <section id="contact-details">
+                    <h2 class="heading-2">{{ _("Contact details") }}</h2>
 
-                        {% set contactDetailsMarkup %}
+                    {% set contactDetailsMarkup %}
+                        <p class="contact-details__line">
+                            <strong>Name</strong>: {{ page.contact_details.name }}
+                        </p>
+                        <p class="contact-details__line">
+                            <strong>Email</strong>: <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.email }}</a>
+                        </p>
+                        {% if page.contact_details.phone %}
                             <p class="contact-details__line">
-                                <strong>Name</strong>: {{ page.contact_details.name }}
-                            </p>
-                            <p class="contact-details__line">
-                                <strong>Email</strong>: <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.email }}</a>
-                            </p>
-                            {% if page.contact_details.phone %}
-                                <p class="contact-details__line">
-                                    <strong>Telephone</strong>: <a href="tel:{{ page.contact_details.phone | replace(' ','')}}">{{ page.contact_details.phone }}</a>
+                                <strong>Telephone</strong>: <a href="tel:{{ page.contact_details.phone | replace(' ','')}}">{{ page.contact_details.phone }}</a>
 
-                                </p>
-                            {% endif %}
-                        {% endset %}
-                        {# fmt:off #}
-                        {{-
-                            onsTextIndent({
-                                "text": contactDetailsMarkup
-                            })
-                        -}}
-                        {# fmt:on #}
-                    </section>
-                {% endif %}
-            </div>
+                            </p>
+                        {% endif %}
+                    {% endset %}
+                    {# fmt:off #}
+                    {{-
+                        onsTextIndent({
+                            "text": contactDetailsMarkup
+                        })
+                    -}}
+                    {# fmt:on #}
+                </section>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

@@ -82,8 +82,15 @@
     }
 
     &__releases {
+        display: grid;
+        column-gap: rem-sizing(40);
         row-gap: rem-sizing(8);
-        margin-bottom: rem-sizing(8);
+
+        @include media-query('l') {
+            grid-template-rows: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-auto-flow: column;
+        }
     }
 
     &__releases-label {

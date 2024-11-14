@@ -17,6 +17,7 @@
 @use 'components/topic-header';
 
 // ONS design system overrides
+@use 'components/design_system_overrides/back-to-top';
 @use 'components/design_system_overrides/breadcrumbs';
 @use 'components/design_system_overrides/button';
 @use 'components/design_system_overrides/container';
