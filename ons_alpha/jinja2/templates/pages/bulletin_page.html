@@ -29,44 +29,39 @@
         </div>
 
         {% block release_meta %}
-            <div class="ons-container">
-                <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--40 bulletin-header__releases">
-                    <div class="ons-grid__col ons-col-4@m">
-                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Release date") }}:</span>
-                        <span class="ons-u-nowrap">{{ page.release_date|date("j F Y") }}</span>
-                    </div>
-                    <div class="ons-grid__col ons-col-4@m">
-                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Version") }}:</span>
-                        {% if latest_version_url %}
-                            <span>{{ _("This has been superseded.") }} <a href="{{ latest_version_url }}">{{ _("View corrected version") }}</a></span>
-                        {% else %}
-                            <span class="ons-u-nowrap">{{ _("Latest") }}</span>
-                        {% endif %}
-                    </div>
-                    <div class="ons-grid__col ons-col-4@m">
-                        {% if page.contact_details %}
-                            <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Contact") }}:</span>
-                            <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.name }}</a>
-                        {% endif %}
-                    </div>
+            <div class="ons-container bulletin-header__releases">
+                <div>
+                    <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Release date") }}:</span>
+                    <span class="ons-u-nowrap">{{ page.release_date|date("j F Y") }}</span>
                 </div>
-                <div class="ons-grid ons-grid-flex-gap ons-grid-flex-gap--40 bulletin-header__releases">
-                    <div class="ons-grid__col ons-col-4@m">
-                        {% if page.next_release_date %}
-                            <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Next release") }}:</span>
-                            <span class="ons-u-nowrap">{{ page.next_release_date|date("j F Y") }}</span>
-                        {% endif %}
+                {% if page.next_release_date %}
+                    <div>
+                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Next release") }}:</span>
+                        <span class="ons-u-nowrap">{{ page.next_release_date|date("j F Y") }}</span>
                     </div>
-                    <div class="ons-grid__col ons-col-4@m">
-                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Releases") }}:</span>
-                        {% if page.is_latest %}
-                            <a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">{{ _("View previous releases") }}</a>
-                        {% else %}
-                            <a href="{{  routablepageurl(page.get_parent().specific, "latest_release") }}">{{ _("View latest release") }}</a>
-                        {% endif %}
-                    </div>
-                    <div class="ons-grid__col ons-col-4@m"></div>
+                {% endif %}
+                <div>
+                    <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Version") }}:</span>
+                    {% if latest_version_url %}
+                        <span>{{ _("This has been superseded.") }} <a href="{{ latest_version_url }}">{{ _("View corrected version") }}</a></span>
+                    {% else %}
+                        <span class="ons-u-nowrap">{{ _("Latest") }}</span>
+                    {% endif %}
                 </div>
+                <div>
+                    <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Releases") }}:</span>
+                    {% if page.is_latest %}
+                        <a href="{{ routablepageurl(page.get_parent().specific, "previous_releases") }}">{{ _("View previous releases") }}</a>
+                    {% else %}
+                        <a href="{{  routablepageurl(page.get_parent().specific, "latest_release") }}">{{ _("View latest release") }}</a>
+                    {% endif %}
+                </div>
+                {% if page.contact_details %}
+                    <div>
+                        <span class="ons-u-fs-r--b bulletin-header__releases-label">{{ _("Contact") }}:</span>
+                        <a href="mailto:{{ page.contact_details.email }}">{{ page.contact_details.name }}</a>
+                    </div>
+                {% endif %}
             </div>
         {% endblock %}
     </div>
