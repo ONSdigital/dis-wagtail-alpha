@@ -77,6 +77,6 @@ class FeaturedDocumentWithChartBlock(FeaturedDocumentBlock):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         page = value["page"].specific
-        context["link_title"] = page.title
+        context["link_title"] = page.headline or page.title
         context["link_url"] = page.get_url(parent_context.get("request") if parent_context else None)
         return context
