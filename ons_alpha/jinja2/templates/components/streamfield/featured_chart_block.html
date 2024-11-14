@@ -1,0 +1,40 @@
+{#
+This is the template for the FeaturedDocumentWithChart block.
+The appearance is similar to the featured document in the document list block, but although the back-end block code inherits from FeaturedDocumentList, the front-end here is different enough to create its own markup and avoid customising the document-list macro.
+ #}
+
+<section id="{{ slug }}" class="featured-chart">
+    <h2 class="heading-2">{{ heading }}</h2>
+
+    <div class="featured-chart__item">
+        <h3 class="ons-u-fs-m ons-u-mt-no ons-u-mb-2xs">
+            <a href="{{ link_url }}">
+                {{ link_title }}
+            </a>
+        </h3>
+        <ul class="featured-chart__metadata">
+            <li class="featured-chart__item-attribute ons-u-fs-s">
+                <span class="ons-u-fw-b">Released:</span>
+                <time datetime="2024-10-18">{{ value.chart_release_date }}</time>
+            </li>
+            <li class="featured-chart__item-attribute ons-u-fs-s">
+                <span class="ons-u-fw-b">{{ value.content_type_label }}</span>
+            </li>
+        </ul>
+
+        <div data-chart-iframe
+             id="featured-chart-id"
+             data-url="{{ value.chart_url }}"
+             class="featured-chart__embed-container">
+            <iframe src="{{ value.chart_url }}"
+                    title="{{ value.title }}"
+                    width="100%"
+                    height="{{ value.chart_initial_height }}">
+            </iframe>
+        </div>
+
+        <div class="featured-chart__item-description">
+            {{ value.description }}
+        </div>
+    </div>
+</section>

@@ -58,8 +58,8 @@ class FeaturedDocumentBlock(blocks.StructBlock):
 
 
 class FeaturedDocumentWithChartBlock(FeaturedDocumentBlock):
-    chart_title = blocks.CharBlock(label=_("Chart title"), required=True)
     chart_url = blocks.URLBlock(label=_("Chart URL"), required=True)
+    chart_release_date = blocks.DateBlock(label=_("Release date"), required=True)
     chart_initial_height = blocks.IntegerBlock(
         label="Initial chart height (px)",
         help_text=("NOTE: The chart embed will remain at this height when JS is disabled."),
@@ -70,15 +70,13 @@ class FeaturedDocumentWithChartBlock(FeaturedDocumentBlock):
     )
 
     class Meta:
-        icon = "list-ul"
+        icon = "code"
         label = _("Featured document (with chart)")
-        template = "templates/components/streamfield/featured_document_block.html"
+        template = "templates/components/streamfield/featured_chart_block.html"
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-        context["documents"][0]["chart"] = {
-            "title": value["chart_title"],
-            "embedUrl": value["chart_url"],
-            "imageUrl": value["chart_image_url"],
-        }
+        page = value["page"].specific
+        context["link_title"] = page.title
+        context["link_url"] = page.get_url(parent_context.get("request") if parent_context else None)
         return context
