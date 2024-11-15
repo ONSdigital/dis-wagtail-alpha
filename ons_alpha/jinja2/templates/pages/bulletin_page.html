@@ -5,7 +5,7 @@
 {% from "components/text-indent/_macro.njk" import onsTextIndent %}
 
 {% block header_area %}
-    <div class="bulletin-header">
+    <div class="bulletin-header {% if page.updates %}bulletin-header--flush{% endif %}">
         <div class="ons-container">
             {% include "templates/components/navigation/breadcrumbs.html" %}
             <p class="bulletin-header__doc-type">{{ page.document_type|default("Analysis") }}</p>
