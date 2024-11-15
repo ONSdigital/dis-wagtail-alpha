@@ -112,8 +112,12 @@ class BulletinPage(BundledPageMixin, RoutablePageMixin, BasePage):
     ]
 
     @property
+    def display_title(self):
+        return f"{self.get_parent().title}: {self.title}"
+
+    @property
     def full_title(self):
-        return self.headline.strip() or f"{self.get_parent().title}: {self.title}"
+        return self.headline.strip() or self.display_title
 
     @property
     def is_latest(self):

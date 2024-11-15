@@ -4,7 +4,7 @@
     <h1>Previous Releases</h1>
     <ul>
         {% for page in pages %}
-            <li><a href="{{ pageurl(page) }}">{{ page.title }}</a> - {{ page.release_date }}</li>
+            <li><a href="{{ pageurl(page) }}">{{ page.display_title | default(page.title) }}</a> - {{ page.release_date }}</li>
         {% else %}
             <p>{{ _("There are currently no releases") }}</p>
         {% endfor %}
