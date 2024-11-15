@@ -11,6 +11,10 @@
         margin-bottom: rem-sizing(40);
     }
 
+    &--flush {
+        margin-bottom: 0;
+    }
+
     &::before {
         position: absolute;
         inset: 0;
