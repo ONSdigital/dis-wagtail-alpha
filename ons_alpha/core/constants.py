@@ -3,5 +3,6 @@ CONTENT_TYPE_LABEL_CHOICES = (
     ("Article", "Article"),
     ("Dataset", "Dataset"),
     ("Methodology", "Methodology"),
+    ("Statistical article", "Statistical Article"),
     ("Time series", "Time series"),
 )
