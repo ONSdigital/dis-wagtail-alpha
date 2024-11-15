@@ -121,3 +121,8 @@
         </div>
     {% endif %}
 {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ static('js/third-party/pym.min.js') }}"></script>
+{% endblock %}

@@ -63,8 +63,19 @@ ONS_EMBED_PREFIX = "https://www.ons.gov.uk/"
 
 
 class ONSEmbedBlock(blocks.StructBlock):
-    url = blocks.URLBlock(label="URL", help_text=f"Must start with <code>{ ONS_EMBED_PREFIX }</code> to your URL.")
+    url = blocks.URLBlock(
+        label="URL",
+        help_text=f"Must start with <code>{ ONS_EMBED_PREFIX }</code> to your URL.",
+    )
     title = blocks.CharBlock(default="Embedded content")
+    initial_height = blocks.IntegerBlock(
+        label="Initial height (px)",
+        help_text="NOTE: The embed will remain at this height when JS is disabled.",
+        required=True,
+        default=400,
+        min_value=100,
+        max_value=1000,
+    )
 
     def clean(self, value):
         errors = {}
