@@ -29,9 +29,10 @@ class FeaturedDocumentBlock(blocks.StructBlock):
 
         # Prepare 'document' object for the context
         page = value["page"].specific
+        display_title = getattr(page, "headline", None) or getattr(page, "display_title", None) or page.title
         document = {
             "title": {
-                "text": page.title,
+                "text": display_title,
                 "url": page.get_url(parent_context.get("request") if parent_context else None),
             },
             "featured": True,
@@ -83,12 +84,5 @@ class FeaturedDocumentWithChartBlock(FeaturedDocumentBlock):
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-        page = value["page"].specific
-        context["link_title"] = page.headline or page.display_title
-        context["link_url"] = page.get_url(parent_context.get("request") if parent_context else None)
-        if release_date := getattr(page, "release_date", None):
-            context["release_date"] = {
-                "iso": release_date.isoformat(),
-                "short": release_date.strftime("%-d %B %Y"),
-            }
+        context["document"] = context["documents"][0]
         return context
