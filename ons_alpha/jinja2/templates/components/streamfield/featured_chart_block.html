@@ -7,7 +7,7 @@ The appearance is similar to the featured document in the document list block, b
     <h2 class="heading-2">{{ heading }}</h2>
 
     <div class="featured-chart__item">
-        <h3 class="ons-u-fs-m ons-u-mt-no ons-u-mb-m">
+        <h3 class="ons-u-fs-m ons-u-mt-no ons-u-mb-2xs">
             <a href="{{ document.title.url }}">
                 {{ document.title.text }}
             </a>
@@ -23,7 +23,6 @@ The appearance is similar to the featured document in the document list block, b
                 <span class="ons-u-fw-b">{{ document.metadata.object.text }}</span>
             </li>
         </ul>
-
         <h4 class="heading-4">{{ value.chart_title }}</h4>
         <div data-chart-iframe
              id="featured-chart-id"
