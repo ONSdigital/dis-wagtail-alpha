@@ -65,54 +65,38 @@
         align-items: center;
     }
 
-    // We have to use an 'after' element and a background image for the hide / show detail
-    // in order to get these to change with the [open] option on the details element
-    &__summary-contents::after {
-        // hide the content from screen readers if supported
-        content: 'show detail' / '';
-        background-image: url('../images/cssBackgrounds/chevron-down.svg');
-        background-repeat: no-repeat;
-        background-position: right center;
-        background-size: 16px;
+    &__summary-reveal,
+    &__summary-hide {
+        display: block;
         padding-right: 20px;
         text-decoration: underline;
         justify-self: flex-end;
         margin-left: auto;
         padding-left: rem-sizing(8);
 
-        #{$root}[open] & {
-            // hide the content from screen readers if supported
-            content: 'hide detail' / '';
-            background-image: url('../images/cssBackgrounds/chevron-up.svg');
-        }
-
         #{$root}__summary:hover &,
         #{$root}__summary:focus & {
             text-decoration-thickness: 2px;
         }
+    }
 
-        #{$root}__summary:focus & {
-            background-image: url('../images/cssBackgrounds/chevron-down-focus.svg');
-
-            // background image not reliable in high contrast mode
-            @media (forced-colors: active) {
-                background-image: none;
-            }
-
-            #{$root}[open] & {
-                background-image: url('../images/cssBackgrounds/chevron-up-focus.svg');
-
-                // background image not reliable in high contrast mode
-                @media (forced-colors: active) {
-                    background-image: none;
-                }
-            }
+    &__summary-reveal {
+        #{$root}[open] & {
+            display: none;
         }
+    }
 
-        // background image not reliable in high contrast mode
-        @media (forced-colors: active) {
-            background-image: none;
+    &__summary-hide {
+        display: none;
+
+        #{$root}[open] & {
+            display: block;
         }
+    }
+
+    &__summary-icon {
+        width: 16px;
+        height: 16px;
     }
 
     &__summary-details {
