@@ -16,6 +16,7 @@ from ons_alpha.bulletins.models import BulletinPage, BulletinSeriesPage
 from ons_alpha.core.blocks import (
     DocumentListBlock,
     FeaturedDocumentBlock,
+    FeaturedDocumentWithChartBlock,
     HeadlineFiguresBlock,
 )
 from ons_alpha.core.models.base import BasePage
@@ -81,6 +82,7 @@ class TopicPage(BaseTopicPage):
     body = StreamField(
         [
             ("featured_document", FeaturedDocumentBlock()),
+            ("featured_document_with_chart", FeaturedDocumentWithChartBlock()),
             ("document_list", DocumentListBlock()),
         ],
         blank=True,
