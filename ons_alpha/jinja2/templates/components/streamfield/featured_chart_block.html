@@ -8,23 +8,23 @@ The appearance is similar to the featured document in the document list block, b
 
     <div class="featured-chart__item">
         <h3 class="ons-u-fs-m ons-u-mt-no ons-u-mb-m">
-            <a href="{{ link_url }}">
-                {{ link_title }}
+            <a href="{{ document.title.url }}">
+                {{ document.title.text }}
             </a>
         </h3>
-        <h4 class="heading-4">{{ value.chart_title }}</h4>
         <ul class="featured-chart__metadata">
+            {% if document.metadata.date %}
+                <li class="featured-chart__item-attribute ons-u-fs-s">
+                    <span class="ons-u-fw-b">{{ document.metadata.date.prefix }}:</span>
+                    <time datetime="{{ document.metadata.date.iso }}">{{ document.metadata.date.short }}</time>
+                </li>
+            {% endif %}
             <li class="featured-chart__item-attribute ons-u-fs-s">
-                <span class="ons-u-fw-b">Released:</span>
-                {%- if release_date -%}
-                    <time datetime="{{ release_date.iso }}">{{ release_date.short }}</time>
-                {%- endif -%}
-            </li>
-            <li class="featured-chart__item-attribute ons-u-fs-s">
-                <span class="ons-u-fw-b">{{ value.content_type_label }}</span>
+                <span class="ons-u-fw-b">{{ document.metadata.object.text }}</span>
             </li>
         </ul>
 
+        <h4 class="heading-4">{{ value.chart_title }}</h4>
         <div data-chart-iframe
              id="featured-chart-id"
              data-url="{{ value.chart_url }}"
@@ -38,7 +38,7 @@ The appearance is similar to the featured document in the document list block, b
         </div>
 
         <div class="featured-chart__item-description">
-            {{ value.description }}
+            {{ document.description }}
         </div>
     </div>
 </section>
