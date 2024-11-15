@@ -29,9 +29,10 @@ class FeaturedDocumentBlock(blocks.StructBlock):
 
         # Prepare 'document' object for the context
         page = value["page"].specific
+        display_title = getattr(page, "headline", None) or getattr(page, "display_title", None) or page.title
         document = {
             "title": {
-                "text": page.title,
+                "text": display_title,
                 "url": page.get_url(parent_context.get("request") if parent_context else None),
             },
             "featured": True,
