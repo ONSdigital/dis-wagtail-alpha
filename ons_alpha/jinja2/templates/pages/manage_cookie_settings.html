@@ -45,7 +45,7 @@
         </p>
         <ul>
             <li>how you got to the site</li>
-            <li>the pages you visit on ons.gov.uk and how long you spend on each page</li>
+            <li>the pages you visit on {{ service_domain}} and how long you spend on each page</li>
             <li>what you click on while you're visiting the site</li>
         </ul>
         {# fmt:off #}
@@ -80,7 +80,7 @@
                                     "value": "<code>_ga</code>"
                                 },
                                 {
-                                    "value": 'This helps us count how many people visit ons.gov.uk by tracking if you’ve visited before'
+                                    "value": 'This helps us count how many people visit ' + service_domain + ' by tracking if you’ve visited before'
                                 },
                                 {
                                     "value": "2 years"
@@ -328,7 +328,7 @@
             }}
             <h5 class="ons-u-fs-r--b">Cookie message</h5>
             <p>
-                You may see a banner when you visit ons.gov.uk inviting you to accept cookies or review your settings. We’ll set
+                You may see a banner when you visit {{ service_domain }} inviting you to accept cookies or review your settings. We’ll set
                 cookies so that your computer knows you’ve seen it and not to show it again, and also to store your settings.
             </p>
             {{
