@@ -34,9 +34,11 @@ class ManageCookieSettingsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        title = "Cookies on " + (settings.ONS_COOKIE_BANNER_SERVICE_NAME or self.request.get_host())
+        service_domain = self.request.get_host()
+        title = "Cookies on " + (settings.ONS_COOKIE_BANNER_SERVICE_NAME or service_domain)
         # NOTE: Templates wrongly assume that everything being rendered is
         # a Wagtail page, hence the need to add a fake page object to the context
         # This should be addressed properly in BETA!
         context["page"] = InformationPage(id=0, title=title)
+        context["service_domain"] = service_domain
         return context
