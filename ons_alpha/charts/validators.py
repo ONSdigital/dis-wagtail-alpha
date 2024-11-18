@@ -9,9 +9,10 @@ BLANK_VALUES = ("", "NULL", "-", "---")
 
 def csv_file_validator(file):
     # check file valid csv format
-    try:
-        csv.Sniffer().sniff(file.read(1024).decode("utf-8"))
-        file.seek(0)
-    except csv.Error as e:
-        raise ValidationError(_("The file is not a valid CSV.")) from e
+    with file.open("rb") as csvfile:
+        try:
+            csv.Sniffer().sniff(csvfile.read(1024).decode("utf-8"))
+            file.seek(0)
+        except csv.Error as e:
+            raise ValidationError(_("The file is not a valid CSV.")) from e
     return True
