@@ -43,7 +43,6 @@ from ons_alpha.charts.constants import (
     HighchartsTheme,
     LegendPosition,
 )
-from ons_alpha.charts.validators import csv_file_validator
 from ons_alpha.utils.fields import NonStrippingCharField
 
 
@@ -223,7 +222,6 @@ class BaseHighchartsChart(Chart):
         upload_to="charts",
         max_length=500,
         blank=True,
-        validators=[csv_file_validator],
     )
     data_headers = models.JSONField(verbose_name=_("headers"), blank=True, default=list)
     data_manual = StreamField(
@@ -251,11 +249,9 @@ class BaseHighchartsChart(Chart):
             raise ValidationError({"data_file": _("This field is required")})
         if self.data_source == DataSource.MANUAL and not self.manual_data_rows:
             raise ValidationError({"data_manual": _("This field is required")})
-        self.data_headers = self.get_headers()
 
     def save(self, *args, **kwargs):
-        if not self.data_headers:
-            self.data_headers = self.get_headers()
+        self.data_headers = self.get_headers()
         super().save(*args, **kwargs)
 
     def get_context(self, request, **kwargs) -> dict[str, Any]:
@@ -282,8 +278,8 @@ class BaseHighchartsChart(Chart):
 
     @contextmanager
     def read_csv(self):
+        csvfile = self.data_file.file.open("rb")
         try:
-            csvfile = self.data_file.open("rb")
             textwrapper = io.TextIOWrapper(csvfile, encoding="utf-8", newline="")
             textwrapper.seek(0)
             reader = csv.reader(textwrapper)
