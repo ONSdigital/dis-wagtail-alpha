@@ -44,8 +44,8 @@ class ChartAPIViewSet(ReadOnlyModelViewSet):
             raise PermissionDenied
 
         if chart.data_source == DataSource.CSV and chart.data_file:
-            with chart.data_file.open("rb") as csvfile:
-                return FileResponse(csvfile, filename="data.csv")
+            csvfile = chart.data_file.open("rb")
+            return FileResponse(csvfile, filename="data.csv")
 
         if chart.data_source == DataSource.MANUAL and chart.rows:
             csvfile = io.StringIO()
