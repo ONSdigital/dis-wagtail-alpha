@@ -3,6 +3,7 @@ from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmath.blocks import MathBlock
 
+from ons_alpha.charts.blocks import ChartEmbedBlock
 from ons_alpha.core.blocks import (
     ButtonLinkBlock,
     CorrectionBlock,
@@ -42,6 +43,7 @@ class CoreStoryBlock(StreamBlock):
     ons_table = ONSTableBlock(group="DataVis")
     ons_chart_embed = ONSChartEmbedBlock(group="DataVis", label="ONS Chart Embed")
     ons_embed = ONSEmbedBlock(group="DataVis", label="ONS General Embed")
+    chart = ChartEmbedBlock(group="DataVis", label="Chart")
     equation = MathBlock(icon="decimal", group="DataVis")
     table = OldTableBlock(
         group="DataVis",

@@ -1,6 +1,13 @@
 import json
 
+from django.db.models import CharField
 from wagtail.fields import StreamField as WagtailStreamfield
+
+
+class NonStrippingCharField(CharField):
+    def formfield(self, **kwargs):
+        kwargs["strip"] = False
+        return super().formfield(**kwargs)
 
 
 class StreamField(WagtailStreamfield):

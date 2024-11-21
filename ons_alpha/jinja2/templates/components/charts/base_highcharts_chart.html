@@ -1,0 +1,13 @@
+
+<figure class="highcharts-figure" id="chart-figure--{{ chart.uuid }}">
+    <div id="container--{{ chart.uuid }}"></div>
+</figure>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let config = {{ highcharts_config|tojson }};
+        {% if data_url %}
+            config["data"] = {"csvURL": "{{ data_url }}"}
+        {% endif %}
+        Highcharts.chart('container--{{ chart.uuid }}', config);
+    });
+</script>

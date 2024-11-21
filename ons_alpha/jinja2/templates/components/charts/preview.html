@@ -1,0 +1,11 @@
+{% extends "templates/base_iframe.html" %}
+
+{% set pageTitle = "Chart preview: " + chart.title %}
+
+{% block body %}
+    <div class="ons-page">
+        <div class="ons-page__content">
+            {% include chart.template %}
+        </div>
+    </div>
+{% endblock %}

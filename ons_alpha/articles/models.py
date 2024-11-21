@@ -19,6 +19,7 @@ from wagtail.models import Page
 from wagtail.search import index
 
 from ons_alpha.bundles.models import BundledPageMixin
+from ons_alpha.charts.utils import streamvalue_includes_highcharts_chart
 from ons_alpha.core.blocks.stream_blocks import (
     CoreStoryBlock,
     CorrectionsNoticesStoryBlock,
@@ -140,6 +141,7 @@ class ArticlePage(BundledPageMixin, RoutablePageMixin, BasePage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["toc"] = self.toc
+        context["load_highcharts_js"] = streamvalue_includes_highcharts_chart(self.body)
         return context
 
     @path("previous/v<int:version>/")

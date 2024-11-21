@@ -5,15 +5,21 @@ from django.urls import include, path, re_path
 from django.views.decorators.cache import never_cache
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import TemplateView
+from rest_framework import routers
 from wagtail import urls as wagtail_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.utils.urlpatterns import decorate_urlpatterns
 
+from ons_alpha.charts.api import ChartAPIViewSet
 from ons_alpha.images.views import ImageServeView
 from ons_alpha.search import views as search_views
 from ons_alpha.utils.cache import get_default_cache_control_decorator
 from ons_alpha.utils.views import ManageCookieSettingsView
+
+
+router = routers.DefaultRouter()
+router.register(r"charts", ChartAPIViewSet)
 
 
 # Private URLs are not meant to be cached.
@@ -76,6 +82,7 @@ if settings.DEBUG:
 urlpatterns = [
     path("sitemap.xml", sitemap),
     re_path(r"^images/([^/]*)/(\d*)/([^/]*)/[^/]*$", ImageServeView.as_view(), name="wagtailimages_serve"),
+    path("charts/", include(router.urls)),
 ]
 # Set public URLs to use the "default" cache settings.
 urlpatterns = decorate_urlpatterns(urlpatterns, get_default_cache_control_decorator())

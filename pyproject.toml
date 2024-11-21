@@ -31,7 +31,7 @@ apscheduler = "^3.10.4"
 slack-sdk = "^3.31.0"
 queryish = "^0.2"
 django-enforce-host = "^1.1.0"
-wagtailcharts = "^0.6.3"
+wagtailtables = "^0.2.2"
 
 [tool.poetry.group.dev.dependencies]
 Werkzeug = "~3.0.3"

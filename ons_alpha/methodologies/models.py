@@ -11,6 +11,7 @@ from wagtail.admin.panels import (
 from wagtail.search import index
 
 from ons_alpha.bundles.models import BundledPageMixin
+from ons_alpha.charts.utils import streamvalue_includes_highcharts_chart
 from ons_alpha.core.blocks.stream_blocks import CoreStoryBlock
 from ons_alpha.core.models.base import BasePage
 from ons_alpha.taxonomy.forms import PageWithTopicsAdminForm
@@ -102,4 +103,5 @@ class MethodologyPage(BundledPageMixin, BasePage):
         context = super().get_context(request, *args, **kwargs)
         context["toc"] = self.toc
         context["has_background_info"] = self.has_background_info
+        context["load_highcharts_js"] = streamvalue_includes_highcharts_chart(self.body)
         return context
