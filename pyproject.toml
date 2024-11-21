@@ -65,6 +65,7 @@ exclude = '''
       | venv
       | \.venv
       | \.git
+      | node_modules
     )/
 '''
 
