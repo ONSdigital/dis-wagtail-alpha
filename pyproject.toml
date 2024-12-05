@@ -32,7 +32,7 @@ slack-sdk = "^3.31.0"
 queryish = "^0.2"
 
 [tool.poetry.group.dev.dependencies]
-Werkzeug = "~3.0.3"
+Werkzeug = "~3.0.6"
 coverage = "^7.5.4"
 detect-secrets = "~1.4.0"
 django-debug-toolbar = "^4.4.2"
