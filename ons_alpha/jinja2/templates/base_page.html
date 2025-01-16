@@ -1,6 +1,7 @@
 {% extends "templates/base.html" %}
 {% from "components/panel/_macro.njk" import onsPanel %}
 {% from "components/back-to-top/_macro.njk" import onsBackToTop %}
+{% from "components/external-link/_macro.njk" import onsExternalLink %}
 
 {% block meta %}
     {{ super() }}
@@ -34,23 +35,30 @@
 
 {% set languages=translation_urls() %}
 
-{#{% block header %}#}
-{#    {% secondary_nav %}#}
-{#    {% primary_nav %}#}
-{#{% endblock header %}#}
-
+{# fmt:off #}
 {% block pageContent %}
     {# Adds a full-width section for the header area before the main page content #}
     {# Changes the location of the <main> tag from the base template - ensures it surrounds the header area #}
     <main id="main-content">
         {# This will contain the breadcrumbs on individual templates #}
         {% block header_area %}
+            {% set feedbackLinkBanner %}
+                {{
+                    onsExternalLink({
+                        "url": PHASE_BANNER_FEEDBACK_URL,
+                        "text": "your feedback to help us improve it"
+                    })
+                }}
+            {% endset %}
+            {% set bannerHTML %}
+                <p>This page is part of a limited preview of the ONS website and we welcome {{ feedbackLinkBanner }}. Most links have been removed for this preview.</p>
+            {% endset %}
             <div class="ons-container">
                 {{
-                onsPanel({
-                "body": '<p>This page is part of a limited preview of the ONS website. We have intentionally made most links inactive for this preview.</p>',
-                "classes": 'panel'
-                })
+                    onsPanel({
+                        "body": bannerHTML,
+                        "classes": 'panel'
+                    })
                 }}
             </div>
         {% endblock %}
@@ -67,3 +75,4 @@
         </div>
     </main>
 {% endblock %}
+{# fmt:on #}
