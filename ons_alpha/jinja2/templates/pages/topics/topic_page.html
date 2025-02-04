@@ -52,7 +52,12 @@
 
             <div class="ons-grid__col ons-col-8@m">
                 {% if page.body %}
-                    {% include_block page.body %}
+                    {# On the topic page, all the available blocks are wrapped in section tags
+                    with heading 2s included - so we bypass stream_block.html and output them directly, so the
+                    table of contents gets the correct markup #}
+                    {% for block in page.body %}
+                        {% include_block block %}
+                    {% endfor %}
                 {% else %}
                     {% if page.sections %}
                         {# fmt:off #}
