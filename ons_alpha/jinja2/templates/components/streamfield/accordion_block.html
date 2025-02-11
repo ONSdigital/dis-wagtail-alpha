@@ -1,0 +1,12 @@
+{% from "components/accordion/_macro.njk" import onsAccordion %}
+
+{{
+    onsAccordion({
+        "id": "accordion-example",
+        "allButton": {
+            "open": "Show all",
+            "close": "Hide all"
+        },
+        "itemsList": accordions
+    })
+}}
