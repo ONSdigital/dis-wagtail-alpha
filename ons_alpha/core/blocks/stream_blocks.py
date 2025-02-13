@@ -9,7 +9,6 @@ from ons_alpha.core.blocks import (
     CorrectionBlock,
     DocumentListBlock,
     DocumentsBlock,
-    ExploreMoreBlock,
     HeadingBlock,
     NoticeBlock,
     ONSChartEmbedBlock,
@@ -52,7 +51,6 @@ class CoreStoryBlock(StreamBlock):
         "Use the 'ONS Table' block for the full ONS needs.",
     )
     document_list = DocumentListBlock()
-    explore_more = ExploreMoreBlock()
 
     class Meta:
         block_counts = {"related_links": {"max_num": 1}}
