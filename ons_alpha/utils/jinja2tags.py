@@ -31,6 +31,7 @@ class UtilsExtension(Extension):  # pylint: disable=abstract-method
             {
                 "social_text": social_text,
                 "social_image": social_image,
+                "setAttributes": set_attributes_filter,
             }
         )
 
@@ -62,3 +63,17 @@ def get_translation_urls(context) -> list[dict[str, str | bool]]:
         )
 
     return urls
+
+
+def set_attributes_filter(attributes: dict, new_attributes: dict) -> dict:
+    """
+    Update attributes dictionary with new_attributes.
+
+    This is a Python reimplementation of the Nunjucks setAttributes filter.
+    See
+    https://github.com/ONSdigital/design-system/blob/d4d4e171690141678af022379273f1e408f5a4e3/lib/filters/set-attributes.js#L1-L9
+
+    Usage in template: {{ attributes|setAttributes(new_attributes) }}
+    """
+    attributes.update(new_attributes)
+    return attributes
