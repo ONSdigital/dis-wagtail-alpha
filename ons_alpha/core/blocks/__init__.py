@@ -2,6 +2,7 @@ from .accordion import AccordionBlock
 from .button_link import ButtonLinkBlock
 from .document_list import DocumentListBlock
 from .embeddable import DocumentBlock, DocumentsBlock, ImageBlock, ONSChartEmbedBlock, ONSEmbedBlock
+from .explore_more import ExploreMoreBlock
 from .featured_document import FeaturedDocumentBlock, FeaturedDocumentWithChartBlock
 from .headline_figures import HeadlineFiguresBlock
 from .markup import HeadingBlock, ONSTableBlock, QuoteBlock, TableBlock, TypedTableBlock
@@ -15,6 +16,7 @@ __all__ = [
     "CorrectionBlock",
     "DocumentBlock",
     "DocumentListBlock",
+    "ExploreMoreBlock",
     "FeaturedDocumentBlock",
     "FeaturedDocumentWithChartBlock",
     "HeadingBlock",

@@ -1,4 +1,17 @@
-{# Note: this is a list of links not documents - but it uses the design system document list component for styling #}
+{#
+Note: this is a list of links not documents - but it uses the design system
+document list component for styling.
+
+This is used for both the Document List and Explore More StreamField blocks. The
+difference is only in the way the data is passed to the template
+
+- Document List uses the Search Results variant:
+  https://service-manual.ons.gov.uk/design-system/components/document-list#search-results.
+  It includes metadata.
+- Explore More uses the News Articles variant:
+  https://service-manual.ons.gov.uk/design-system/components/document-list#news-articles.
+  It includes thumbnails, and no metadata.
+#}
 {% from "component_overrides/document-list/_macro.njk" import onsDocumentListNew %}
 
 <section id="{{ slug }}" class="document-list-block">
