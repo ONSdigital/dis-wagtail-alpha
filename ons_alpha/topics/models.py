@@ -15,6 +15,7 @@ from ons_alpha.articles.models import ArticlePage, ArticleSeriesPage
 from ons_alpha.bulletins.models import BulletinPage, BulletinSeriesPage
 from ons_alpha.core.blocks import (
     DocumentListBlock,
+    ExploreMoreBlock,
     FeaturedDocumentBlock,
     FeaturedDocumentWithChartBlock,
     HeadlineFiguresBlock,
@@ -84,6 +85,7 @@ class TopicPage(BaseTopicPage):
             ("featured_document", FeaturedDocumentBlock()),
             ("featured_document_with_chart", FeaturedDocumentWithChartBlock()),
             ("document_list", DocumentListBlock()),
+            ("explore_more", ExploreMoreBlock()),
         ],
         blank=True,
         block_counts={
