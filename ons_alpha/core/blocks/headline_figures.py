@@ -12,7 +12,7 @@ class HeadlineFiguresItemBlock(StructBlock):
 class HeadlineFiguresBlock(ListBlock):
     def __init__(self, search_index=True, **kwargs):
         kwargs.setdefault("min_num", 3)
-        kwargs.setdefault("max_num", 3)
+        kwargs.setdefault("max_num", 6)
         super().__init__(HeadlineFiguresItemBlock, search_index=search_index, **kwargs)
 
     class Meta:
