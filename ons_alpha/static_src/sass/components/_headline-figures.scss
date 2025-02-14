@@ -1,11 +1,36 @@
 @use 'config' as *;
 
 .headline-figures {
-    //padding-top: rem-sizing(24);
+    $root: &;
     padding-bottom: rem-sizing(40);
 
     &__grid {
-        row-gap: rem-sizing(24);
+        gap: rem-sizing(24);
+        display: grid;
+
+        &--3 {
+            @include media-query('m') {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        &--4 {
+            @include media-query('m') {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        &--5 {
+            @include media-query('m') {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        &--6 {
+            @include media-query('m') {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
     }
 
     &__block {
@@ -23,6 +48,18 @@
 
         @media (forced-colors: active) {
             border: 1px solid var(--ons-color-grey-5);
+        }
+
+        #{$root}__grid--5 & {
+            @include media-query('m') {
+                grid-column: span 3;
+            }
+        }
+
+        #{$root}__grid--5 &:nth-child(n + 3) {
+            @include media-query('m') {
+                grid-column: span 2;
+            }
         }
     }
 

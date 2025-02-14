@@ -4,6 +4,7 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtailmath.blocks import MathBlock
 
 from ons_alpha.core.blocks import (
+    AccordionBlock,
     ButtonLinkBlock,
     CorrectionBlock,
     DocumentListBlock,
@@ -35,6 +36,7 @@ class CoreStoryBlock(StreamBlock):
     heading = HeadingBlock()
     rich_text = RichTextBlock()
     panel = PanelBlock()
+    accordion = AccordionBlock()
     embed = EmbedBlock()
     image = ImageChooserBlock()
     documents = DocumentsBlock()
