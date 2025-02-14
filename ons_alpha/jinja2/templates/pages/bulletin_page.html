@@ -107,7 +107,10 @@
             {% for block in page.body %}
                 {% if block.block_type == "heading" %}
                     {% if ns.has_section %} </section>{% endif %}
-                    <section id="{{ block.value|slugify }}">
+                    <section
+                        id="{{ block.value|slugify }}"
+                        class="{% if content_block.block_type !='heading' %}streamfield{% if last_flush %}streamfield--last-flush{% endif %}{% endif %}"
+                    >
                         <h2>{{ block.value }}</h2>
                         {% set ns.has_section = True %}
                 {% else %}
