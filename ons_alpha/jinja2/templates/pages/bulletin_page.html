@@ -109,12 +109,14 @@
                     {% if ns.has_section %} </section>{% endif %}
                     <section
                         id="{{ block.value|slugify }}"
-                        class="{% if content_block.block_type !='heading' %}streamfield{% if last_flush %}streamfield--last-flush{% endif %}{% endif %}"
+                        class="streamfield {% if last_flush %}streamfield--last-flush{% endif %}"
                     >
                         <h2>{{ block.value }}</h2>
                         {% set ns.has_section = True %}
                 {% else %}
-                    {% include_block block %}
+                    <div class="streamfield {% if loop.last %}streamfield--last-flush{% endif %}">
+                        {% include_block block %}
+                    </div>
                 {% endif %}
             {% endfor %}
 

@@ -12,4 +12,8 @@
     &__title {
         @include heading-2();
     }
+
+    .streamfield & {
+        margin-bottom: 0;
+    }
 }
