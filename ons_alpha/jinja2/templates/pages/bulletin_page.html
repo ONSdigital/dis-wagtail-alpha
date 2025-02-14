@@ -93,7 +93,7 @@
             {# fmt:on #}
         </div>
 
-        <div class="ons-grid__col ons-col-8@m">
+        <div class="ons-grid__col ons-col-8@m  ons-js-toc-container">
             {# if there are no contact details on the page, we don't want the last
             streamfield block to have a bottom margin. last_flush is used in stream_block.html #}
             {% if page.contact_details %}
@@ -102,7 +102,20 @@
                 {% set last_flush = True %}
             {% endif %}
 
-            {% include_block page.body %}
+            {# see https://jinja.palletsprojects.com/en/stable/templates/#assignments #}
+            {% set ns = namespace(has_section=false) %}
+            {% for block in page.body %}
+                {% if block.block_type == "heading" %}
+                    {% if ns.has_section %} </section>{% endif %}
+                    <section id="{{ block.value|slugify }}">
+                        <h2>{{ block.value }}</h2>
+                        {% set ns.has_section = True %}
+                {% else %}
+                    {% include_block block %}
+                {% endif %}
+            {% endfor %}
+
+            {% if ns.has_section %}</section>{% endif %}
 
             {% if page.contact_details %}
                 <section id="contact-details">
