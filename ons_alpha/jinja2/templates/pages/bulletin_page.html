@@ -102,20 +102,7 @@
                 {% set last_flush = True %}
             {% endif %}
 
-            {# see https://jinja.palletsprojects.com/en/stable/templates/#assignments #}
-            {% set ns = namespace(has_section=false) %}
-            {% for block in page.body %}
-                {% if block.block_type == "heading" %}
-                    {% if ns.has_section %} </section>{% endif %}
-                    <section id="{{ block.value|slugify }}">
-                        <h2>{{ block.value }}</h2>
-                        {% set ns.has_section = True %}
-                {% else %}
-                    {% include_block block %}
-                {% endif %}
-            {% endfor %}
-
-            {% if ns.has_section %}</section>{% endif %}
+            {% include_block page.body %}
 
             {% if page.contact_details %}
                 <section id="contact-details">
