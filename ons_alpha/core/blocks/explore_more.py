@@ -1,12 +1,7 @@
 from django.utils.html import format_html, strip_tags
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
-from wagtail.blocks import (
-    CharBlock,
-    ListBlock,
-    StructBlock,
-    TextBlock,
-)
+from wagtail.blocks import CharBlock, ListBlock, StructBlock, TextBlock
 from wagtail.images.blocks import ImageChooserBlock
 
 
@@ -55,9 +50,9 @@ class ExploreMoreBlock(StructBlock):
                 "metadata": {},
                 "thumbnail": {
                     # standard: 136×96
-                    # high-dpi: 192×272
+                    # high-dpi: 272×192
                     "smallSrc": item["thumbnail"].get_rendition("fill-136x96").url,
-                    "largeSrc": item["thumbnail"].get_rendition("fill-192x272").url,
+                    "largeSrc": item["thumbnail"].get_rendition("fill-272x192").url,
                 },
             }
             documents.append(document)
