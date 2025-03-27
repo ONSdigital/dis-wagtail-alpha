@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.utils.html import format_html, strip_tags
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
@@ -8,7 +9,9 @@ from wagtail.blocks import (
     ListBlock,
     PageChooserBlock,
     StructBlock,
+    StructBlockValidationError,
     TextBlock,
+    URLBlock,
 )
 
 from ons_alpha.core.constants import CONTENT_TYPE_LABEL_CHOICES
@@ -20,6 +23,7 @@ class DocumentListItemBlock(StructBlock):
     content_type_label = ChoiceBlock(label=_("Content type label"), choices=CONTENT_TYPE_LABEL_CHOICES, required=True)
     description = TextBlock(label=_("Description"), max_length=300, required=True)
     page = PageChooserBlock(label=_("Page"), required=False)
+    url = URLBlock(label=_("External link"), required=False)
 
     class Meta:
         icon = "list-ul"
@@ -28,6 +32,10 @@ class DocumentListItemBlock(StructBlock):
     def clean(self, value):
         value = super().clean(value)
         value["description"] = strip_tags(value["description"])
+        if value["page"] and value["url"]:
+            raise StructBlockValidationError(
+                block_errors={"url": ValidationError("Only one of 'Page' or 'External link' can be selected")}
+            )
         return value
 
 
@@ -69,6 +77,8 @@ class DocumentListBlock(StructBlock):
                 document["title"]["url"] = page.specific_deferred.get_url(
                     parent_context.get("request") if parent_context else None
                 )
+            elif item["url"]:
+                document["title"]["url"] = item["url"]
             documents.append(document)
 
         # Add 'documents' to the context
