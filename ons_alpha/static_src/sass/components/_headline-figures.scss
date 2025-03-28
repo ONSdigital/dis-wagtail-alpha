@@ -88,10 +88,6 @@
         margin: 0 0 1rem 0;
     }
 
-    &__image-caption {
-        font-size: 0.8em;
-    }
-
     &__figure {
         // font-sizes don't match design system type scale in the figma file
         font-size: rem-sizing(32);

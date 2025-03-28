@@ -14,9 +14,6 @@
                 </h3>
                 {% if figure.image %}
                     <figure class="headline-figures__image-container">
-                        {% if figure.image_caption %}
-                            <figcaption class="headline-figures__image-caption">{{ figure.image_caption }}</figcaption>
-                        {% endif %}
                         {{ srcset_image(figure.image, "format-png|width-{278,556}", class="headline-figures__image") }}
                     </figure>
                 {% endif %}
