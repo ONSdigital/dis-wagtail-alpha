@@ -1,7 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.utils.html import format_html, strip_tags
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
-from wagtail.blocks import CharBlock, ListBlock, StructBlock, TextBlock
+from wagtail.blocks import CharBlock, ListBlock, PageChooserBlock, StructBlock, TextBlock, URLBlock
 from wagtail.images.blocks import ImageChooserBlock
 
 
@@ -9,6 +10,16 @@ class ExploreMoreListItemBlock(StructBlock):
     title = CharBlock(label=_("Title"), max_length=200, required=True)
     thumbnail = ImageChooserBlock(label=_("Thumbnail"), required=True)
     description = TextBlock(label=_("Description"), max_length=300, required=True)
+    page = PageChooserBlock(
+        label=_("Page"),
+        required=False,
+        help_text=_("Select a page to link to. This will be used as the URL."),
+    )
+    external_link = URLBlock(
+        label=_("External link"),
+        required=False,
+        help_text=_("Enter an external URL to link to."),
+    )
 
     class Meta:
         icon = "list-ul"
@@ -17,6 +28,9 @@ class ExploreMoreListItemBlock(StructBlock):
     def clean(self, value):
         value = super().clean(value)
         value["description"] = strip_tags(value["description"])
+        # Ensure only one of page or external_link is provided
+        if value["page"] and value["external_link"]:
+            raise ValidationError(_("You cannot provide both a page and an external link at the same time."))
         return value
 
 
@@ -45,6 +59,7 @@ class ExploreMoreBlock(StructBlock):
             document = {
                 "title": {
                     "text": item["title"],
+                    "url": item["page"].url if item["page"] else item["external_link"],
                 },
                 "description": format_html("<p>{}</p>", item["description"]),
                 "metadata": {},
