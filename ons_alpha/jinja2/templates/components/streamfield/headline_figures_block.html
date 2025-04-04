@@ -12,6 +12,13 @@
                         </a>
                     {% endif %}
                 </h3>
+                {% if figure.image %}
+                    <figure class="headline-figures__image-container">
+                        <figcaption class="headline-figures__image-caption">{{ figure.image_caption }}</figcaption>
+                        {{ srcset_image(figure.image, "format-png|width-{278,556}", class="headline-figures__image") }}
+                    </figure>
+                {% endif %}
+
                 <p class="headline-figures__figure">{{ figure.figure }}</p>
 
                 {% if figure.supporting_text %}
