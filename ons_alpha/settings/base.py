@@ -830,6 +830,7 @@ SHORT_DATETIME_FORMAT = "d/m/Y P"
 
 ONS_TOPIC_PAGE_URL = env.get("ONS_TOPIC_PAGE_URL", "/business-industry-trade/retail-industry/")
 ONS_CPI_PAGE_URL = env.get("ONS_CPI_PAGE_URL", "")
+ONS_HEALTH_PAGE_URL = env.get("ONS_HEALTH_PAGE_URL", "/deaths/deaths/")
 ONS_API_DATASET_BASE_URL = env.get("ONS_API_DATASET_BASE_URL", "https://api.beta.ons.gov.uk/v1/datasets")
 ONS_WEBSITE_DATASET_BASE_URL = env.get("ONS_WEBSITE_DATASET_BASE_URL", "https://www.ons.gov.uk/datasets")
 ONS_COOKIE_BANNER_ENABLED = env.get("ONS_COOKIE_BANNER_ENABLED", "false").lower() == "true"
